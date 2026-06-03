@@ -3,9 +3,7 @@
 > Stop coding with AI agents "loosey-goosey." Design your codebase so agents *succeed* —
 > the way a systems engineer would.
 
-> 📖 **Browse the site:** this curriculum is published with MkDocs Material. Once GitHub Pages is
-> enabled it will live at `https://<user>.github.io/agent-first-engineering/`. Preview locally with
-> `.venv/bin/mkdocs serve` (see [Local preview](#local-preview)).
+> 📖 **Read it online → [codyamaughan.github.io/agent-first-engineering](https://codyamaughan.github.io/agent-first-engineering/)**
 
 This repository has **two deliverables that are two views of one body of knowledge**:
 
@@ -63,14 +61,6 @@ quiz from each phase's lessons).
 | 2 | [Context Engineering](docs/curriculum/02-context-engineering/index.md) ★★★ | 5 | [Spec-Driven Development](docs/curriculum/05-spec-driven-development/index.md) |
 | 3 | [Verification & TDD](docs/curriculum/03-verification-and-tdd/index.md) ★★★ | 6 | [Orchestration & Harness](docs/curriculum/06-orchestration-and-harness/index.md) |
 
-## Local preview
-
-```bash
-python3 -m venv .venv
-.venv/bin/pip install mkdocs-material
-.venv/bin/mkdocs serve   # http://127.0.0.1:8000
-```
-
 ## Status
 
 **Foundations curriculum + scaffolder built and dogfooded.** Authored using Spec Kit itself (dogfooding). Advanced tier on the [Roadmap](docs/roadmap.md).
@@ -87,11 +77,8 @@ python3 -m venv .venv
 - [`specs/001-curriculum/spec.md`](specs/001-curriculum/spec.md) — Deliverable A (curriculum)
 - [`specs/002-scaffolder/spec.md`](specs/002-scaffolder/spec.md) — Deliverable B (scaffolder)
 
-**Next:** generate `plan.md` + `tasks.md` for the scaffolder spec (Spec Kit flow), then implement
-the `SKILL.md`-first scaffolder.
-
 ## License
 
 Intended: **MIT** (to be added). All redistributed dependencies are MIT/Apache/BSD.
 
-[*AI Engineering from Scratch*]: https://github.com/
+[*AI Engineering from Scratch*]: https://github.com/rohitg00/ai-engineering-from-scratch
