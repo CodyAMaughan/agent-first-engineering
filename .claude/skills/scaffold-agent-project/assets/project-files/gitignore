@@ -1,0 +1,23 @@
+# Template — the scaffolder writes this as `.gitignore` (customize per stack).
+
+# Dependencies / build
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets & local env (NEVER commit) — but keep the example
+.env
+.env.*
+!.env.example
+
+# Logs / OS / coverage
+*.log
+.DS_Store
+coverage/
+
+# Agent-first: keep the curated memory wiki, ignore the volatile staging buffer
+.agent/memory/_staging.md

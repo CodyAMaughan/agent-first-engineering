@@ -1,0 +1,2 @@
+# Docs site (MkDocs Material). Used locally and by the GitHub Pages deploy workflow.
+mkdocs-material>=9.7

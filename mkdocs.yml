@@ -1,0 +1,105 @@
+site_name: Agent-First Engineering
+site_description: >-
+  Stop coding with AI agents loosely. A 6-phase curriculum that takes you from
+  "vibe coding" to systems engineer for agents — agent-agnostic, built on open
+  standards (AGENTS.md, SKILL.md, MCP).
+site_url: https://CodyAMaughan.github.io/agent-first-engineering/
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.indexes
+    - navigation.tracking
+    - navigation.footer
+    - toc.follow
+    - content.code.copy
+    - content.tooltips
+    - search.suggest
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - abbr
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+nav:
+  - Home: index.md
+  - Curriculum:
+      - curriculum/index.md
+      - Phase 1 — Fundamentals:
+          - curriculum/01-fundamentals/index.md
+          - The loop: curriculum/01-fundamentals/01-the-loop.md
+          - Prompt specificity: curriculum/01-fundamentals/02-prompt-specificity.md
+          - Feeding context: curriculum/01-fundamentals/03-feeding-context.md
+          - Plan mode first: curriculum/01-fundamentals/04-plan-mode.md
+      - Phase 2 — Context Engineering:
+          - curriculum/02-context-engineering/index.md
+          - The context window is a desk: curriculum/02-context-engineering/01-context-window-is-a-desk.md
+          - Context rot: curriculum/02-context-engineering/02-context-rot.md
+          - The three moves: curriculum/02-context-engineering/03-the-three-moves.md
+          - The spec handoff: curriculum/02-context-engineering/04-the-spec-handoff.md
+          - What the scaffolder automates: curriculum/02-context-engineering/05-scaffolder-memory-loop.md
+      - Phase 3 — Verification & TDD:
+          - curriculum/03-verification-and-tdd/index.md
+          - "'Looks done' isn't done": curriculum/03-verification-and-tdd/01-looks-done-isnt-done.md
+          - The oracle gradient: curriculum/03-verification-and-tdd/02-the-oracle-gradient.md
+          - TDD with agents: curriculum/03-verification-and-tdd/03-tdd-with-agents.md
+          - Oracles for the un-testable: curriculum/03-verification-and-tdd/04-oracles-for-the-untestable.md
+          - What the scaffolder automates: curriculum/03-verification-and-tdd/05-scaffolder-test-gate.md
+      - Phase 4 — Session & Memory:
+          - curriculum/04-session-and-memory/index.md
+          - Course-correct early: curriculum/04-session-and-memory/01-course-correct-early.md
+          - AGENTS.md done right: curriculum/04-session-and-memory/02-agents-md-done-right.md
+          - Skills, rules & commands: curriculum/04-session-and-memory/03-skills-rules-commands.md
+          - Prose to hooks: curriculum/04-session-and-memory/04-prose-to-hooks.md
+          - What the scaffolder automates: curriculum/04-session-and-memory/05-scaffolder-steering.md
+      - Phase 5 — Spec-Driven Development:
+          - curriculum/05-spec-driven-development/index.md
+          - Why specs beat prompts: curriculum/05-spec-driven-development/01-why-specs-beat-prompts.md
+          - The Spec Kit loop: curriculum/05-spec-driven-development/02-the-speckit-loop.md
+          - WHAT vs HOW: curriculum/05-spec-driven-development/03-what-vs-how.md
+          - Spec as steering wheel: curriculum/05-spec-driven-development/04-spec-as-steering-wheel.md
+          - Scaffolder handoff: curriculum/05-spec-driven-development/05-scaffolder-speckit-handoff.md
+      - Phase 6 — Orchestration & Harness:
+          - curriculum/06-orchestration-and-harness/index.md
+          - Small, focused agents: curriculum/06-orchestration-and-harness/01-small-focused-agents.md
+          - Adversarial review: curriculum/06-orchestration-and-harness/02-adversarial-review.md
+          - Parallelism & worktrees: curriculum/06-orchestration-and-harness/03-parallelism-and-worktrees.md
+          - Harness engineering: curriculum/06-orchestration-and-harness/04-harness-engineering.md
+          - Defining team direction: curriculum/06-orchestration-and-harness/05-defining-team-direction.md
+          - The scaffolder is the capstone: curriculum/06-orchestration-and-harness/06-scaffolder-capstone.md
+  - Roadmap: roadmap.md
+  - Reference:
+      - Translation Matrix: translation-matrix.md

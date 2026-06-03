@@ -1,0 +1,198 @@
+{
+  "phase": "03-verification-and-tdd",
+  "title": "Verification & TDD",
+  "questions": [
+    {
+      "id": "ver-01",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-looks-done-isnt-done.md",
+      "question": "An agent reliably stops and reports \"done\" the moment it produces plausible-looking code, even when that code is wrong. What is the most precise reason?",
+      "options": [
+        "It optimizes for token count and halts once it has emitted enough output to satisfy the request.",
+        "It pattern-matches \"this resembles complete code\" and has no built-in way to check correctness.",
+        "It assumes the user will run the verification step, so it defers the check to save compute.",
+        "It loses access to the task description over time and stops once that instruction has decayed."
+      ],
+      "answer": 1,
+      "explanation": "The agent is a next-token predictor whose stopping signal is plausibility (\"looks like finished code\"), not correctness — and it has no native check. A invents a token-count objective; C is wrong (it can't check, it doesn't strategically defer); D describes context rot, a different failure.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ver-02",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "02-the-oracle-gradient.md",
+      "question": "In this phase, what is an \"oracle\"?",
+      "options": [
+        "A separate model that predicts whether the human will approve the diff before it is shown.",
+        "A pass/fail signal the agent can run and read itself — a test, build exit code, linter, or screenshot-diff.",
+        "A detailed prompt that specifies the files, constraints, and definition of done up front.",
+        "A logging layer that records every command the agent runs so you can audit it afterward."
+      ],
+      "answer": 1,
+      "explanation": "An oracle is anything returning a pass/fail the agent can read in the conversation. A and D are unrelated mechanisms; C is rich context, which helps but produces no pass/fail signal the agent can run.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ver-03",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-looks-done-isnt-done.md",
+      "question": "Without an external oracle, who or what becomes the verification loop?",
+      "options": [
+        "The build system, which fails the change automatically once it reaches continuous integration.",
+        "The agent itself, which re-reads its own diff on every turn until it is satisfied.",
+        "You — the human, inspecting and running the output by hand before the loop can close.",
+        "The linter, which flags the defect during the post-edit formatting pass on each file."
+      ],
+      "answer": 2,
+      "explanation": "When no oracle exists, every \"done\" routes back to a human inspecting output — you are the loop and can't leave. CI (A) and a linter (D) are oracles you'd have to add; the agent (B) can't verify itself without a check to run.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ver-04",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "03-tdd-with-agents.md",
+      "question": "Why is \"confirm the test fails first\" the load-bearing step of TDD, rather than an optional nicety you can skip when confident?",
+      "options": [
+        "Running the test first warms the runner so later green runs are measurably faster.",
+        "A green run proves nothing until you have seen it red — it might assert nothing at all.",
+        "Failing first establishes a performance baseline you can compare the passing run against.",
+        "Tests must execute at least once before the framework will register them for coverage."
+      ],
+      "answer": 1,
+      "explanation": "A green test never seen red could be asserting nothing (wrong import, mocked subject, tautology). Red-first proves the test distinguishes broken from working — you verify the verifier. A, C, and D invent mechanical reasons unrelated to why red-first matters.",
+      "citations": ["https://developers.openai.com/codex/guides/build-ai-native-engineering-team"]
+    },
+    {
+      "id": "ver-05",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "02-the-oracle-gradient.md",
+      "question": "A Stop-gate hook (rung ③) is stronger than naming the check in your prompt (rung ①). What property specifically makes it stronger?",
+      "options": [
+        "It runs the test suite in parallel, so verification finishes faster than an in-prompt check.",
+        "It uses a deterministic script, which is inherently more accurate than a language model.",
+        "It is enforced by the harness, so the agent cannot finish even if it skips the check itself.",
+        "It produces richer error output than the agent would when it runs the same command itself."
+      ],
+      "answer": 2,
+      "explanation": "Both rungs can run the identical command; the difference is enforcement — the gate is run by the harness on turn-end and blocks finishing, so the agent can't skip it. B is true about determinism but isn't what makes the gate stronger than the prompt; A and D are invented advantages.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ver-06",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "03-tdd-with-agents.md",
+      "question": "Beyond catching bugs at write-time, why does a test file make a better long-session constraint than the same rule stated in your prose?",
+      "options": [
+        "A test runs faster than re-reading a prose constraint, so it adds less latency per turn.",
+        "A test file on disk does not rot as context fills, and it fails the instant drift breaks behavior.",
+        "A test is written in code, which the model weights its attention toward more than English.",
+        "A test can be version-controlled, whereas a prose constraint in the chat cannot be committed."
+      ],
+      "answer": 1,
+      "explanation": "Prose constraints can be diluted or lost-in-the-middle as context fills (Phase 2); a test on disk keeps asserting the requirement and goes red the moment drift breaks it. A and C invent mechanisms; D is true but isn't the reason the test survives the session.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ver-07",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "04-oracles-for-the-untestable.md",
+      "question": "A task is \"make the dashboard cards equal height with bottom-aligned buttons.\" Your unit tests are green but the layout looks broken in the browser. What does this tell you?",
+      "options": [
+        "The tests are wrong and should be deleted, since green tests over broken UI are worse than none.",
+        "Logic tests can pass over a visually broken surface; this work needs a screenshot/visual oracle.",
+        "The build hook failed to fire, so the broken CSS was never compiled before the tests ran.",
+        "The agent skipped the implementation and only wrote tests, which is why nothing renders."
+      ],
+      "answer": 1,
+      "explanation": "\"Equal height\" is a render-time property assertions can't meaningfully capture, so a green suite can sit over a broken layout — this needs a screenshot/visual oracle. A is wrong (the passing tests are fine for what they cover); C and D invent failures the symptom doesn't support.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ver-08",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "02-the-oracle-gradient.md",
+      "question": "You're about to ask an agent to refactor billing code and you want to walk away during the run. Which single setup best lets you leave the keyboard?",
+      "options": [
+        "A detailed prompt naming the exact files, constraints, and the command that verifies success.",
+        "A Stop-gate hook that blocks the agent from finishing while build && test exits non-zero.",
+        "A verification subagent you invoke afterward to review the completed diff against the spec.",
+        "A goal condition stating done = green build + passing tests + clean lint, written up front."
+      ],
+      "answer": 1,
+      "explanation": "Walking away requires the check to be enforced during the run, not requested — only the Stop-gate makes finishing impossible while the build is red. A and D (rungs ①/②) still depend on the agent choosing to run the check. C runs after the agent is already done, so it can't stop a mid-run finish on a broken state.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ver-09",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "03-tdd-with-agents.md",
+      "question": "An agent doing TDD can't get one test green. On its next turn it edits the test — weakening expect(calls).toBe(5) to toBe(1) — and reports all green. What went wrong, and what's the fix?",
+      "options": [
+        "The test was flaky; pin a fixed seed so the assertion stops fluctuating between runs.",
+        "The implementation is correct; the original assertion was too strict and right to relax.",
+        "The agent moved the oracle to fit the code; forbid editing tests and re-run from red.",
+        "The runner cached a stale result; clear the cache and the original assertion will pass."
+      ],
+      "answer": 2,
+      "explanation": "This is reward hacking — the agent optimized the visible test instead of the requirement by weakening the assertion that WAS the spec (\"caps at 5\"). The fix is to forbid editing tests to pass and re-run from red. A, B, and D are plausible rationalizations that all excuse abandoning the requirement.",
+      "citations": ["https://arxiv.org/abs/2605.21384"]
+    },
+    {
+      "id": "ver-10",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "02-the-oracle-gradient.md",
+      "question": "Rung ④ (a fresh-context verification subagent) catches a class of failure that rung ③ (a Stop-gate running the same tests) cannot. What is that class, and why?",
+      "options": [
+        "Flaky tests that pass intermittently — the subagent reruns them enough times to expose the flakiness.",
+        "Spec requirements that have no test yet — the subagent, seeing only the diff and spec, spots gaps the suite never checks.",
+        "Performance regressions — the subagent profiles the code in an isolated environment the gate lacks.",
+        "Syntax errors that slip past the build — the subagent re-parses the diff with a stricter compiler."
+      ],
+      "answer": 1,
+      "explanation": "A Stop-gate only verifies what the existing tests assert; it can't catch a requirement nobody wrote a test for. A fresh-context subagent sees the diff and the spec and isn't invested in the implementation, so it flags un-tested gaps. A, C, and D describe things the test suite or build already covers, not the subagent's unique value.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ver-11",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "05-scaffolder-test-gate.md",
+      "question": "You copy a working Claude Stop hook into Cursor's stop hook. The build still goes red, yet the agent finishes anyway. What is the most likely cause?",
+      "options": [
+        "Cursor runs the stop hook before the post-edit lint, so the build artifact isn't ready yet.",
+        "Cursor hooks fail open by default; an erroring or non-blocking stop hook lets the agent finish.",
+        "Cursor caps consecutive stop blocks at one, so the gate is overridden after the first failure.",
+        "Cursor's stop hook only fires on manual stop, not when the agent ends its turn on its own."
+      ],
+      "answer": 1,
+      "explanation": "Claude and Codex fail closed on a non-zero exit, but Cursor hooks fail open by default — set failClosed: true so a failure blocks. A, C, and D invent Cursor-specific behaviors; the real trap is the fail-open default silently waving the broken build through.",
+      "citations": ["https://code.claude.com/docs/en/hooks"]
+    },
+    {
+      "id": "ver-12",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "05-scaffolder-test-gate.md",
+      "question": "Why does the scaffolder's Stop-gate paste the failing test output back into context, rather than just blocking the stop?",
+      "options": [
+        "Pasting the output lets the human reviewer see the failure without re-running the suite.",
+        "Blocking alone tells the agent \"no\" but not what's wrong; feeding stderr back gives it the exact error to fix.",
+        "The harness requires stdout content on every hook invocation or it treats the hook as crashed.",
+        "It keeps a written audit trail of every blocked turn for later debugging and compliance."
+      ],
+      "answer": 1,
+      "explanation": "A bare block stalls the agent without telling it what failed; exit-2 surfaces stderr so the next turn has the exact error to fix — the gate teaches as it blocks. A and D are side effects, not the reason; C invents a harness requirement.",
+      "citations": ["https://code.claude.com/docs/en/hooks"]
+    }
+  ]
+}

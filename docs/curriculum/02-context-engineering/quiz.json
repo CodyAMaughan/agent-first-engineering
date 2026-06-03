@@ -1,0 +1,182 @@
+{
+  "phase": "02-context-engineering",
+  "title": "Context Engineering",
+  "questions": [
+    {
+      "id": "ctx-01",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-context-window-is-a-desk.md",
+      "question": "Why is the context window described as a desk rather than a filing cabinet?",
+      "options": [
+        "Finite working space the agent reasons over now — not searchable storage to query later.",
+        "An unlimited store the agent can page through one file at a time.",
+        "It compresses old messages automatically so it never fills up.",
+        "It keeps files on disk but loads only their filenames into memory."
+      ],
+      "answer": 0,
+      "explanation": "The window is a fixed token budget holding everything the agent currently sees; it is not a queryable database. A/the cabinet describes infinite queryable storage (the opposite); C describes compaction (a separate move); D is invented.",
+      "citations": ["https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"]
+    },
+    {
+      "id": "ctx-02",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-context-window-is-a-desk.md",
+      "question": "Which two categories most often silently consume the context budget?",
+      "options": [
+        "The system prompt and the steering files.",
+        "Fully-read file contents and tool output (test logs, grep, build errors).",
+        "The user's typed messages and the agent's short acknowledgements.",
+        "The agent's internal weights and its tokenizer vocabulary."
+      ],
+      "answer": 1,
+      "explanation": "Files read in full and tool output are the budget-eaters; tool results alone can exceed 50k tokens. The system prompt and steering files are small and fixed (A); user messages are small (C); weights/tokenizer aren't in the window at all (D).",
+      "citations": ["https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"]
+    },
+    {
+      "id": "ctx-03",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "03-the-three-moves.md",
+      "question": "You finished a feature and now want to work on a completely unrelated module. Which move is correct?",
+      "options": [
+        "/compact, to keep a summary of the finished feature.",
+        "Keep typing in the same session so the agent retains full context.",
+        "A fresh session seeded with the finished feature's spec.",
+        "/clear, to wipe the conversation and start the new task on a clean desk."
+      ],
+      "answer": 3,
+      "explanation": "For an unrelated task you want the old work gone, not summarized. /compact (A) leaves old-task noise on the desk; continuing (B) dilutes the new work; seeding the new task with the old spec (C) is irrelevant context.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ctx-04",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "02-context-rot.md",
+      "question": "An agent is sharp for five turns, then degrades over the next fifteen on the same bug. Nothing about the model or codebase changed. What is the most precise explanation?",
+      "options": [
+        "The model's weights shift toward likelier tokens as the conversation lengthens.",
+        "The window filled with dead ends and dilution, so signal-to-noise fell.",
+        "The task exceeded the model's parameter count and it ran out of capacity.",
+        "Long conversations trigger a smaller fallback model to control serving cost."
+      ],
+      "answer": 1,
+      "explanation": "This is context rot: dead ends and dilution lower signal-to-noise. The model is a stateless function whose weights don't change mid-session (A, D are invented mechanisms); 'ran out of parameters' (C) is not how inference works.",
+      "citations": ["https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"]
+    },
+    {
+      "id": "ctx-05",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "02-context-rot.md",
+      "question": "You've debugged one issue for fifteen turns; the agent keeps re-proposing a fix it already tried twice. What is the best next move?",
+      "options": [
+        "Run /compact so the failed attempts are summarized but still retained.",
+        "Paste the full error logs again and ask it to read them more carefully.",
+        "/clear, then restate the bug and the two failed approaches crisply.",
+        "Keep going but instruct it explicitly to avoid the approach that failed."
+      ],
+      "answer": 2,
+      "explanation": "You're past the ~2-failed-fixes line, so the history is scar tissue; /clear plus a crisp restatement wins. A keeps the dead ends on the desk; B adds to the rot; D leaves all the failed context in view even while naming one approach to avoid.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "ctx-06",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "04-the-spec-handoff.md",
+      "question": "Why does the spec-handoff pattern implement the feature in a fresh session rather than continuing in the session that produced the spec?",
+      "options": [
+        "The thinking session's desk is full of exploration that is rot for coding.",
+        "A fresh session resets per-token billing, lowering implementation cost.",
+        "Specs can only be read by a session that did not author them, by design.",
+        "Fresh sessions are assigned more context-window capacity than older ones."
+      ],
+      "answer": 0,
+      "explanation": "The thinking session's full desk is useful for thinking but pure rot for implementation. B is false (clearing doesn't change billing); C and D are invented (specs are plain files; fresh sessions don't get more window).",
+      "citations": ["https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"]
+    },
+    {
+      "id": "ctx-07",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "03-the-three-moves.md",
+      "question": "You're still on the same feature, the desk is cluttered with file dumps you no longer need, but you still want the narrative of decisions and the two approaches that failed. Best move?",
+      "options": [
+        "/clear, then restate the feature from scratch.",
+        "A fresh session seeded with a brand-new SPEC.md.",
+        "/compact with a focus on the bug and the two failed approaches.",
+        "Keep going; the clutter will be ignored automatically."
+      ],
+      "answer": 2,
+      "explanation": "Same task plus a needed narrative is the textbook /compact case: it keeps decisions and drops raw dumps. /clear (A) would wipe the thread you still need; a new spec (B) is for a clean re-run you didn't ask for; clutter is not ignored (D) — it rots.",
+      "citations": ["https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"]
+    },
+    {
+      "id": "ctx-08",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "02-context-rot.md",
+      "question": "A 2025 study found LLM performance still degrades 13.9%–85% as input length grows even when retrieval of the relevant fact is perfect. What does controlling for perfect retrieval specifically establish?",
+      "options": [
+        "That longer contexts always reduce the model's maximum token limit.",
+        "That length itself degrades reasoning, independent of whether the fact was found.",
+        "That the 'lost in the middle' U-shape is the only cause of long-context failure.",
+        "That retrieval-augmented generation eliminates context rot entirely."
+      ],
+      "answer": 1,
+      "explanation": "Holding retrieval at 100% rules out 'it couldn't find the fact,' isolating length itself as a degrader. A confuses limit with quality; C overclaims a single cause (the study is broader than positional bias); D is the opposite of the finding.",
+      "citations": ["https://arxiv.org/abs/2510.05381"]
+    },
+    {
+      "id": "ctx-09",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "02-context-rot.md",
+      "question": "Given the 'lost in the middle' effect, where should you keep restating a critical invariant during a long session to maximize the chance the agent honors it?",
+      "options": [
+        "In the original instruction near the start, since primacy attention is strongest there.",
+        "Buried once in the middle, so it is equidistant from both attention peaks.",
+        "Near the end, in your most recent message, since recency attention is high.",
+        "Anywhere — modern long-context models weight all positions equally."
+      ],
+      "answer": 2,
+      "explanation": "Attention is U-shaped (strong at start and end); over a long session the latest message (the end) is the reliable high-attention slot for re-stating invariants. A is true of the start but the start gets buried as the session grows; B targets the weakest position; D contradicts the finding.",
+      "citations": ["https://arxiv.org/abs/2307.03172"]
+    },
+    {
+      "id": "ctx-10",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "05-scaffolder-memory-loop.md",
+      "question": "The capture-learnings loop uses a deterministic, non-LLM hook. Why is 'deterministic, no model call' the right design choice here, specifically?",
+      "options": [
+        "Because LLM calls cannot produce valid markdown for a memory file.",
+        "So it runs reliably on every event without relying on the agent's judgment.",
+        "Because hooks are technically forbidden from invoking any language model.",
+        "So the captured learnings are guaranteed to be factually correct."
+      ],
+      "answer": 1,
+      "explanation": "A deterministic hook fires on every event and doesn't depend on the agent choosing to save — reliability and zero attention cost are the point. A and C are false (LLMs emit markdown; hooks may call models); D overclaims — determinism guarantees it runs, not that the content is right.",
+      "citations": ["https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents"]
+    },
+    {
+      "id": "ctx-11",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "03-the-three-moves.md",
+      "question": "A teammate says 'auto-compaction handles context for me, so I never manage it manually.' What is the strongest specific reason to push back?",
+      "options": [
+        "Auto-compaction is disabled by default and must be turned on per project.",
+        "Manual /clear is the only thing that ever frees any context at all.",
+        "Auto-compaction can silently drop a subtle invariant stated many turns ago.",
+        "Compaction permanently deletes the code the agent has written to disk."
+      ],
+      "answer": 2,
+      "explanation": "Auto-compaction is a real backstop but can summarize away a long-ago invariant, so you must restate non-negotiables. A is false (it's generally automatic); B is false (/compact and fresh sessions also free context); D is false (compaction touches the conversation, not disk).",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    }
+  ]
+}

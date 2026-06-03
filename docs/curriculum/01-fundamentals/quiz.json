@@ -1,0 +1,166 @@
+{
+  "phase": "01-fundamentals",
+  "title": "Fundamentals: the agentic loop",
+  "questions": [
+    {
+      "id": "fund-01",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-the-loop.md",
+      "question": "What is the correct order of the agentic loop?",
+      "options": [
+        "Plan → explore → commit → code",
+        "Explore → plan → code → commit",
+        "Code → explore → plan → commit",
+        "Explore → code → plan → commit"
+      ],
+      "answer": 1,
+      "explanation": "The loop is explore → plan → code → commit. Reading the real code first corrects the agent's mental model before it plans, so the wrong target is caught while it's still cheap text.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-02",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "02-prompt-specificity.md",
+      "question": "Per this phase, which four elements make a prompt specific?",
+      "options": [
+        "The tone, the length, the formatting, and the politeness of the ask",
+        "The model name, the sampling temperature, the max-token budget, and a system prompt",
+        "The file, the constraint, the example to imitate, and the definition of done",
+        "A task title, a short summary, a time estimate, and a hard deadline"
+      ],
+      "answer": 2,
+      "explanation": "Specificity is naming the file, the constraint, the example pattern to imitate, and a checkable definition of done — not raw length or model settings.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-03",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "03-feeding-context.md",
+      "question": "What does 'feed context, don't describe it' mean?",
+      "options": [
+        "Hand the agent the verbatim source (the file, screenshot, or log) rather than paraphrasing it",
+        "Write a longer, more careful prose description of the problem before the agent starts working",
+        "Always summarize the relevant files first so the agent reads fewer tokens off the raw source",
+        "Let the agent guess the missing details from memory to keep the working context window small"
+      ],
+      "answer": 0,
+      "explanation": "Feeding means giving the source of truth verbatim — @file, an image, piped output — because your paraphrase is a lossy, confidently-incomplete summary.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-04",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "04-plan-mode.md",
+      "question": "You need to bump a single constant in one config file from 3000 to 5000. Your agent offers plan mode. Best move?",
+      "options": [
+        "Use plan mode anyway — planning every change builds a consistently safe habit",
+        "Skip the plan and just make the edit; the diff is obvious and one line",
+        "Use plan mode, then clear context, then implement in a fresh session",
+        "Route the change through a migration so it's reversible"
+      ],
+      "answer": 1,
+      "explanation": "A one-line, obvious change is exactly when planning is pure ceremony. 'Always plan' overgeneralizes into waste; the others pile heavyweight process onto a trivial fix.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-05",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "01-the-loop.md",
+      "question": "An agent skips exploration, writes code that compiles and passes a quick eyeball, but at review turns out to solve the wrong problem. What does this reveal about the explore step?",
+      "options": [
+        "Exploration mainly warms up the model before it starts editing, so its later output comes out more fluent",
+        "Without reading the real code, the agent invents the unseen parts plausibly, so wrong-target bugs hide",
+        "Exploration is only needed when the task spans several source files; a single-file change can skip it safely",
+        "Skipping the explore step makes the code fail to compile, an error that is caught long before it reaches review"
+      ],
+      "answer": 1,
+      "explanation": "The danger is precisely that the code DOES compile — it solved the wrong problem. 'Warm up' is invented; single-file tasks also hide constraints; and the failure is not a compile error.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-06",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "04-plan-mode.md",
+      "question": "What is the defining property of plan mode (vs. just chatting)?",
+      "options": [
+        "It runs the agent on a cheaper, faster model so that planning costs you fewer tokens",
+        "It lets the agent read, reason, and propose a plan without writing anything to disk",
+        "It automatically commits the proposed plan to git as a checkpoint you can revert to",
+        "It hides the earlier conversation history so the working context window stays small"
+      ],
+      "answer": 1,
+      "explanation": "Plan mode is read-only thinking: the agent proposes what it will do with no disk writes, so you correct cheap words instead of expensive code. It isn't a model swap, a commit, or a context reset.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-07",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "03-feeding-context.md",
+      "question": "A button is misaligned only on mobile. Which prompt best follows 'feed, don't describe'?",
+      "options": [
+        "The submit button in @src/components/SubmitBar.tsx looks off on small phone screens, kind of pushed over to the right side",
+        "Make the whole layout responsive and just fix any of the mobile issues you happen to notice across @src/components/",
+        "Here's a 375px screenshot [attached] and @src/components/SubmitBar.tsx — the button overflows on mobile; fix it, don't touch desktop",
+        "Something is clearly wrong with the CSS on phones for @src/components/SubmitBar.tsx; please go and review all of the stylesheets in there"
+      ],
+      "answer": 2,
+      "explanation": "Only option C feeds verbatim sources — the actual screenshot and the actual component — plus a constraint. The others describe a layout the agent can't see or scope it so wide it must read your whole repo.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-08",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "02-prompt-specificity.md",
+      "question": "Of these prompts for the SAME task, which is the WEAKEST by this phase's standards despite sounding thorough?",
+      "options": [
+        "In cart.ts, dedupe items by SKU like mergeLines does; don't change totals; cart tests green",
+        "Make the cart code cleaner and more robust, and handle the duplicate-items situation well",
+        "Fix the duplicate line-items bug in @cart.ts; reuse mergeLines; done when npm test -- cart passes",
+        "Dedupe cart items by SKU in cart.ts, mirror mergeLines, keep totals identical, verify with the cart tests"
+      ],
+      "answer": 1,
+      "explanation": "B names no file, no concrete constraint, no pattern to mirror, and no checkable done — 'cleaner' and 'robust' are wishes, not orders. A, C, and D each pin a file, a pattern, a constraint, and a verifiable finish line.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-09",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "04-plan-mode.md",
+      "question": "You ask the agent to 'add caching to the API.' Its plan proposes an in-memory cache. Reading the plan, you realize you run several instances behind a load balancer. Why is catching this in the plan the textbook win?",
+      "options": [
+        "Plans are billed at a lower per-token rate than the implementation code the agent goes on to write afterwards",
+        "A plan is the only artifact the agent is actually permitted to revise once it has already been written out for you",
+        "A plan-stage catch costs one sentence to fix; an implementation-stage catch costs a re-read, a re-write, and a polluted window",
+        "Once the code has actually been written, the agent can no longer read back its own earlier reasoning steps from the conversation"
+      ],
+      "answer": 2,
+      "explanation": "The plan is the cheapest place to be wrong. The distractors are plausible but false: there is no separate plan billing tier, code is also revisable, and the agent can re-read its own work.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-10",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "03-feeding-context.md",
+      "question": "Your prose description of a bug is careful and grammatically perfect. Why can feeding the verbatim source still beat it?",
+      "options": [
+        "Pasted sources are stored outside the context window, so they cost the agent no tokens at all to read",
+        "Even careful prose is a lossy summary that omits details you didn't know mattered and can reflect stale memory of the code",
+        "Agents are simply unable to act on any information that is handed to them as plain natural-language prose alone",
+        "Screenshots and logs are always routed to a separate, much more accurate vision-only model that plain text prose can never reach"
+      ],
+      "answer": 1,
+      "explanation": "Prose quality doesn't fix the two real problems: omission of unknowingly-important detail and staleness vs. the current file. The distractors invent token-free storage, a prose restriction, and a separate model.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    }
+  ]
+}

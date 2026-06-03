@@ -1,0 +1,182 @@
+{
+  "phase": "04-session-and-memory",
+  "title": "Session & Memory Discipline",
+  "questions": [
+    {
+      "id": "sm-01",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "04-prose-to-hooks.md",
+      "question": "What is the core distinction between a knowledge file (AGENTS.md / a rule) and a hook?",
+      "options": [
+        "A knowledge file loads faster than a hook, which must spawn its own subprocess every single turn",
+        "A knowledge file is advisory guidance; a hook is deterministic enforcement of the action",
+        "A knowledge file works across every agent, whereas a hook works only in Claude Code today",
+        "A knowledge file is version-controlled, whereas a hook is stored only in untracked local config"
+      ],
+      "answer": 1,
+      "explanation": "Anthropic states it directly: unlike CLAUDE.md instructions which are advisory, hooks are deterministic and guarantee the action happens. The others are false or incidental — both are version-controllable, hooks exist across agents, and load speed is not the point.",
+      "citations": ["https://code.claude.com/docs/en/hooks"]
+    },
+    {
+      "id": "sm-02",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "02-agents-md-done-right.md",
+      "question": "What single test does Anthropic recommend applying to every line of AGENTS.md / CLAUDE.md?",
+      "options": [
+        "Is this line phrased as a direct imperative command rather than a passive description?",
+        "Is this line comfortably shorter than the file's documented per-line length budget?",
+        "Would removing this line cause the agent to err — if not, cut it?",
+        "Does this line restate a convention the team has already agreed to follow anyway?"
+      ],
+      "answer": 2,
+      "explanation": "The removal test is the documented core law: bloated files reduce adherence by dilution, so each line must earn its place by causing a mistake if removed. Command phrasing and brevity are good qualities but neither one prunes the dilution.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "sm-03",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-course-correct-early.md",
+      "question": "Why is interrupting the agent at its first wrong step cheaper than after the turn completes?",
+      "options": [
+        "Interrupting early resets the per-token billing meter for the remainder of the task",
+        "The agent builds later edits on the bad step, so waiting multiplies the cleanup",
+        "A completed turn permanently locks every file it touched until the next session",
+        "Early interruption forces a fresh checkpoint to load from disk before retrying"
+      ],
+      "answer": 1,
+      "explanation": "The agent does not pause at a wrong turn — it builds on it, making the bad decision load-bearing under later changes. Billing is unaffected, turns do not lock files, and no forced checkpoint reload occurs.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "sm-04",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "03-skills-rules-commands.md",
+      "question": "What exactly is a 'command' relative to a 'skill'?",
+      "options": [
+        "A command is just a lifecycle hook, whereas a skill is a loaded knowledge file",
+        "A command is authored as a JSON config file, whereas a skill is authored in Markdown",
+        "A command is a skill with disable-model-invocation set, so it is manual-only",
+        "A command runs deterministically every turn, whereas a skill only ever runs probabilistically"
+      ],
+      "answer": 2,
+      "explanation": "A command is literally a skill with auto-invocation turned off — same SKILL.md file, one flag — used for side-effecting or destructive procedures you want to trigger by hand. The others confuse commands with hooks or invent format differences.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "sm-05",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "04-prose-to-hooks.md",
+      "question": "AGENTS.md says in bold 'ALWAYS run the test suite before declaring done.' On a long session the agent declares done with tests failing. What does this most precisely reveal about the line?",
+      "options": [
+        "The wording was insufficiently firm and needs a much stronger imperative verb",
+        "The line is advisory, hence probabilistic, so it loses to context rot",
+        "The line should be moved nearer the top of the file, where the model's attention is higher",
+        "The agent ignored it because the file had exceeded its two-hundred-line budget"
+      ],
+      "answer": 1,
+      "explanation": "Knowledge files are advisory and probabilistic; on a long session context rot buries the line. Firmer wording, repositioning, and trimming all keep it as guidance. The fix is to promote it to a deterministic Stop-gate hook.",
+      "citations": ["https://code.claude.com/docs/en/hooks"]
+    },
+    {
+      "id": "sm-06",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "03-skills-rules-commands.md",
+      "question": "You want a release procedure the agent reaches for on its own when you ask to ship, but it must NOT fire during unrelated work. Which mechanism, and why?",
+      "options": [
+        "A rule in AGENTS.md, because rules stay loaded and are always on hand",
+        "A skill, because it auto-triggers from its description when the task matches",
+        "A command, because its manual-only invocation prevents any accidental misfires",
+        "A hook, because deterministic enforcement guarantees the steps run every single time"
+      ],
+      "answer": 1,
+      "explanation": "A skill auto-triggers from its description only when the task matches, satisfying both halves: it fires on 'ship a release' and stays dormant otherwise. A rule would sit on the desk always (dilution); a command is manual-only (would not self-fire); a hook is for must-happen-every-time enforcement, not on-demand procedures.",
+      "citations": ["https://agentskills.io/specification"]
+    },
+    {
+      "id": "sm-07",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "03-skills-rules-commands.md",
+      "question": "Why does having fifty installed skills cost almost nothing in context, while moving those same fifty procedures into AGENTS.md would wreck the desk?",
+      "options": [
+        "Skills are stored compressed on disk, whereas AGENTS.md is always held uncompressed in memory",
+        "Skills are merely summarized once at session start, whereas AGENTS.md is fully re-read on every turn",
+        "Progressive disclosure loads only the matched skill's body; AGENTS.md's body loads every session",
+        "Skills run inside a separate subagent context that never touches the main context window at all"
+      ],
+      "answer": 2,
+      "explanation": "Progressive disclosure loads only each skill's ~100-token metadata at startup; the full body loads only for the skill whose description matches. AGENTS.md, by contrast, has its entire body on the desk every session, so fifty procedures there is fifty bodies of permanent rot.",
+      "citations": ["https://agentskills.io/specification"]
+    },
+    {
+      "id": "sm-08",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "01-course-correct-early.md",
+      "question": "Claude ships auto-checkpoints and /rewind. Why still run 'git commit' before a risky multi-file refactor?",
+      "options": [
+        "Git commits are simply faster to restore from than Claude's own checkpoints are",
+        "Checkpoints track only Claude's edits, not external processes; git is the complete rollback",
+        "Claude checkpoints expire the very moment the terminal closes, but git history stays permanent",
+        "Git is strictly required to enable the /rewind command to function in the first place"
+      ],
+      "answer": 1,
+      "explanation": "Anthropic warns that checkpoints only track changes made by Claude (not your build, scripts, or other agents) and are not a git replacement; only Claude ships them. Git captures everything and works in every agent. Checkpoints actually persist across sessions, so the expiry claim is false.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "sm-09",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "04-prose-to-hooks.md",
+      "question": "You ship one hook that blocks reading .env files to Claude, Codex, and Cursor. It blocks on Claude and Codex but silently lets .env reads through on Cursor. What is the most likely cause?",
+      "options": [
+        "Cursor exposes no pre-read lifecycle event, so the hook simply never fires there at all",
+        "Cursor caps the steering config size, so the hook was silently dropped for exceeding that limit",
+        "Cursor fails open by default, so a failing security hook is ignored unless failClosed is on",
+        "Cursor requires all security policies to be authored as skills, never as lifecycle hooks"
+      ],
+      "answer": 2,
+      "explanation": "Cursor fails open by default — a crashed, timed-out, or invalid security hook is ignored unless you set failClosed: true. Claude and Codex fail closed, which is why it worked there. Cursor does have pre-read events (beforeReadFile), so it is not a missing-event problem.",
+      "citations": ["https://cursor.com/docs/agent/hooks"]
+    },
+    {
+      "id": "sm-10",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "04-prose-to-hooks.md",
+      "question": "In a Claude 'Stop' hook intended to gate the turn on tests, what does exit code 2 do, and how does it differ from exit code 1?",
+      "options": [
+        "Exit 2 just logs a warning and still lets the turn end; exit 1 also silently lets it end too",
+        "Exit 2 blocks the turn and feeds the message back so the agent works on; exit 1 is non-blocking",
+        "Exit 2 and exit 1 both block the turn, but exit 2 additionally restarts the entire whole session",
+        "Exit 2 ends the turn immediately, whereas exit 1 quietly retries the very last tool call again"
+      ],
+      "answer": 1,
+      "explanation": "On a Stop hook, exit 2 is a blocking error: it prevents the turn from ending and surfaces the message so the agent continues. Exit 1 (and other non-zero codes) are non-blocking errors that proceed anyway. Only exit 2 enforces the gate.",
+      "citations": ["https://code.claude.com/docs/en/hooks"]
+    },
+    {
+      "id": "sm-11",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "05-scaffolder-steering.md",
+      "question": "The scaffolder authors hooks against canonical events (tool.pre, tool.post, turn.stop) rather than writing native Claude/Codex/Cursor hooks directly. What is the primary reason this is the correct design?",
+      "options": [
+        "Canonical events execute measurably faster because they get to skip the adapter layer entirely",
+        "Native event names are identical across every agent, so canonical events are just a naming nicety",
+        "Cursor splits and renames events and lacks some, so a canonical-plus-adapter design avoids drift",
+        "Canonical events are the only event type that can support failClosed enforcement semantics at all"
+      ],
+      "answer": 2,
+      "explanation": "Native event names are not identical: Cursor splits tool.pre into beforeShellExecution and beforeReadFile and lacks events like compact.post and session.end. Authoring one canonical spec and letting an adapter render each native form prevents hand-translation errors and drift. The canonical layer adds an adapter rather than skipping one, and failClosed is a Cursor flag, not a canonical-only feature.",
+      "citations": ["https://cursor.com/docs/agent/hooks"]
+    }
+  ]
+}

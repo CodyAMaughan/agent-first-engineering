@@ -1,0 +1,182 @@
+{
+  "phase": "05-spec-driven-development",
+  "title": "Spec-Driven Development",
+  "questions": [
+    {
+      "id": "spec-01",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-why-specs-beat-prompts.md",
+      "question": "In spec-driven development, what is the relationship between the spec and the code?",
+      "options": [
+        "The code is the source of truth and the spec is generated from it afterward.",
+        "The spec is the durable source of truth and the code is its regenerable output.",
+        "The spec and the code are kept in sync by a linter that fails if they diverge.",
+        "The spec replaces the code entirely; no implementation is committed to the repo."
+      ],
+      "answer": 1,
+      "explanation": "The whole phase rests on 'code serves specifications' — the spec is durable and the code is its regenerable expression. A inverts it; C invents a mechanism; D is false (code is still committed, just treated as output).",
+      "citations": ["https://github.com/github/spec-kit/blob/main/spec-driven.md"]
+    },
+    {
+      "id": "spec-02",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "02-the-speckit-loop.md",
+      "question": "What are the five steps of the Spec Kit loop, in order?",
+      "options": [
+        "specify → constitution → plan → implement → tasks",
+        "constitution → specify → plan → tasks → implement",
+        "plan → specify → constitution → tasks → implement",
+        "constitution → plan → specify → implement → tasks"
+      ],
+      "answer": 1,
+      "explanation": "The constitution sets principles first; then specify (WHAT), plan (HOW), tasks (checklist), implement (code). The other orders scramble the WHAT-before-HOW and principles-first sequence.",
+      "citations": ["https://github.com/github/spec-kit"]
+    },
+    {
+      "id": "spec-03",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "03-what-vs-how.md",
+      "question": "Which artifact is where a technology choice (a specific language, framework, or library) belongs?",
+      "options": [
+        "The spec, so the requirement is concrete and unambiguous.",
+        "The constitution, so every feature reuses the same stack.",
+        "The plan, which is the HOW artifact.",
+        "The tasks checklist, since that is closest to the code."
+      ],
+      "answer": 2,
+      "explanation": "The plan is the HOW; tech choices live there. The spec stays HOW-free so it survives a rewrite; the constitution holds principles, not a stack; tasks derive from the plan.",
+      "citations": ["https://github.com/github/spec-kit"]
+    },
+    {
+      "id": "spec-04",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "04-spec-as-steering-wheel.md",
+      "question": "Why is the spec called a 'steering wheel'?",
+      "options": [
+        "Because correcting a misunderstanding in the spec is cheap, but the same fix in finished code is costly.",
+        "Because the spec controls which agent (Claude, Codex, or Cursor) is allowed to run the implementation.",
+        "Because the spec is rewritten on every single turn as the agent steers its way through the existing code.",
+        "Because the spec sets the speed at which the implementing agent is allowed to generate brand-new code."
+      ],
+      "answer": 0,
+      "explanation": "A 2-degree correction early is a flick of the wrist; the same fix after 2,000 lines is a U-turn. B, C, and D describe things the spec does not do.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "spec-05",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "03-what-vs-how.md",
+      "question": "A teammate writes in a spec: 'The service must return results quickly, using a Redis cache with a 60-second TTL.' What is the WHAT-vs-HOW defect?",
+      "options": [
+        "Nothing — naming the cache makes the requirement concrete and easier to implement correctly.",
+        "The latency target is too vague and should be a specific millisecond budget instead.",
+        "It belongs in the plan because 'return quickly' is untestable, unlike a concrete TTL.",
+        "It smuggles a HOW (Redis, a TTL) into a WHAT artifact, freezing a tech choice prematurely."
+      ],
+      "answer": 3,
+      "explanation": "'Return quickly' is a legitimate WHAT, but 'Redis cache, 60s TTL' is a HOW that belongs in the plan. B is a real-but-different improvement; C inverts it (the latency target stays in the spec, the Redis part moves out).",
+      "citations": ["https://github.com/github/spec-kit/blob/main/spec-driven.md"]
+    },
+    {
+      "id": "spec-06",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "02-the-speckit-loop.md",
+      "question": "Why does the constitution sit above the per-feature spec rather than being restated inside each one?",
+      "options": [
+        "The constitution is the only artifact Spec Kit actually requires you to write.",
+        "It holds project-wide non-negotiables that every spec inherits, checked at plan and review time.",
+        "Constitutions are version-controlled, whereas individual specs are kept out of git.",
+        "It defines the technology stack once so each spec can avoid repeating the stack choices."
+      ],
+      "answer": 1,
+      "explanation": "The constitution holds project-wide principles every spec inherits by default. A is false (the spec is the core artifact); C is false (specs ARE versioned); D is a trap — the constitution holds principles, not the stack, which would violate WHAT-vs-HOW.",
+      "citations": ["https://github.com/github/spec-kit"]
+    },
+    {
+      "id": "spec-07",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "04-spec-as-steering-wheel.md",
+      "question": "You're writing the spec for a 'share document via link' feature. Which addition does the MOST to catch a misunderstanding while it's still cheap to fix?",
+      "options": [
+        "A note that the implementation should reuse the existing auth middleware where possible.",
+        "A Given/When/Then scenario for what happens when a recipient opens an expired share link.",
+        "A paragraph describing the database table that will store the generated share tokens.",
+        "A reminder that the feature must ship before the end of the current sprint."
+      ],
+      "answer": 1,
+      "explanation": "A Given/When/Then for the expired-link case forces you to decide ambiguous behavior on paper. A and C are HOW details that belong in the plan and catch no ambiguity; D is a schedule note, irrelevant to surfacing misunderstanding.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "spec-08",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "05-scaffolder-speckit-handoff.md",
+      "question": "The scaffolder offers to run 'specify init' after generating the agent-first layer. Why doesn't it just include spec→plan→tasks itself?",
+      "options": [
+        "Spec Kit's license forbids bundling it, so an external 'specify init' call is mandatory.",
+        "The scaffolder adopts Spec Kit as a decoupled complement rather than forking and reinventing it.",
+        "Running 'specify init' is faster than the equivalent code the scaffolder would have to ship.",
+        "Spec Kit only works as a standalone CLI and cannot be invoked from another tool at all."
+      ],
+      "answer": 1,
+      "explanation": "Constitution Principle VI (Adopt, Don't Reinvent): the scaffolder owns the context/guardrail layer, Spec Kit owns the workflow, and they stay decoupled. A is invented (Spec Kit is MIT); C and D are false and beside the point.",
+      "citations": ["https://github.com/github/spec-kit"]
+    },
+    {
+      "id": "spec-09",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "02-the-speckit-loop.md",
+      "question": "During 'implement', the agent discovers an edge case the spec never mentioned and quietly handles it in code, leaving the spec untouched. Per this phase's principles, what is the precise defect?",
+      "options": [
+        "The agent should have halted and asked a human before writing any edge-case handling at all.",
+        "Edge cases belong only in tasks.md, so the fix should have been recorded there rather than in code.",
+        "The spec is the source of truth; it must be updated first, then the downstream artifacts regenerated.",
+        "Nothing is wrong — handling edge cases inline during implementation is exactly what 'implement' is for."
+      ],
+      "answer": 2,
+      "explanation": "Specs Are the Source of Truth: when implementation surfaces something new, update the spec first, then regenerate downstream. A overcorrects (the agent needn't halt for every edge case, it needs to record intent upstream); B is wrong (tasks derive from the spec); D is the exact anti-pattern the principle prevents.",
+      "citations": ["https://github.com/github/spec-kit/blob/main/spec-driven.md"]
+    },
+    {
+      "id": "spec-10",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "01-why-specs-beat-prompts.md",
+      "question": "A team kept detailed prompts in a shared doc but no specs. A model upgrade later, the agent regenerates a feature differently and a guarantee silently breaks. Which statement best explains why a spec would have prevented this, where the prompt log did not?",
+      "options": [
+        "Prompts are written in prose while specs use markdown tables, which models tend to parse more reliably.",
+        "A spec encodes the guarantee as a durable, testable requirement, so it holds across regenerations.",
+        "Specs are always shorter than prompt logs, so the agent is less likely to lose the constraint to context rot.",
+        "The prompt log was never committed to git, whereas a spec is a committed, regenerated artifact by definition."
+      ],
+      "answer": 1,
+      "explanation": "The guarantee survives because it lives in the durable artifact as a testable requirement, not in a one-shot prompt. A and C are true-sounding but not the mechanism (format/length aren't why it holds); D is a side effect — a committed prompt log still wouldn't be re-run as a requirement.",
+      "citations": ["https://github.com/github/spec-kit/blob/main/spec-driven.md"]
+    },
+    {
+      "id": "spec-11",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "05-scaffolder-speckit-handoff.md",
+      "question": "The scaffolder's spec pins SC-008: 'Declining the hand-off still yields a complete, valid scaffold 100% of the time.' Which phase concept does this single requirement most directly demonstrate in action?",
+      "options": [
+        "WHAT-vs-HOW separation, because SC-008 names a behavior to guarantee but no technology to build it with.",
+        "The steering wheel — the decline branch was pinned in the spec up front, so it can't break later.",
+        "Adopt-Don't-Reinvent, because choosing to decline means the scaffolder avoids forking Spec Kit itself.",
+        "Context engineering, because a shorter scaffold keeps the implementing agent's context window clean."
+      ],
+      "answer": 1,
+      "explanation": "SC-008 is the steering wheel eating its own cooking: the decline branch is pinned on paper before any code, so it can't silently break at implement-time. A is true (it names no tech) but not what the requirement demonstrates; C confuses the decline branch with forking; D is unrelated.",
+      "citations": ["https://code.claude.com/docs/en/best-practices"]
+    }
+  ]
+}

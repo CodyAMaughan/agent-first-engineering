@@ -1,0 +1,182 @@
+{
+  "phase": "06-orchestration-and-harness",
+  "title": "Orchestration & Harness Engineering",
+  "questions": [
+    {
+      "id": "orch-01",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-small-focused-agents.md",
+      "question": "A subagent reads 40 files to locate every call site of a function and returns a 3-line summary to the main agent. What is the primary benefit of doing this in a subagent rather than the main session?",
+      "options": [
+        "The subagent reads those 40 files faster than the main agent could on its own.",
+        "The 40 files load into the subagent's window and never land on the main agent's desk.",
+        "Subagents are billed at a lower per-token rate than the orchestrating main agent.",
+        "The summary is guaranteed to be more accurate than the main agent reading the files."
+      ],
+      "answer": 1,
+      "explanation": "The subagent is a context firewall: it burns its own window on the 40 files and returns a summary, so the main desk stays clean and rot is delayed. A is unsupported (no speed difference), C is an invented billing mechanism, and D overclaims — a summary can lose detail, it isn't guaranteed more accurate.",
+      "citations": ["https://code.claude.com/docs/en/sub-agents"]
+    },
+    {
+      "id": "orch-02",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "02-adversarial-review.md",
+      "question": "Why does an adversarial reviewer need a fresh context window — seeing only the diff and the criteria — rather than continuing in the session that wrote the code?",
+      "options": [
+        "A fresh session is allocated more context-window capacity than an older one.",
+        "Review tools refuse to run inside a session that already holds an open diff.",
+        "The authoring session's window is full of the reasoning that justified the bug.",
+        "A fresh session resets billing, making the second review pass cheaper to run."
+      ],
+      "answer": 2,
+      "explanation": "The authoring window holds every justification that made the bug feel correct, so a self-review inherits the author's blind spots; a fresh window judges only the artifact. A and D are invented mechanisms (fresh sessions don't get more capacity or change billing), and B is false — tools don't refuse based on an open diff.",
+      "citations": ["https://code.claude.com/docs/en/sub-agents"]
+    },
+    {
+      "id": "orch-03",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "03-parallelism-and-worktrees.md",
+      "question": "You give two agents their own branch but run both in the same working directory. Why can they still collide?",
+      "options": [
+        "Branches isolate commits but not the working files on disk, which both agents share.",
+        "Git locks the index during writes, so the second agent's commits are silently dropped.",
+        "Two agents cannot hold two different branches checked out from one repository at all.",
+        "The agents share one context window, so each overwrites the other's planned edits."
+      ],
+      "answer": 0,
+      "explanation": "A branch only isolates commit history; both agents still edit the same files on disk, so one's uncommitted edits clobber the other's. A worktree gives each its own directory. B and C are false git claims, and D confuses on-disk collision with context.",
+      "citations": ["https://code.claude.com/docs/en/worktrees"]
+    },
+    {
+      "id": "orch-04",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "04-harness-engineering.md",
+      "question": "Your rule \"modules in domain/ must not import from infra/\" lives as a paragraph in AGENTS.md, and agents keep violating it under load. What is the harness-engineering fix?",
+      "options": [
+        "Rewrite the paragraph more forcefully and move it to the very top of AGENTS.md.",
+        "Add the rule to every subagent's system prompt so each one is reminded directly.",
+        "Encode it as a dependency-lint rule that fails CI on any upward import path.",
+        "Spawn a reviewer subagent to check for the violation on every diff before merge."
+      ],
+      "answer": 2,
+      "explanation": "Harness engineering promotes the rule into a mechanical gate: a lint rule that fails CI makes the violation impossible to merge with zero human attention. A is still prose the agent can dilute; B bloats every prompt and still relies on the agent remembering; D is better than prose but probabilistic and runs every diff — a deterministic lint gate is stronger and cheaper.",
+      "citations": ["https://openai.com/index/harness-engineering/"]
+    },
+    {
+      "id": "orch-05",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "01-small-focused-agents.md",
+      "question": "12-factor #10 says keep agents small and focused (roughly 3–20 steps). Which statement best explains why a tight step budget improves quality?",
+      "options": [
+        "Shorter agents finish before the model's response cache expires and resets.",
+        "Past a point the window fills with dead ends, so signal-to-noise falls and the model drifts.",
+        "Each step consumes a fixed token quota, so fewer steps strictly means lower spend.",
+        "Smaller agents are routed to larger models that hold constraints more reliably."
+      ],
+      "answer": 1,
+      "explanation": "Decomposition keeps each slice on a clean desk; a sprawling task fills the window with file dumps and abandoned approaches until quality rots before the window is even full. A and D are invented routing/cache mechanisms, and C is a true-ish cost note that doesn't explain the quality effect.",
+      "citations": ["https://github.com/humanlayer/12-factor-agents"]
+    },
+    {
+      "id": "orch-06",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "03-parallelism-and-worktrees.md",
+      "question": "You must apply the same migration to 30 packages with one headless prompt, and your instinct is to fan it out across all 30 worktrees at once. What should you do first?",
+      "options": [
+        "Run all 30 in parallel but cap concurrency so the machine doesn't run out of memory.",
+        "Run it on 1 package, verify the diff and JSON output, then 3, then fan out wide.",
+        "Run all 30, then spawn a reviewer on each branch to catch the ones that went wrong.",
+        "Run it on 30 but in serial rather than parallel so failures are easier to trace."
+      ],
+      "answer": 1,
+      "explanation": "Test small, then scale: prove the prompt, worktree, and JSON gate on 1, confirm isolation on 3, then fan out — a bad prompt run 30× wastes time and leaves 30 messy branches. A and D still launch the unproven prompt at full scale; C reviews 30 likely-broken branches instead of catching the bad prompt at N=1.",
+      "citations": ["https://developers.openai.com/codex/guides/build-ai-native-engineering-team"]
+    },
+    {
+      "id": "orch-07",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "02-adversarial-review.md",
+      "question": "You brief a reviewer \"review this code and list everything you'd improve.\" It returns twelve findings — mostly style nits and speculation about impossible inputs — burying one real off-by-one. What is the precise fix?",
+      "options": [
+        "Tell the reviewer to rank its twelve findings by severity so the real bug surfaces first.",
+        "Switch to a larger model for the reviewer so it produces fewer low-quality findings.",
+        "Scope the rubric to correctness-only and explicitly permit it to return PASS.",
+        "Run the reviewer twice and keep only the findings that appear in both of its passes."
+      ],
+      "answer": 2,
+      "explanation": "An open-ended brief forces the reviewer to produce a list, so it invents nits and speculation; scoping to correctness and allowing PASS restores signal. A and D still let the noise findings exist (you're sorting or intersecting noise), and B doesn't fix the brief — a bigger model asked to \"list everything\" still lists everything.",
+      "citations": ["https://code.claude.com/docs/en/sub-agents"]
+    },
+    {
+      "id": "orch-08",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "04-harness-engineering.md",
+      "question": "A team writes detailed architecture rationale into AGENTS.md and adds a CI lint gate that enforces the same import rules. Six months later the gate quietly diverges from the prose. Which framing best captures why the gate, not the prose, is the source of truth?",
+      "options": [
+        "Prose is read by humans and the gate by machines, so only the gate scales to large teams.",
+        "The gate runs on every diff while the prose is read at onboarding, so the gate fires more often.",
+        "The prose can drift undetected, but a machine-checkable rule makes any code–doc disagreement fail a check.",
+        "Machine-parsable docs are shorter than prose, so they dilute the agent's attention less."
+      ],
+      "answer": 2,
+      "explanation": "The point of machine-parsable docs is that a disagreement between code and the rule is caught by a check rather than noticed by a human months later — the executable rule is load-bearing. A, B, and D are all true statements about gates/docs but none names the divergence-catching property that makes the gate authoritative.",
+      "citations": ["https://openai.com/index/harness-engineering/"]
+    },
+    {
+      "id": "orch-09",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "05-defining-team-direction.md",
+      "question": "As a tech lead you've written \"never commit secrets\" in the team wiki, yet a secret leaks every few weeks. Which change most reduces the leaks, and why?",
+      "options": [
+        "Add the rule to the shared AGENTS.md core so every repo and agent inherits the text.",
+        "Require a code-review checklist item where the reviewer confirms no secrets were added.",
+        "Add a secret-scanning hook/CI gate as a non-bypassable required check on every merge.",
+        "Track a per-team leak-rate dashboard so repeat offenders can be coached over time."
+      ],
+      "answer": 2,
+      "explanation": "A non-negotiable enforced by a non-bypassable mechanism is the only one that actually holds; prose and process are honored \"when convenient.\" A is still prose (just shared wider), B depends on a human catching it every time, and D measures the problem without preventing the next leak.",
+      "citations": ["https://github.com/humanlayer/12-factor-agents"]
+    },
+    {
+      "id": "orch-10",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "05-defining-team-direction.md",
+      "question": "A staff engineer authors the team's agent-first core in one vendor's proprietary config format because it has the richest features. From an agent-first leadership view, what is the strongest objection?",
+      "options": [
+        "The proprietary format exposes fewer hook events, so some guardrails cannot be enforced.",
+        "Authoring in the vendor format makes the next tool migration a rewrite instead of a re-render.",
+        "Proprietary formats change spelling release-to-release, so templates break more frequently.",
+        "Other engineers prefer different agents, so a shared format reduces individual productivity."
+      ],
+      "answer": 1,
+      "explanation": "Open standards (AGENTS.md / SKILL.md / MCP) let you author once and render per agent, so swapping tools is a re-render, not a rewrite; a proprietary core bets the team on one vendor. A and C are real annoyances and D is a real preference issue, but neither is the load-bearing portability argument — the rewrite-on-migration risk is.",
+      "citations": ["https://agents.md/", "https://developers.openai.com/codex/guides/build-ai-native-engineering-team"]
+    },
+    {
+      "id": "orch-11",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "06-scaffolder-capstone.md",
+      "question": "You run the scaffolder's adopt on an existing repo. It generates a Stop-gate hook for Claude and Codex and a stop hook for Cursor, but only the Cursor one sets failClosed: true. Why is that line load-bearing specifically for Cursor?",
+      "options": [
+        "Cursor's stop hook runs after the agent commits, so it must re-open the diff to block.",
+        "Cursor hooks fail open by default, so without failClosed a blocking guardrail is decorative.",
+        "Cursor cannot read JSON on stdin, so failClosed switches the hook to exit-code signaling.",
+        "Cursor runs hooks in series, so failClosed prevents a later hook from overriding the gate."
+      ],
+      "answer": 1,
+      "explanation": "Claude and Codex hooks fail closed on a blocking exit; Cursor fails open by default, so a security/Stop-gate hook there does nothing unless you set failClosed: true. A, C, and D invent Cursor behaviors (commit ordering, stdin limits, serial override) that aren't the reason.",
+      "citations": ["https://code.claude.com/docs/en/worktrees"]
+    }
+  ]
+}
