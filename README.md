@@ -1,5 +1,10 @@
 # Agent-First Engineering
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Docs site](https://img.shields.io/badge/docs-GitHub%20Pages-3553ff?style=flat-square)](https://codyamaughan.github.io/agent-first-engineering/)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+[![Stars](https://img.shields.io/github/stars/CodyAMaughan/agent-first-engineering?style=flat-square)](https://github.com/CodyAMaughan/agent-first-engineering/stargazers)
+
 > Stop coding with AI agents "loosey-goosey." Design your codebase so agents *succeed* —
 > the way a systems engineer would.
 
@@ -77,8 +82,14 @@ quiz from each phase's lessons).
 - [`specs/001-curriculum/spec.md`](specs/001-curriculum/spec.md) — Deliverable A (curriculum)
 - [`specs/002-scaffolder/spec.md`](specs/002-scaffolder/spec.md) — Deliverable B (scaffolder)
 
+## Contributing
+
+Contributions are welcome — fix a lesson, add a diagram, propose a topic from the
+[Roadmap](docs/roadmap.md), or improve the scaffolder. Start with [CONTRIBUTING.md](CONTRIBUTING.md)
+and our [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## License
 
-Intended: **MIT** (to be added). All redistributed dependencies are MIT/Apache/BSD.
+[MIT](LICENSE) © 2026 CodyAMaughan. Redistributed dependencies are MIT / Apache-2.0 / BSD.
 
 [*AI Engineering from Scratch*]: https://github.com/rohitg00/ai-engineering-from-scratch
