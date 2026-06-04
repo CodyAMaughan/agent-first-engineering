@@ -80,17 +80,6 @@ Six phases, from vibe coding to systems engineer for agents. Full index in
 [`check-understanding`](.claude/skills/check-understanding/SKILL.md) skill generates an interactive
 quiz from each phase's lessons).
 
-```mermaid
-flowchart LR
-  V["vibe coding"] --> P1["1 · Fundamentals"]
-  P1 --> P2["2 · Context Engineering"]
-  P2 --> P3["3 · Verification + TDD"]
-  P3 --> P4["4 · Session + Memory"]
-  P4 --> P5["5 · Spec-Driven Dev"]
-  P5 --> P6["6 · Orchestration + Harness"]
-  P6 --> S["systems engineer for agents"]
-```
-
 | # | Phase | # | Phase |
 |---|---|---|---|
 | 1 | [Fundamentals](docs/curriculum/01-fundamentals/index.md) | 4 | [Session & Memory](docs/curriculum/04-session-and-memory/index.md) |
@@ -114,21 +103,41 @@ on the [Roadmap](docs/roadmap.md). Built (and dogfooded) using GitHub Spec Kit.
 
 ## FAQ
 
-**Do I need Claude Code?** No. It's agent-agnostic — Claude Code is the reference implementation, not a
-requirement. Lessons show the open-standard form plus Codex and Cursor equivalents.
+<details>
+<summary><strong>Do I need Claude Code?</strong></summary>
 
-**Is it free?** Yes — MIT-licensed and open source.
+No. It's agent-agnostic — Claude Code is the reference implementation, not a requirement. Lessons show
+the open-standard form plus Codex and Cursor equivalents.
+</details>
 
-**Did you write all of this yourself?** No, and I'm upfront about it: it's a curation and synthesis of
-the best blogs, posts, and documentation from the top AI labs, their contributors, and other thought
-leaders — cited throughout. It was drafted primarily with AI (fitting, given the topic) and reviewed by
-me. What's mine is the direction, the structure, and the review.
+<details>
+<summary><strong>Is it free?</strong></summary>
 
-**Curriculum vs. scaffolder?** The curriculum *teaches* the practice; the scaffolder *generates* it.
-Each lesson ends by showing what the scaffolder produces.
+Yes — MIT-licensed and open source.
+</details>
 
-**How can I help?** See [Contributing](#contributing) — fixes, diagrams, better sources, and new topics
-from the [Roadmap](docs/roadmap.md) are all welcome.
+<details>
+<summary><strong>Did you write all of this yourself?</strong></summary>
+
+No, and I'm upfront about it: it's a curation and synthesis of the best blogs, posts, and documentation
+from the top AI labs, their contributors, and other thought leaders — cited throughout. It was drafted
+primarily with AI (fitting, given the topic) and reviewed by me. What's mine is the direction, the
+structure, and the review.
+</details>
+
+<details>
+<summary><strong>Curriculum vs. scaffolder — what's the difference?</strong></summary>
+
+The curriculum *teaches* the practice; the scaffolder *generates* it. Each lesson ends by showing what
+the scaffolder produces.
+</details>
+
+<details>
+<summary><strong>How can I help?</strong></summary>
+
+See [Contributing](#contributing) — fixes, diagrams, better sources, and new topics from the
+[Roadmap](docs/roadmap.md) are all welcome.
+</details>
 
 ## Contributing
 
