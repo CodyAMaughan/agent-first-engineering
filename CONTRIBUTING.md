@@ -33,13 +33,18 @@ python3 -m venv .venv
 .venv/bin/mkdocs serve   # http://127.0.0.1:8000
 ```
 
+**Optional local checks.** This repo ships a light `.pre-commit-config.yaml` (whitespace + JSON/YAML
+validation). To use it: `pipx install pre-commit && pre-commit install`. It's a convenience — the real
+gate is **CI**, which builds the site with `--strict` and validates every `quiz.json` on each PR.
+
 ## Pull requests
 
 1. Fork the repo and create a branch (`feat/...`, `fix/...`, or `docs/...`).
 2. Make your change. If you touched a lesson, run `mkdocs build` to confirm it builds with no broken
    links or footnotes.
 3. Use clear [Conventional Commit](https://www.conventionalcommits.org/) messages.
-4. Open a PR describing what changed and why, and link any related issue.
+4. For a notable change, add a line under `Unreleased` in [CHANGELOG.md](CHANGELOG.md).
+5. Open a PR describing what changed and why, and link any related issue.
 
 ## Code of Conduct
 

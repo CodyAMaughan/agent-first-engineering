@@ -1,0 +1,13 @@
+# Optional local checks (the "guardrails over vibes" principle, dogfooded).
+# One-time setup:  pipx install pre-commit  &&  pre-commit install
+# CI enforces the real gate (see .github/workflows/ci.yml); this is a local convenience.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-json          # validates every quiz.json
+      - id: check-yaml          # validates workflow YAML
+        exclude: ^mkdocs\.yml$  # mkdocs.yml uses a custom !!python tag
+      - id: check-merge-conflict

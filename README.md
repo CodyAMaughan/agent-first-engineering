@@ -1,9 +1,13 @@
-# Agent-First Engineering
+<p align="center">
+  <img src="assets/banner.svg" alt="Agent-First Engineering" width="100%">
+</p>
 
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
-[![Docs site](https://img.shields.io/badge/docs-GitHub%20Pages-3553ff?style=flat-square)](https://codyamaughan.github.io/agent-first-engineering/)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![Stars](https://img.shields.io/github/stars/CodyAMaughan/agent-first-engineering?style=flat-square)](https://github.com/CodyAMaughan/agent-first-engineering/stargazers)
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT License"></a>
+  <a href="https://codyamaughan.github.io/agent-first-engineering/"><img src="https://img.shields.io/badge/docs-GitHub%20Pages-3553ff?style=flat-square" alt="Docs site"></a>
+  <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square" alt="PRs welcome"></a>
+  <a href="https://github.com/CodyAMaughan/agent-first-engineering/stargazers"><img src="https://img.shields.io/github/stars/CodyAMaughan/agent-first-engineering?style=flat-square" alt="Stars"></a>
+</p>
 
 > Stop coding with AI agents "loosey-goosey." Design your codebase so agents *succeed* —
 > the way a systems engineer would.
@@ -25,6 +29,22 @@ This repository has **two deliverables that are two views of one body of knowled
 
 **Teach and generate in lockstep:** every layer the curriculum teaches, the scaffolder
 generates; every artifact the scaffolder generates, the curriculum explains.
+
+## Who this is for
+
+- **Developers already using AI agents** who want to level up from "vibe coding" to designing repos
+  where agents succeed by default.
+- **Tech leads** deciding how their team should adopt AI coding tools.
+
+It assumes you've used an AI coding agent before. It is **not** an intro-to-AI course.
+
+## What you'll get
+
+- A **6-phase course** (read it free at [the site](https://codyamaughan.github.io/agent-first-engineering/))
+  — from prompting and context engineering through verification, memory, spec-driven development, and
+  harness engineering.
+- A **scaffolder** that interviews you and sets up a new (or existing) repo to be agent-ready —
+  `AGENTS.md`, a skills library, and guardrail hooks — for Claude Code, Codex, and Cursor.
 
 ## Principles
 
@@ -60,27 +80,55 @@ Six phases, from vibe coding to systems engineer for agents. Full index in
 [`check-understanding`](.claude/skills/check-understanding/SKILL.md) skill generates an interactive
 quiz from each phase's lessons).
 
+```mermaid
+flowchart LR
+  V["vibe coding"] --> P1["1 · Fundamentals"]
+  P1 --> P2["2 · Context Engineering"]
+  P2 --> P3["3 · Verification + TDD"]
+  P3 --> P4["4 · Session + Memory"]
+  P4 --> P5["5 · Spec-Driven Dev"]
+  P5 --> P6["6 · Orchestration + Harness"]
+  P6 --> S["systems engineer for agents"]
+```
+
 | # | Phase | # | Phase |
 |---|---|---|---|
 | 1 | [Fundamentals](docs/curriculum/01-fundamentals/index.md) | 4 | [Session & Memory](docs/curriculum/04-session-and-memory/index.md) |
 | 2 | [Context Engineering](docs/curriculum/02-context-engineering/index.md) ★★★ | 5 | [Spec-Driven Development](docs/curriculum/05-spec-driven-development/index.md) |
 | 3 | [Verification & TDD](docs/curriculum/03-verification-and-tdd/index.md) ★★★ | 6 | [Orchestration & Harness](docs/curriculum/06-orchestration-and-harness/index.md) |
 
-## Status
+## Project status
 
-**Foundations curriculum + scaffolder built and dogfooded.** Authored using Spec Kit itself (dogfooding). Advanced tier on the [Roadmap](docs/roadmap.md).
+Early and active. The **foundations** tier is complete and published; the **Advanced Patterns** tier is
+on the [Roadmap](docs/roadmap.md). Built (and dogfooded) using GitHub Spec Kit.
 
-**Start here:**
-- 📋 [`meta/executive-summary.md`](meta/executive-summary.md) — the thesis & recommendations (read this first)
-- 🗺️ [`docs/translation-matrix.md`](docs/translation-matrix.md) — deep Claude→Codex→Cursor feature research, by layer, with diagrams
-- 🎓 [`docs/curriculum/`](docs/curriculum/index.md) — the full 6-phase curriculum (30k+ words) + quiz skill
-- 📐 [`meta/curriculum-outline.md`](meta/curriculum-outline.md) — curriculum design rationale
-- 🔎 [`meta/prior-art.md`](meta/prior-art.md) — landscape & why this niche is unfilled
+<details>
+<summary>Repo internals (for contributors)</summary>
 
-**Specs (Spec Kit format):**
+- [`docs/translation-matrix.md`](docs/translation-matrix.md) — Claude→Codex→Cursor feature research
 - [`.specify/memory/constitution.md`](.specify/memory/constitution.md) — governing principles
-- [`specs/001-curriculum/spec.md`](specs/001-curriculum/spec.md) — Deliverable A (curriculum)
-- [`specs/002-scaffolder/spec.md`](specs/002-scaffolder/spec.md) — Deliverable B (scaffolder)
+- [`specs/`](specs/) — Spec Kit specs/plan/tasks for the curriculum (A) and scaffolder (B)
+- [`meta/`](meta/) — executive summary, prior-art, curriculum outline, and the authoring rubric
+
+</details>
+
+## FAQ
+
+**Do I need Claude Code?** No. It's agent-agnostic — Claude Code is the reference implementation, not a
+requirement. Lessons show the open-standard form plus Codex and Cursor equivalents.
+
+**Is it free?** Yes — MIT-licensed and open source.
+
+**Did you write all of this yourself?** No, and I'm upfront about it: it's a curation and synthesis of
+the best blogs, posts, and documentation from the top AI labs, their contributors, and other thought
+leaders — cited throughout. It was drafted primarily with AI (fitting, given the topic) and reviewed by
+me. What's mine is the direction, the structure, and the review.
+
+**Curriculum vs. scaffolder?** The curriculum *teaches* the practice; the scaffolder *generates* it.
+Each lesson ends by showing what the scaffolder produces.
+
+**How can I help?** See [Contributing](#contributing) — fixes, diagrams, better sources, and new topics
+from the [Roadmap](docs/roadmap.md) are all welcome.
 
 ## Contributing
 

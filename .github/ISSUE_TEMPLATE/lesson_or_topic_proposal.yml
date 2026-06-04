@@ -1,0 +1,34 @@
+name: Lesson or topic proposal
+description: Suggest a new lesson or an Advanced-tier topic.
+labels: ["proposal"]
+body:
+  - type: input
+    id: topic
+    attributes:
+      label: Topic
+      description: One line — what should we teach?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters for agent-first codebases
+    validations:
+      required: true
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Where does it fit?
+      options:
+        - Foundations (an existing phase)
+        - Advanced Patterns (the Roadmap)
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Authoritative source(s)
+      description: Links to papers or docs/blogs from the AI labs or standards bodies (no Reddit/forums).
+    validations:
+      required: false

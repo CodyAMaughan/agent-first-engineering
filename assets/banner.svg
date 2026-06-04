@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 640" width="1280" height="640" role="img" aria-label="Agent-First Engineering">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f1226"/>
+      <stop offset="1" stop-color="#1b2150"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect x="0" y="0" width="14" height="640" fill="#3553ff"/>
+
+  <text x="84" y="270" font-family="'JetBrains Mono','SFMono-Regular',Consolas,monospace" font-size="82" font-weight="700" fill="#fafaf5">Agent-First</text>
+  <text x="84" y="366" font-family="'JetBrains Mono','SFMono-Regular',Consolas,monospace" font-size="82" font-weight="700" fill="#3553ff">Engineering</text>
+
+  <text x="88" y="436" font-family="-apple-system,'Segoe UI',Roboto,sans-serif" font-size="30" fill="#c7c9e6">Design your codebase so AI coding agents succeed.</text>
+  <text x="88" y="482" font-family="-apple-system,'Segoe UI',Roboto,sans-serif" font-size="22" fill="#8b8fbf">A curriculum + an agent-agnostic scaffolder &#183; Claude Code &#183; Codex &#183; Cursor &#183; MIT</text>
+
+  <text x="88" y="566" font-family="'JetBrains Mono','SFMono-Regular',Consolas,monospace" font-size="18" fill="#5a5f93">codyamaughan.github.io/agent-first-engineering</text>
+</svg>

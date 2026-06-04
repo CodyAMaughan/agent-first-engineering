@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions & discussion
+    url: https://github.com/CodyAMaughan/agent-first-engineering/discussions
+    about: Ask questions or share ideas in Discussions.
+  - name: Read the curriculum
+    url: https://codyamaughan.github.io/agent-first-engineering/
+    about: The published site.

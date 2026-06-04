@@ -1,0 +1,31 @@
+name: Bug report
+description: Something is wrong with a lesson, the site, or the scaffolder.
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What's wrong?
+      description: A clear, short description of the problem.
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where?
+      description: Page URL, file path, or lesson (e.g. docs/curriculum/02-context-engineering/02-context-rot.md).
+    validations:
+      required: false
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect instead?
+    validations:
+      required: false
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?
+      description: Screenshots, agent/OS, or a suggested fix.
+    validations:
+      required: false

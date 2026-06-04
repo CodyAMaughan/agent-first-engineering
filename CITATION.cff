@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: Agent-First Engineering
+message: If you use this curriculum or scaffolder, please cite it.
+type: software
+authors:
+  - name: CodyAMaughan
+repository-code: https://github.com/CodyAMaughan/agent-first-engineering
+url: https://codyamaughan.github.io/agent-first-engineering/
+abstract: >-
+  A curriculum and an agent-agnostic scaffolder for agent-first software
+  engineering — designing codebases and harnesses so AI coding agents succeed
+  by construction, built on open standards (AGENTS.md, SKILL.md, MCP).
+keywords:
+  - ai-agents
+  - claude-code
+  - codex
+  - cursor
+  - agents-md
+  - skill-md
+  - curriculum
+license: MIT
+version: 0.1.0
+date-released: 2026-06-03
