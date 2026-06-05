@@ -46,7 +46,8 @@ becomes automation of a process you understand.
 1. [The loop](01-fundamentals/01-the-loop.md) — Explore→Plan→Code→Commit.
 2. [Prompt specificity](01-fundamentals/02-prompt-specificity.md) — file, constraint, example, done.
 3. [Feeding context](01-fundamentals/03-feeding-context.md) — feed it, don't describe it.
-4. [Plan mode first](01-fundamentals/04-plan-mode.md) — plan before you build.
+4. [Personas & perspective](01-fundamentals/04-personas-and-perspective.md) — a role aims the view, not the IQ.
+5. [Plan mode first](01-fundamentals/05-plan-mode.md) — plan before you build.
 
 ### Phase 2 — [Context Engineering ★★★](02-context-engineering/index.md)
 1. [The context window is a desk](02-context-engineering/01-context-window-is-a-desk.md) — finite working space.

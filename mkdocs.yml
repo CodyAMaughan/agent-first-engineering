@@ -63,7 +63,8 @@ nav:
           - The loop: curriculum/01-fundamentals/01-the-loop.md
           - Prompt specificity: curriculum/01-fundamentals/02-prompt-specificity.md
           - Feeding context: curriculum/01-fundamentals/03-feeding-context.md
-          - Plan mode first: curriculum/01-fundamentals/04-plan-mode.md
+          - Personas & perspective: curriculum/01-fundamentals/04-personas-and-perspective.md
+          - Plan mode first: curriculum/01-fundamentals/05-plan-mode.md
       - Phase 2 — Context Engineering:
           - curriculum/02-context-engineering/index.md
           - The context window is a desk: curriculum/02-context-engineering/01-context-window-is-a-desk.md

@@ -78,7 +78,7 @@ _The "feed it" move is agent-agnostic; only the keys differ._
 Find a recent prompt where you *described* something — an error, a UI glitch, an API. Redo it by **feeding the source**. Note how much of your original description turned out slightly wrong. That gap is the bug you'd have sent the agent chasing.
 
 ---
-← [Lesson 1.2](02-prompt-specificity.md) · next → [Lesson 1.4 — Plan mode first](04-plan-mode.md)
+← [Lesson 1.2](02-prompt-specificity.md) · next → [Lesson 1.4 — Personas & perspective](04-personas-and-perspective.md)
 
 [^1]: [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices) — Anthropic
 [^2]: [Best practices for coding with agents](https://cursor.com/blog/agent-best-practices) — Cursor

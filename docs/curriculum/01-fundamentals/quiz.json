@@ -54,7 +54,7 @@
       "id": "fund-04",
       "difficulty": "medium",
       "type": "practical",
-      "lesson": "04-plan-mode.md",
+      "lesson": "05-plan-mode.md",
       "question": "You need to bump a single constant in one config file from 3000 to 5000. Your agent offers plan mode. Best move?",
       "options": [
         "Use plan mode anyway — planning every change builds a consistently safe habit",
@@ -86,7 +86,7 @@
       "id": "fund-06",
       "difficulty": "medium",
       "type": "conceptual",
-      "lesson": "04-plan-mode.md",
+      "lesson": "05-plan-mode.md",
       "question": "What is the defining property of plan mode (vs. just chatting)?",
       "options": [
         "It runs the agent on a cheaper, faster model so that planning costs you fewer tokens",
@@ -134,7 +134,7 @@
       "id": "fund-09",
       "difficulty": "hard",
       "type": "conceptual",
-      "lesson": "04-plan-mode.md",
+      "lesson": "05-plan-mode.md",
       "question": "You ask the agent to 'add caching to the API.' Its plan proposes an in-memory cache. Reading the plan, you realize you run several instances behind a load balancer. Why is catching this in the plan the textbook win?",
       "options": [
         "Plans are billed at a lower per-token rate than the implementation code the agent goes on to write afterwards",
@@ -161,6 +161,38 @@
       "answer": 1,
       "explanation": "Prose quality doesn't fix the two real problems: omission of unknowingly-important detail and staleness vs. the current file. The distractors invent token-free storage, a prose restriction, and a separate model.",
       "citations": ["https://code.claude.com/docs/en/best-practices"]
+    },
+    {
+      "id": "fund-11",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "04-personas-and-perspective.md",
+      "question": "You prefix a prompt with 'act as a Principal Engineer.' What does that reliably change?",
+      "options": [
+        "It raises factual accuracy by giving the model expert-level domain knowledge it otherwise lacks",
+        "It shifts the output's perspective, priorities, and tone without changing the model's knowledge",
+        "It switches the model to a larger, more capable variant for the rest of the session",
+        "It guarantees a correct answer as long as the role you name is sufficiently senior"
+      ],
+      "answer": 1,
+      "explanation": "A role is a lens, not a capability upgrade: it conditions viewpoint and tone. A controlled study across 162 roles found personas do not beat a no-persona control on accuracy, and no model swap or correctness guarantee occurs.",
+      "citations": ["https://aclanthology.org/2024.findings-emnlp.888/"]
+    },
+    {
+      "id": "fund-12",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "04-personas-and-perspective.md",
+      "question": "You open every session with 'review this as a security engineer.' What is the durable, professional way to make that stick?",
+      "options": [
+        "Paste the security-engineer persona into CLAUDE.md so it loads automatically every session",
+        "Encode it as a reusable security-reviewer subagent or output style that owns that system prompt",
+        "Append 'be 99% confident' to the line so the model double-checks its own security findings",
+        "Prefix 'this is critical to my career' so the model raises its effort on the security review"
+      ],
+      "answer": 1,
+      "explanation": "Promote the lens up the ladder: a subagent or output style persists the role with its own system prompt, version-controlled. Stuffing it into CLAUDE.md is the documented anti-pattern (fires every session, bloats context), and confidence/stakes phrasing tunes tone, not correctness.",
+      "citations": ["https://code.claude.com/docs/en/sub-agents"]
     }
   ]
 }

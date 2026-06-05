@@ -16,6 +16,7 @@ By the end of this phase you can:
 - **Run the loop** — drive a task through explore → plan → code → commit, in order.
 - **Write specific prompts** — name the file, the constraint, the example, the definition of done.
 - **Feed context** instead of describing it — `@file`, screenshots, piped logs, doc URLs.
+- **Set the perspective** — use a role/audience to aim output, not to fake expertise, and make a useful lens durable.
 - **Use plan mode** to align on *what* before *how* — and skip it for one-line diffs.
 
 ---
@@ -41,7 +42,8 @@ By the end of this phase you can:
 | 1 | [The loop](01-the-loop.md) | Explore→Plan→Code→Commit; skipping *explore* solves the wrong problem. |
 | 2 | [Prompt specificity](02-prompt-specificity.md) | Name the file, the constraint, the example, the definition of done. |
 | 3 | [Feeding context](03-feeding-context.md) | *Feed* context (`@file`, screenshots, pipes, URLs) — don't *describe* it. |
-| 4 | [Plan mode first](04-plan-mode.md) | Plan before you build — and skip it for one-line diffs. |
+| 4 | [Personas & perspective](04-personas-and-perspective.md) | A role sets viewpoint & audience, not expertise — make a useful one durable. |
+| 5 | [Plan mode first](05-plan-mode.md) | Plan before you build — and skip it for one-line diffs. |
 
 ---
 
@@ -53,8 +55,9 @@ flowchart LR
     P --> C["CODE<br/>(build against the plan)"]
     C --> CM["COMMIT<br/>(small, reviewable unit)"]
     L3["feed it real context (L3)"] -.-> E
-    L4["plan mode first (L4)"] -.-> P
+    L5["plan mode first (L5)"] -.-> P
     L2["a prompt that is specific (L2)"] -.-> C
+    L4["aim the perspective (L4)"] -.-> C
 ```
 
 ---
@@ -85,6 +88,7 @@ _Print this. The loop is universal; the buttons differ per agent._
 | **Specific prompt** | "a detailed prompt" | One that names the **file, constraint, example, done** — not just more words [^1]. |
 | **Feed context** | "give it context" | Hand over the **verbatim source** (`@file`, screenshot, log), not your paraphrase [^1]. |
 | **Definition of done** | "when it's finished" | A *checkable* finish line (a passing test), not "ran out of ideas" [^1]. |
+| **Persona / role** | "act like a senior X" | A lens that sets viewpoint, priorities, and tone — *not* added knowledge or accuracy [^4]. |
 | **Read-only sandbox** | "Codex can't edit" | Codex's equivalent of plan mode — think + propose, no writes [^3]. |
 
 ### The four to pin in every prompt
@@ -119,3 +123,4 @@ _Print this. The loop is universal; the buttons differ per agent._
 [^1]: [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices) — Anthropic
 [^2]: [Best practices for coding with agents](https://cursor.com/blog/agent-best-practices) — Cursor
 [^3]: [AGENTS.md — Codex guide](https://developers.openai.com/codex/guides/agents-md) — OpenAI
+[^4]: [When "A Helpful Assistant" Is Not Really Helpful: Personas in System Prompts Do Not Improve Performances of LLMs](https://aclanthology.org/2024.findings-emnlp.888/) — Findings of EMNLP 2024
