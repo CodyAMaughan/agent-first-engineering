@@ -77,7 +77,7 @@ niche is currently unfilled.
 
 Six phases, from vibe coding to systems engineer for agents. Full index in
 [`docs/curriculum/`](docs/curriculum/index.md). Quiz yourself with `/check-understanding <phase>` (the
-[`check-understanding`](.claude/skills/check-understanding/SKILL.md) skill generates an interactive
+[`check-understanding`](.agents/skills/check-understanding/SKILL.md) skill generates an interactive
 quiz from each phase's lessons).
 
 | # | Phase | # | Phase |

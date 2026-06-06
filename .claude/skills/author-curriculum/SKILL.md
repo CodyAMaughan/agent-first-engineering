@@ -20,8 +20,7 @@ visual-first, heavily cited, agent-agnostic, and wired into nav/quiz — on the 
 `docs/curriculum/02-context-engineering/` is the tone/density gold standard; Phase 1 lessons are the
 cleanest structural template.
 
-> ⚠️ The guide says phase landing pages are `README.md`; on disk they are **`index.md`**. Use
-> `index.md`. (Fix the guide if it still says otherwise.)
+> Phase landing pages are **`index.md`** (not `README.md`).
 
 ## Modes
 

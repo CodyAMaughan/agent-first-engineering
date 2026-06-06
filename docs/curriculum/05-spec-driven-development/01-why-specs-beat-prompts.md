@@ -72,13 +72,13 @@ still holds — because it lives in the artifact, not in someone's memory of a c
 _A prompt's reach is one session; a spec's reach is the lifetime of the system._
 
 ```
-   one small change:        prompt is fine (Phase 1: small tasks skip the plan) [^2]
-   a feature:               prompt rots across a long session (Phase 2: context rot) [^2]
+   one small change:        prompt is fine (Phase 1: small tasks skip the plan)
+   a feature:               prompt rots across a long session (Phase 2: context rot)
    a system, over months:   only the spec survives team turnover, model upgrades,
                             and "wait, why did we build it this way?"
 ```
 
-The bigger and longer-lived the work, the more the durable artifact wins.
+The bigger and longer-lived the work, the more the durable artifact wins — a quick prompt is the right tool only for the small, fast changes that don't even need a plan [^2].
 
 ## Your turn (exercise)
 

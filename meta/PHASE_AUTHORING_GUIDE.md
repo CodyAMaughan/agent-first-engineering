@@ -14,7 +14,7 @@ any paragraph that can be shown instead of told.
    callouts. Prose is for the *one idea* a visual can't carry. Keep lessons ~one screen. **Phases 4–6
    are the densest and need the most diagrams + ELI5.**
 2. **Concise.** Lead with the point. Cut filler, throat-clearing, and restatement. Tight > complete.
-3. **Phase executive summary.** The phase `README.md` opens with a 3–5 sentence **Executive
+3. **Phase executive summary.** The phase `index.md` opens with a 3–5 sentence **Executive
    Summary** (what this phase makes you able to do + why it matters) and a learning-objectives list.
 4. **Subsection summaries.** Every lesson, and every `##`/`###` subsection inside it, starts with a
    **1–2 line summary in _italics_** before the details.
@@ -33,7 +33,7 @@ any paragraph that can be shown instead of told.
 7. **Test-Your-Knowledge checkpoints.** Between major sections of a lesson, insert a quick
    `> 🧠 **Test Yourself:**` checkpoint — 1 question with the answer in a `<details>` reveal.
    These are *formative* (quick gut-checks), distinct from the graded `quiz.json`.
-8. **Per-phase cheatsheet.** Near the bottom of the phase `README.md`, a **Cheatsheet** section:
+8. **Per-phase cheatsheet.** Near the bottom of the phase `index.md`, a **Cheatsheet** section:
    key concepts, definitions, and tools as compact tables (mirror the gold standard's
    "Key Terms | what people say | what it actually means" table, plus a commands/tools table).
 9. **`quiz.json`** present and schema-valid (see below), with a difficulty spread.
@@ -46,7 +46,7 @@ any paragraph that can be shown instead of told.
 
 ```
 docs/curriculum/NN-name/
-├── README.md          # exec summary, objectives, lesson map, phase diagram, cheatsheet, sources
+├── index.md           # exec summary, objectives, lesson map, phase diagram, cheatsheet, sources
 ├── 01-*.md … 0N-*.md  # lessons (keep existing filenames/nav)
 └── quiz.json          # graded quiz (REPLACES quiz.md — delete quiz.md if present)
 ```

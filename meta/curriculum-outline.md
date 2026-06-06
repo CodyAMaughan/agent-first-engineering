@@ -30,7 +30,8 @@ prompts; use plan mode to align on *what* before *how*; know when a task is too 
 1. The loop: why "explore→plan→code→commit" beats "just ask for code" (the agent solves the wrong problem when it skips exploration).
 2. Prompt specificity: name the file, the constraint, the example pattern, the definition of done.
 3. Feeding context, not describing it: `@file`, screenshots, piped data, URLs.
-4. Plan mode first — and when to skip it (one-line diffs don't need a plan).
+4. Personas & perspective: a role sets viewpoint and audience, not expertise — the durable form is a reusable subagent/output style, not a one-off line.
+5. Plan mode first — and when to skip it (one-line diffs don't need a plan).
 
 **Diagram**
 ```

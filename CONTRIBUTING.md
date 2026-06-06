@@ -10,7 +10,8 @@ improving the tool.
 - **Fix or improve a lesson** — clarity, diagrams, ELI5, better or more current sources.
 - **Propose a new lesson or topic** — see the [Roadmap](docs/roadmap.md) for the Advanced tier, then
   open an issue describing the topic and an authoritative source or two.
-- **Improve the scaffolder** — the tool lives in `.claude/skills/scaffold-agent-project/`.
+- **Improve the scaffolder** — the tool lives in `.agents/skills/scaffold-agent-project/` (the
+  canonical open-standard copy; mirrored byte-identically to `.claude/skills/` for Claude Code).
 - **Strengthen sources** — if a citation is weak or outdated, suggest an authoritative replacement.
 
 ## Ground rules
@@ -19,7 +20,10 @@ improving the tool.
   built from them with MkDocs Material.
 - **Follow the authoring rubric:** [`meta/PHASE_AUTHORING_GUIDE.md`](meta/PHASE_AUTHORING_GUIDE.md) —
   visual-first (at least one diagram per lesson), an executive summary, per-subsection summaries,
-  inline footnote citations, a Test-Yourself checkpoint, and a `quiz.json`.
+  inline footnote citations, a Test-Yourself checkpoint, and a `quiz.json`. The
+  [`author-curriculum`](.agents/skills/author-curriculum/SKILL.md) skill operationalizes this rubric
+  (the full Mandatory/Recommended/Optional checklist, a gap audit, and the nav/quiz wiring) — run it
+  when adding or updating a lesson.
 - **Cite authoritative sources only** — papers (arXiv/ACL/NeurIPS) and docs/blogs from the AI labs and
   standards bodies (Anthropic, OpenAI, Google, Cursor, GitHub, Microsoft, agents.md, agentskills.io,
   modelcontextprotocol.io). **No Reddit, forum, or low-quality sources.**
