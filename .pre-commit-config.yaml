@@ -11,3 +11,14 @@ repos:
       - id: check-yaml          # validates workflow YAML
         exclude: ^mkdocs\.yml$  # mkdocs.yml uses a custom !!python tag
       - id: check-merge-conflict
+
+  # First-party skills must stay byte-identical between the canonical
+  # .agents/skills/ and the .claude/skills/ mirror. Runs when either tree changes.
+  - repo: local
+    hooks:
+      - id: skill-mirror-parity
+        name: skill mirror parity (.agents/skills == .claude/skills)
+        entry: tests/check-skill-mirror.sh
+        language: script
+        pass_filenames: false
+        files: ^\.(agents|claude)/skills/

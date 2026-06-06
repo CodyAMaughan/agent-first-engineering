@@ -26,6 +26,9 @@ jobs:
             python -c "import json; json.load(open('$f'))" && echo "ok  $f"
           done
 
+      - name: Skill mirror parity (.agents/skills == .claude/skills)
+        run: sh tests/check-skill-mirror.sh
+
       - name: Check external links (advisory)
         uses: lycheeverse/lychee-action@v2
         continue-on-error: true
