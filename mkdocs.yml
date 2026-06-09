@@ -106,6 +106,7 @@ nav:
           - Anatomy of a Skill: curriculum/07-advanced-patterns/01-anatomy-of-a-skill.md
           - Hooks, deep: curriculum/07-advanced-patterns/02-hooks-deep.md
           - "MCP, deep": curriculum/07-advanced-patterns/03-mcp-deep.md
+          - Security & injection: curriculum/07-advanced-patterns/04-security-and-injection.md
   - Roadmap: roadmap.md
   - Reference:
       - Translation Matrix: translation-matrix.md

@@ -145,6 +145,54 @@
       "answer": 1,
       "explanation": "A server that pulls external content can deliver attacker-controlled text the agent then treats as instructions (indirect prompt injection); the spec also flags tool descriptions as untrusted. The distractors misstate MCP's transport, permission, and filesystem behavior.",
       "citations": ["https://code.claude.com/docs/en/mcp"]
+    },
+    {
+      "id": "adv-10",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "04-security-and-injection.md",
+      "question": "What are the three legs of the 'lethal trifecta' for AI agents?",
+      "options": [
+        "A slow model, a large context window, and an impatient user",
+        "Access to private data, exposure to untrusted content, and a way to communicate out",
+        "Read access, write access, and network access to the same repository",
+        "Direct injection, indirect injection, and supply-chain injection"
+      ],
+      "answer": 1,
+      "explanation": "The lethal trifecta is private-data access + untrusted content + an exfiltration channel; when all three coexist, injection can steal data. The other options mix up unrelated concepts.",
+      "citations": ["https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"]
+    },
+    {
+      "id": "adv-11",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "04-security-and-injection.md",
+      "question": "Why is 'tell the model to ignore any instructions it reads in files' not a real defense against indirect prompt injection?",
+      "options": [
+        "Models physically cannot read instructions embedded inside source files or comments",
+        "The model parses your rule and the attacker's text the same way and can't rank trust by origin",
+        "File contents are always stripped of instructions before reaching the model anyway",
+        "It works, but only if you also raise the model's temperature to zero"
+      ],
+      "answer": 1,
+      "explanation": "The model can't reliably privilege instructions by where they came from, so your rule and the injected payload compete on equal footing. It's a request, not an enforced boundary.",
+      "citations": ["https://genai.owasp.org/llmrisk/llm01-prompt-injection/"]
+    },
+    {
+      "id": "adv-12",
+      "difficulty": "hard",
+      "type": "practical",
+      "lesson": "04-security-and-injection.md",
+      "question": "An agent must read untrusted web pages AND has a token that can reach private repos. Which single change most reduces the data-exfiltration risk?",
+      "options": [
+        "Add a strong system-prompt instruction telling the agent never to leak private data",
+        "Restrict the agent's network egress to an allowlist so it has no channel to exfiltrate",
+        "Run a prompt-injection classifier on each page and block the ones it flags",
+        "Switch to a larger model that is better at recognizing malicious instructions"
+      ],
+      "answer": 1,
+      "explanation": "Removing the exfiltration leg (network egress) is an enforced control that holds even if the agent is fully injected. A system prompt is advisory, a classifier is probabilistic and beatable by retry, and a bigger model still can't rank trust by origin.",
+      "citations": ["https://www.anthropic.com/engineering/claude-code-sandboxing"]
     }
   ]
 }

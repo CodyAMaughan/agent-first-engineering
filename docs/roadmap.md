@@ -54,7 +54,7 @@ The seven we'd write first, because they're mature *and* highest-leverage for an
    parallel fan-out, model-per-task. *Scale throughput and quality without flooding one context.*
    [Claude Code subagents](https://code.claude.com/docs/en/sub-agents) ·
    [Cursor agent best practices](https://cursor.com/blog/agent-best-practices)
-5. **Security, permissions & sandboxing** 🟢 — permission models, filesystem/network isolation, and
+5. **Security, permissions & sandboxing** 🟢 — ✅ **shipped → [Lesson 7.4](curriculum/07-advanced-patterns/04-security-and-injection.md)**. Permission models, filesystem/network isolation, and
    prompt-injection defense for agents that read untrusted input. *Non-negotiable before autonomy.*
    [Claude Code sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing) ·
    [OWASP Top 10 for LLM/Agentic Apps](https://genai.owasp.org/)

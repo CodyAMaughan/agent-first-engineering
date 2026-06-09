@@ -36,6 +36,7 @@ By the end of this phase you can:
 | 1 | [Anatomy of a Skill](01-anatomy-of-a-skill.md) | A skill is a `SKILL.md` directory; name+description load always, the rest on demand; portable across agents. |
 | 2 | [Hooks, deep](02-hooks-deep.md) | A hook is a deterministic command the harness runs on an event; exit 2 blocks. Prose → enforced. |
 | 3 | [MCP, deep](03-mcp-deep.md) | One open protocol so any agent reaches your data/tools; servers expose Tools, Resources, Prompts. |
+| 4 | [Security & injection](04-security-and-injection.md) | Agents read untrusted input — enforce safety in the harness (sandbox, least-privilege), not the prompt. |
 
 ---
 
@@ -69,6 +70,8 @@ _The Advanced tier in compact form. Grows as the phase fills in._
 | **Hook** | "a script" | A deterministic command the *harness* runs on a lifecycle event; **exit 2 blocks** [^3]. |
 | **Fail-open** | "it errored, so we're fine" | A guardrail that *allows* the action when it crashes — Cursor hooks' dangerous default [^4]. |
 | **MCP** | "an Anthropic thing" | An open protocol (USB-C for AI) so any agent reaches your tools/data; servers expose Tools/Resources/Prompts [^5]. |
+| **Lethal trifecta** | "prompt injection" | Private-data access + untrusted content + an exfil channel — all three, and data can be stolen [^6]. |
+| **Prompt injection** | "a jailbreak" | Untrusted text (a README, an issue) the agent treats as instructions — OWASP's #1 LLM risk [^7]. |
 
 ### Agent translation (same idea, different homes)
 
@@ -89,3 +92,5 @@ _The Advanced tier in compact form. Grows as the phase fills in._
 [^3]: [Hooks reference](https://code.claude.com/docs/en/hooks) — Anthropic (Claude Code docs)
 [^4]: [Cursor hooks](https://cursor.com/docs/hooks) — Cursor (fail-open by default)
 [^5]: [What is MCP? (intro)](https://modelcontextprotocol.io/docs/getting-started/intro) — Model Context Protocol
+[^6]: [The lethal trifecta for AI agents](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) — Simon Willison
+[^7]: [LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — OWASP GenAI Security Project

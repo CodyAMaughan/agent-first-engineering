@@ -107,7 +107,7 @@ _MCP is an open standard, not an Anthropic feature — the major hosts all speak
 Pick a system you keep pasting into the agent by hand — a DB schema, an internal API, your issue tracker. Sketch the MCP server: which **Tools** (actions the model can take), which **Resources** (read-only context like the schema), which **Prompts** (templates)? Choose the transport: **stdio** (local, single user) or **HTTP** (shared, needs OAuth). Then ask the real question: is this genuinely an MCP server (many agents, live data), or is it actually a **skill** (one agent, procedural know-how) — or both, a skill that drives the server's tools?
 
 ---
-← [Lesson 7.2](02-hooks-deep.md) · [Phase 7 home](index.md) · → [Check your understanding](quiz.json)
+← [Lesson 7.2](02-hooks-deep.md) · [Phase 7 home](index.md) · next → [Lesson 7.4 — Security & injection](04-security-and-injection.md)
 
 [^1]: [MCP Specification (rev. 2025-11-25)](https://modelcontextprotocol.io/specification/2025-11-25) — Model Context Protocol
 [^2]: [Architecture overview](https://modelcontextprotocol.io/docs/learn/architecture) — Model Context Protocol
