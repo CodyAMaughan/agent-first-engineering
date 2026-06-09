@@ -22,16 +22,23 @@ case "$INPUT" in
   *"git checkout ."*|*"git restore ."*)       block "wholesale discard of working-tree changes" ;;
 esac
 
-# Commits/pushes onto a protected default branch.
-# Use `git branch --show-current` — it reports the branch name even on an unborn branch,
-# whereas `git rev-parse --abbrev-ref HEAD` returns "HEAD" (unreliable). Found via dogfooding.
-branch=$(git branch --show-current 2>/dev/null || true)
-[ -n "$branch" ] || branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
-case "$branch" in
-  main|master)
+# Commits/pushes onto a protected branch. Configurable via .agent/guardrails.conf:
+#   PROTECTED_BRANCHES="main master"   (default)   |   PROTECTED_BRANCHES=""  disables it.
+# Some repos (solo, docs, trunk-based) legitimately commit to main — found via dogfooding.
+CONF="${SCAFFOLD_CONF:-.agent/guardrails.conf}"
+PROTECTED_BRANCHES="main master"
+[ -f "$CONF" ] && . "$CONF" 2>/dev/null || true
+if [ -n "${PROTECTED_BRANCHES:-}" ]; then
+  # `git branch --show-current` reports the name even on an unborn branch, whereas
+  # `git rev-parse --abbrev-ref HEAD` returns "HEAD" (unreliable). Found via dogfooding.
+  branch=$(git branch --show-current 2>/dev/null || true)
+  [ -n "$branch" ] || branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+  for pb in $PROTECTED_BRANCHES; do
+    [ "$branch" = "$pb" ] || continue
     case "$INPUT" in
-      *"git commit"*|*"git push"*) block "writing directly to the '$branch' branch — create a feature branch first" ;;
-    esac ;;
-esac
+      *"git commit"*|*"git push"*) block "writing directly to the protected '$branch' branch — create a feature branch first (set PROTECTED_BRANCHES in $CONF to change)" ;;
+    esac
+  done
+fi
 
 exit 0

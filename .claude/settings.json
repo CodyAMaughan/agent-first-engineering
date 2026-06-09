@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "sh .agent/hooks/git-safety.sh" }] },
+      { "matcher": "Read", "hooks": [{ "type": "command", "command": "sh .agent/hooks/secret-scan.sh" }] }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "sh .agent/hooks/test-gate.sh" }] }
+    ]
+  }
+}
