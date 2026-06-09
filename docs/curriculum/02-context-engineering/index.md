@@ -119,7 +119,7 @@ _Everything in this phase, compressed. Steal it._
 > Codex auto-compacts aggressively; treat it as a backstop, not a strategy [^4].
 
 ---
-→ **[Check your understanding](quiz.json)**
+→ **[Check your understanding](quiz.md)**
 
 [^1]: [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) — Anthropic
 [^2]: [Lost in the Middle: How Language Models Use Long Contexts](https://arxiv.org/abs/2307.03172) — arXiv (Liu et al., 2023)

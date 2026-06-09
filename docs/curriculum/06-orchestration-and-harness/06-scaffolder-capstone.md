@@ -110,7 +110,7 @@ is no longer magic — it's *your* process, automated. That is what it means to 
 for agents.
 
 ---
-← [Lesson 6.5](05-defining-team-direction.md) · [Phase 6 home](index.md) · 🎓 → [Check your understanding](quiz.json)
+← [Lesson 6.5](05-defining-team-direction.md) · [Phase 6 home](index.md) · 🎓 → [Check your understanding](quiz.md)
 
 [^1]: [Building an AI-Native Engineering Team](https://developers.openai.com/codex/guides/build-ai-native-engineering-team) — OpenAI
 [^2]: [Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) — OpenAI

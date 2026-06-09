@@ -5,6 +5,16 @@ site_description: >-
   standards (AGENTS.md, SKILL.md, MCP).
 site_url: https://CodyAMaughan.github.io/agent-first-engineering/
 
+extra_css:
+  - assets/css/quiz.css
+extra_javascript:
+  - assets/js/quiz.js
+
+# Per-phase quiz pages are reached via inline "Check your understanding" links,
+# not the sidebar — exempt them from the nav-completeness check.
+not_in_nav: |
+  /curriculum/*/quiz.md
+
 theme:
   name: material
   features:

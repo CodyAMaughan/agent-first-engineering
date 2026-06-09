@@ -140,7 +140,7 @@ _The whole phase on one screen._
 
 ---
 
-→ **[Check your understanding](quiz.json)**
+→ **[Check your understanding](quiz.md)**
 
 [^1]: [Harness engineering: leveraging Codex in an agent-first world](https://openai.com/index/harness-engineering/) — OpenAI
 [^2]: [Building an AI-Native Engineering Team](https://developers.openai.com/codex/guides/build-ai-native-engineering-team) — OpenAI

@@ -75,7 +75,7 @@ Sketch the three artifacts for one real project, by hand, on paper:
 If all three fit on one page, you've internalized the phase — and you'll see exactly what the scaffolder is doing the day you run it.
 
 ---
-← [Lesson 4.4](04-prose-to-hooks.md) · [Phase 4 home](index.md) · → [Check your understanding](quiz.json) · next phase → [Spec-Driven Development](../05-spec-driven-development/index.md)
+← [Lesson 4.4](04-prose-to-hooks.md) · [Phase 4 home](index.md) · → [Check your understanding](quiz.md) · next phase → [Spec-Driven Development](../05-spec-driven-development/index.md)
 
 [^1]: [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices) — Anthropic
 [^2]: [Cursor hooks — events & failClosed](https://cursor.com/docs/agent/hooks) — Cursor

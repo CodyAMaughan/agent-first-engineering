@@ -64,7 +64,7 @@ You graduate by recognizing the automation as the loop you already understand: `
 For your next two tasks, predict **before you start** whether each needs a plan, using the rule of thumb. Then run them. Did the "skip it" task stay trivial, or surprise you and deserve a plan after all? Calibrating that prediction — *blast radius vs. ceremony* — is the whole skill.
 
 ---
-← [Lesson 1.4](04-personas-and-perspective.md) · [Phase 1 home](index.md) · → [Check your understanding](quiz.json)
+← [Lesson 1.4](04-personas-and-perspective.md) · [Phase 1 home](index.md) · → [Check your understanding](quiz.md)
 
 [^1]: [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices) — Anthropic
 [^2]: [Best practices for coding with agents](https://cursor.com/blog/agent-best-practices) — Cursor

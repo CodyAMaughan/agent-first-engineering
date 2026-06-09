@@ -82,7 +82,7 @@ _The Advanced tier in compact form. Grows as the phase fills in._
 
 ---
 
-→ **[Check your understanding](quiz.json)**
+→ **[Check your understanding](quiz.md)**
 
 ---
 ← [Curriculum home](../index.md) · more advanced topics → [Roadmap](../../roadmap.md)

@@ -71,7 +71,7 @@ When you run the companion scaffolder, its **risk tier** picks an enforced guard
 Take an agent task that reads untrusted input — a web page, an external issue, a third-party dependency. Map the trifecta: does it have **private-data access**? **untrusted content**? an **exfiltration channel**? Remove at least one leg with an *enforced* control (a network allowlist, a least-privilege token, an approval gate) — not a prompt. Then apply the real test: assume the agent is **fully injected** — does your control still hold? If it only holds when the model "behaves," it isn't a boundary.
 
 ---
-← [Lesson 7.3](03-mcp-deep.md) · [Phase 7 home](index.md) · → [Check your understanding](quiz.json)
+← [Lesson 7.3](03-mcp-deep.md) · [Phase 7 home](index.md) · → [Check your understanding](quiz.md)
 
 [^1]: [The lethal trifecta for AI agents](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) — Simon Willison (Jun 16, 2025)
 [^2]: [LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — OWASP GenAI Security Project

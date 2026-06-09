@@ -115,7 +115,7 @@ _Print this. The loop is universal; the buttons differ per agent._
 
 ---
 
-→ **[Check your understanding](quiz.json)**
+→ **[Check your understanding](quiz.md)**
 
 ---
 ← [Curriculum home](../index.md) · next phase → [Context Engineering ★★★](../02-context-engineering/index.md)

@@ -105,7 +105,7 @@ one-line pass/fail is precisely what the scaffolder wires into `turn.stop` so th
 again stop above a red build.
 
 ---
-← [Lesson 3.4](04-oracles-for-the-untestable.md) · [Phase 3 home](index.md) · → [Check your understanding](quiz.json)
+← [Lesson 3.4](04-oracles-for-the-untestable.md) · [Phase 3 home](index.md) · → [Check your understanding](quiz.md)
 
 [^1]: [Best practices for Claude Code](https://code.claude.com/docs/en/best-practices) — Anthropic
 [^2]: [Hooks reference](https://code.claude.com/docs/en/hooks) — Anthropic

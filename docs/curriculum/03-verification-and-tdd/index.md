@@ -134,7 +134,7 @@ _What people say vs. what it actually means._
 
 ---
 
-→ **[Check your understanding](quiz.json)**
+→ **[Check your understanding](quiz.md)**
 
 ---
 ← [Phase 2 — Context Engineering](../02-context-engineering/index.md) · next phase → [Phase 4 — Session & Memory Discipline](../04-session-and-memory/index.md)

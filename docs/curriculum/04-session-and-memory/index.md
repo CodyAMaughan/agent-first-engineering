@@ -118,7 +118,7 @@ _The terms, the decision, and the per-agent mechanics in three compact tables._
 
 ---
 
-→ **[Check your understanding](quiz.json)** · next phase → [Spec-Driven Development](../05-spec-driven-development/index.md)
+→ **[Check your understanding](quiz.md)** · next phase → [Spec-Driven Development](../05-spec-driven-development/index.md)
 
 [^1]: [Best practices for Claude Code — Write an effective CLAUDE.md](https://code.claude.com/docs/en/best-practices) — Anthropic
 [^2]: [Agent Skills — Specification (progressive disclosure)](https://agentskills.io/specification) — agentskills.io

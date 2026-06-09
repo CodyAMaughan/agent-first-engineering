@@ -151,7 +151,7 @@ registry. The commands are the same idea everywhere; only invocation differs [^1
 
 ---
 
-→ **[Check your understanding](quiz.json)**
+→ **[Check your understanding](quiz.md)**
 
 ---
 ← [Phase 4](../04-session-and-memory/index.md) · next phase → [Orchestration & Harness Engineering](../06-orchestration-and-harness/index.md)

@@ -101,7 +101,7 @@ the exact step the scaffolder's handoff would tee up — and you now know what i
 and why.
 
 ---
-← [Lesson 5.4](04-spec-as-steering-wheel.md) · [Phase 5 home](index.md) · → [Check your understanding](quiz.json)
+← [Lesson 5.4](04-spec-as-steering-wheel.md) · [Phase 5 home](index.md) · → [Check your understanding](quiz.md)
 
 [^1]: [Spec Kit — Toolkit for Spec-Driven Development](https://github.com/github/spec-kit) — GitHub
 [^2]: [AGENTS.md — open format for coding agents](https://agents.md) — Agentic AI Foundation

@@ -80,6 +80,6 @@ Keep it to ~3 lines. If you can't say it in 3, it's probably two memories. Small
 living — that's what keeps agent memory useful instead of bloated.
 
 ---
-← [Lesson 2.4](04-the-spec-handoff.md) · [Phase 2 home](index.md) · → [Check your understanding](quiz.json)
+← [Lesson 2.4](04-the-spec-handoff.md) · [Phase 2 home](index.md) · → [Check your understanding](quiz.md)
 
 [^1]: [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) — Anthropic
