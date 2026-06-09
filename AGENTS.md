@@ -51,3 +51,15 @@ under every subsection, and **agent-agnostic** framing (per-agent specifics go i
 - **`author-curriculum`** — add/update/audit a lesson, phase, or doc against the authoring standard.
 - **`scaffold-agent-project`** — turn a repo agent-first (the curriculum's capstone artifact).
 - **`check-understanding`** — quiz the user on a phase from its `quiz.json`.
+
+## Subagents (Claude Code: `.claude/agents/`)
+- **`lesson-reviewer`** — adversarial, fresh-context review of a lesson/phase against the authoring
+  checklist + citation verification (read-only). Use after writing or editing a lesson (Phase 6.2's
+  reviewer pattern). Subagent *definitions* are still per-tool (Codex/Cursor use their own
+  custom-agent/mode files) — unlike `SKILL.md`, there's no shared cross-tool standard yet.
+
+## Agent guardrails & memory (`.agent/`)
+Deterministic hooks (registered in `.claude/settings.json`) run on agent events: `git-safety` +
+`secret-scan` (PreToolUse), a `test-gate` on Stop, and the capture-learnings **memory loop**
+(`PreCompact` + `SessionStart`). Config in `.agent/guardrails.conf`; details in `.agent/README.md`.
+`tests/validate.sh` checks this layer (also in CI).
