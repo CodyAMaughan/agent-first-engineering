@@ -1,8 +1,9 @@
 # Curriculum — Agent-First Engineering
 
-From "vibe coding" to **systems engineer for agents**. Six phases, one competency each, taught one
-concept at a time with diagrams, worked examples, a hands-on exercise per lesson, and a hard quiz.
-Agent-agnostic (Claude Code / Codex / Cursor), built on open standards.
+From "vibe coding" to **systems engineer for agents**. Six foundations phases plus an **Advanced
+Patterns** tier, one competency each, taught one concept at a time with diagrams, worked examples, a
+hands-on exercise per lesson, and a hard quiz. Agent-agnostic (Claude Code / Codex / Cursor), built on
+open standards.
 
 > **Quiz yourself:** in Claude Code (or any agent with the skill installed) run
 > `/check-understanding <phase>` — e.g. `/check-understanding context-engineering`. The
@@ -20,6 +21,7 @@ flowchart LR
     P4 --> P5[P5 · Spec-Driven Dev]
     P5 --> P6[P6 · Orchestration & Harness]
     P6 --> S[systems engineer for agents]
+    S --> P7["P7 · Advanced Patterns<br/>(encode & automate)"]
 ```
 
 | # | Phase | You'll be able to… | Scaffolder artifact (lockstep) |
@@ -30,6 +32,7 @@ flowchart LR
 | 4 | [Session & Memory](04-session-and-memory/index.md) | Course-correct early; author and prune minimal `AGENTS.md`/skills; promote rules to hooks. | `AGENTS.md` + `.agents/skills/` |
 | 5 | [Spec-Driven Development](05-spec-driven-development/index.md) | Turn a vague idea into an executable spec; the spec is the source of truth. | Spec Kit hand-off |
 | 6 | [Orchestration & Harness](06-orchestration-and-harness/index.md) | Small focused agents, adversarial review, worktrees; design the environment, not the edit. | full guardrail + CI + adapters |
+| 7 | [Advanced Patterns](07-advanced-patterns/index.md) **(Advanced)** | Encode the disciplines into machinery: skills, hooks, MCP, security. | the internals of what the scaffolder emits |
 
 ★★★ = load-bearing. If you internalize only two phases, make them **2 and 3** — context engineering
 and verification carry the most weight across every researched source.
@@ -85,7 +88,10 @@ becomes automation of a process you understand.
 5. [Defining team direction](06-orchestration-and-harness/05-defining-team-direction.md) — non-negotiables as hooks.
 6. [The scaffolder is the capstone](06-orchestration-and-harness/06-scaffolder-capstone.md) — recognize every artifact.
 
+### Phase 7 — [Advanced Patterns: encode & automate](07-advanced-patterns/index.md) *(Advanced tier)*
+1. [Anatomy of a Skill](07-advanced-patterns/01-anatomy-of-a-skill.md) — name+description load always; the rest on demand.
+
 ---
 
-**What's next?** This is the *foundations* tier. See the **[Roadmap](../roadmap.md)** for the
-**Advanced Patterns** tier coming next.
+**What's next?** The **Advanced Patterns** tier (Phase 7) is now underway. See the
+**[Roadmap](../roadmap.md)** for the full backlog of advanced topics still to come.

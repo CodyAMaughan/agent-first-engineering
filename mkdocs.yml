@@ -101,6 +101,9 @@ nav:
           - Harness engineering: curriculum/06-orchestration-and-harness/04-harness-engineering.md
           - Defining team direction: curriculum/06-orchestration-and-harness/05-defining-team-direction.md
           - The scaffolder is the capstone: curriculum/06-orchestration-and-harness/06-scaffolder-capstone.md
+      - Phase 7 — Advanced Patterns:
+          - curriculum/07-advanced-patterns/index.md
+          - Anatomy of a Skill: curriculum/07-advanced-patterns/01-anatomy-of-a-skill.md
   - Roadmap: roadmap.md
   - Reference:
       - Translation Matrix: translation-matrix.md

@@ -34,7 +34,7 @@ lessons over time.
 
 The seven we'd write first, because they're mature *and* highest-leverage for an agent-first codebase:
 
-1. **Anatomy of a Skill** 🟢 — `SKILL.md` internals end-to-end: frontmatter, `scripts/`/`references/`/
+1. **Anatomy of a Skill** 🟢 — ✅ **shipped → [Lesson 7.1](curriculum/07-advanced-patterns/01-anatomy-of-a-skill.md)**. `SKILL.md` internals end-to-end: frontmatter, `scripts/`/`references/`/
    `assets/`, progressive disclosure, packaging as plugins. *Skills are how you encode a repeatable
    procedure once and let any agent reach for it.*
    [Agent Skills spec](https://agentskills.io/specification) ·

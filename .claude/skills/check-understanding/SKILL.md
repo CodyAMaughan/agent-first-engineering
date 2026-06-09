@@ -13,7 +13,7 @@ Triggers: `/check-understanding <phase>`, "test my knowledge on context engineer
 phase 3", "am I ready for the next phase".
 
 ## Input
-A phase number (1-6) or name/keyword. If none given, list the six phases and ask.
+A phase number (1-7) or name/keyword. If none given, list the seven phases and ask.
 
 ## Phase Map
 | Input | Directory | Phase |
@@ -24,11 +24,12 @@ A phase number (1-6) or name/keyword. If none given, list the six phases and ask
 | 4, session, memory | `docs/curriculum/04-session-and-memory` | Session & Memory Discipline |
 | 5, spec, spec-driven | `docs/curriculum/05-spec-driven-development` | Spec-Driven Development |
 | 6, orchestration, harness | `docs/curriculum/06-orchestration-and-harness` | Orchestration & Harness Engineering |
+| 7, advanced, patterns, skills, hooks, mcp, security | `docs/curriculum/07-advanced-patterns` | Advanced Patterns |
 
 ## Procedure
 
 ### 1. Resolve phase
-Map the argument to a directory (validate 1-6; on miss, list all six and ask).
+Map the argument to a directory (validate 1-7; on miss, list all seven and ask).
 
 ### 2. Load the question bank
 Read `docs/curriculum/<dir>/quiz.json`. It has `{ phase, title, questions: [{ id, difficulty, type,
@@ -58,8 +59,8 @@ Tally correct/total and a per-difficulty breakdown (e.g. Easy 2/2 · Medium 2/3 
 miss, record the user's choice, the correct option, the `explanation`, and the `lesson`.
 
 ### 6. Results & grade
-- **≥90%** — Mastered. If phase 6: "You've completed the curriculum — you think like a systems
-  engineer for agents." Else: "Strong grasp of <phase>. Ready for the next phase."
+- **≥90%** — Mastered. If phase 7: "You've completed the Advanced tier — you don't just drive agents,
+  you build the machinery they run on." Else: "Strong grasp of <phase>. Ready for the next phase."
 - **70-89%** — Almost. List the lessons behind the misses to review.
 - **50-69%** — Developing. List each missed topic + lesson.
 - **<50%** — Start over. Recommend re-reading the phase, hardest-missed lessons first.
