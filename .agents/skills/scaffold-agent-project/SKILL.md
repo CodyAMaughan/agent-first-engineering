@@ -23,6 +23,7 @@ IS the tool (it runs inside any agent; no install). It is the capstone artifact 
 - `references/event-map.md` — canonical → native hook events + fallbacks
 - `references/agents-md-template.md` — the `AGENTS.md` skeleton
 - `assets/hooks/*` — the portable guardrail scripts · `assets/adapters/*` — per-agent registration
+- `assets/skill-templates/*` & `assets/agent-templates/*` — starter skills & subagents
 
 ## Procedure
 
@@ -51,6 +52,11 @@ generic `.agents/` output + tell the user it's a fallback.
 4. **Project files** from `assets/project-files/`, filled from the Profile: `.gitignore`,
    `.env.example` (list the env vars/secrets this project needs), and a project `README.md`. In
    `adopt` mode, never overwrite an existing `README.md`/`.gitignore` without confirmation (merge instead).
+5. **Starter subagent(s)** from `assets/agent-templates/` (e.g. `code-reviewer`) into each target's
+   native location — Claude Code `.claude/agents/*.md` — **least-privilege** (read + inspect, no
+   write/edit). Subagents are per-tool (see `references/adapter-paths.md`): emit project files only for
+   agents that support them, and name the equivalent (Cursor custom agents/modes, OpenAI Agents SDK)
+   for the others.
 
 ### Step 4 — Generate the guardrail layer (by risk tier)
 Pick a hook set from the Profile's risk tier:

@@ -7,6 +7,7 @@ native files; the core stays byte-identical. (Source: `docs/translation-matrix.m
 |---|---|---|---|
 | Context file | `CLAUDE.md` = `@AGENTS.md` bridge | reads `AGENTS.md` natively | reads `AGENTS.md`; optional `.cursor/rules/*.mdc` |
 | Skills dir | `.claude/skills/` (mirror of `.agents/skills/`) | `.agents/skills/` (native) | `.agents/skills/` (native) + `.cursor/skills/` |
+| Subagents | `.claude/agents/*.md` (frontmatter + system prompt) | Agents SDK `Agent(...)` def — no project-file standard | custom agents (`*.agent.md`) / modes |
 | Hooks config | `.claude/settings.json` (`hooks` block) | `.codex/hooks.json` or `[hooks]` in `~/.codex/config.toml` | `.cursor/hooks.json` |
 | Permissions | `.claude/settings.json` (`permissions` allow/deny/ask) | `[execpolicy]` / approval policy | `.cursor/permissions.json` |
 | MCP | `.mcp.json` | `[mcp_servers]` in config.toml | shared editor/CLI MCP config |
@@ -20,3 +21,6 @@ native files; the core stays byte-identical. (Source: `docs/translation-matrix.m
   pointing at the script + the native event name) differs per agent.
 - Use portable script paths (no absolute paths); reference repo root via the agent's project-dir var
   where available.
+- **Subagents are the least-standardized layer** — unlike `SKILL.md`, definitions differ per tool. Emit
+  them only for agents that support a project-file format (today: Claude Code `.claude/agents/*.md`);
+  for others, note the equivalent (Cursor custom agents/modes, the OpenAI Agents SDK).
