@@ -93,6 +93,7 @@ becomes automation of a process you understand.
 2. [Hooks, deep](07-advanced-patterns/02-hooks-deep.md) — deterministic enforcement on lifecycle events; exit 2 blocks.
 3. [MCP, deep](07-advanced-patterns/03-mcp-deep.md) — one open protocol; servers expose Tools, Resources, Prompts.
 4. [Security & injection](07-advanced-patterns/04-security-and-injection.md) — enforce safety in the harness, not the prompt.
+5. [Anatomy of a Subagent](07-advanced-patterns/05-anatomy-of-a-subagent.md) — a focused specialist: own context, own tools, delegated by description.
 
 ---
 

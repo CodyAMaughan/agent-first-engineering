@@ -117,6 +117,7 @@ nav:
           - Hooks, deep: curriculum/07-advanced-patterns/02-hooks-deep.md
           - "MCP, deep": curriculum/07-advanced-patterns/03-mcp-deep.md
           - Security & injection: curriculum/07-advanced-patterns/04-security-and-injection.md
+          - Anatomy of a Subagent: curriculum/07-advanced-patterns/05-anatomy-of-a-subagent.md
   - Roadmap: roadmap.md
   - Reference:
       - Translation Matrix: translation-matrix.md

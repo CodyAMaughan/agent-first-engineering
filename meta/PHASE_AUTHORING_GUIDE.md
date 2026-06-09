@@ -102,7 +102,7 @@ _1–2 line italic summary of this subsection._
 ```
 
 Rules for `quiz.json`:
-- **9–12 questions**, with a spread: **≥3 easy, ≥3 medium, ≥3 hard**. Mix `conceptual` and `practical`.
+- **9–15 questions (≈2–3 per lesson)**, with a spread: **≥3 easy, ≥3 medium, ≥3 hard**. Mix `conceptual` and `practical`.
 - `answer` is the 0-based index of the correct option. 3–4 options each.
 - **Hard questions must be hard:** plausible distractors, several being *true statements that don't
   answer the question*. **Normalize option length** so the answer isn't inferable from phrasing.

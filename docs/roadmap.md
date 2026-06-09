@@ -50,7 +50,7 @@ The seven we'd write first, because they're mature *and* highest-leverage for an
    tools to any agent over one open standard. *The portable way to give agents new capabilities.*
    [MCP specification](https://modelcontextprotocol.io/specification/2025-11-25) ·
    [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol)
-4. **Subagents & multi-agent orchestration** 🟢 — least-privilege subagents, writer/reviewer pairs,
+4. **Subagents & multi-agent orchestration** 🟢 — ✅ **shipped → [Lesson 7.5](curriculum/07-advanced-patterns/05-anatomy-of-a-subagent.md)**. Least-privilege subagents, writer/reviewer pairs,
    parallel fan-out, model-per-task. *Scale throughput and quality without flooding one context.*
    [Claude Code subagents](https://code.claude.com/docs/en/sub-agents) ·
    [Cursor agent best practices](https://cursor.com/blog/agent-best-practices)

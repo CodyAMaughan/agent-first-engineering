@@ -193,6 +193,54 @@
       "answer": 1,
       "explanation": "Removing the exfiltration leg (network egress) is an enforced control that holds even if the agent is fully injected. A system prompt is advisory, a classifier is probabilistic and beatable by retry, and a bigger model still can't rank trust by origin.",
       "citations": ["https://www.anthropic.com/engineering/claude-code-sandboxing"]
+    },
+    {
+      "id": "adv-13",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "05-anatomy-of-a-subagent.md",
+      "question": "In a subagent's Markdown file, what is the body (below the frontmatter)?",
+      "options": [
+        "Its system prompt — it replaces the default assistant for that worker",
+        "A description shown in the picker, separate from its actual behavior",
+        "A list of example tasks the subagent has completed before",
+        "Optional documentation the agent ignores at runtime"
+      ],
+      "answer": 0,
+      "explanation": "The body becomes the subagent's system prompt; it receives only that (plus basic environment details), not the full default system prompt. It isn't a picker label, a history, or ignored docs.",
+      "citations": ["https://code.claude.com/docs/en/sub-agents"]
+    },
+    {
+      "id": "adv-14",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "05-anatomy-of-a-subagent.md",
+      "question": "You're defining a code-reviewer subagent. Which tools grant best fits its job?",
+      "options": [
+        "All tools, so it can fix the problems it finds while reviewing",
+        "Write and Bash, so it can edit files and commit the fixes itself",
+        "Read, Grep, Glob (and run-tests) only — inspect, never write or push",
+        "No tools at all — a reviewer only needs the task description, not the code"
+      ],
+      "answer": 2,
+      "explanation": "Least-privilege: a reviewer needs read + inspect, never write/push — that both improves focus and shrinks the blast radius. Granting write/all tools invites exactly the actions a reviewer shouldn't take; granting none leaves it unable to read the code.",
+      "citations": ["https://code.claude.com/docs/en/sub-agents"]
+    },
+    {
+      "id": "adv-15",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "05-anatomy-of-a-subagent.md",
+      "question": "Anthropic's orchestrator-worker research system beat a single agent by ~90%. What most explains the gain?",
+      "options": [
+        "The subagents shared one context window, so they never lost information",
+        "A larger model was used only in the multi-agent configuration",
+        "The multi-agent system skipped verification to answer faster",
+        "Specialized subagents ran in parallel with separate contexts and tools"
+      ],
+      "answer": 3,
+      "explanation": "The gain comes from parallel specialized subagents with separation of concerns (distinct contexts, tools, exploration paths). They do NOT share one context, the lead/worker models were Opus/Sonnet (not a bigger model only in one arm), and nothing was skipped.",
+      "citations": ["https://www.anthropic.com/engineering/multi-agent-research-system"]
     }
   ]
 }
