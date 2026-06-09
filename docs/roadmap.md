@@ -40,7 +40,7 @@ The seven we'd write first, because they're mature *and* highest-leverage for an
    [Agent Skills spec](https://agentskills.io/specification) ·
    [anthropics/skills](https://github.com/anthropics/skills) ·
    [Cursor Skills](https://cursor.com/docs/context/skills)
-2. **Hooks, deep** 🟢 — every lifecycle event and handler type; patterns for enforcing rules,
+2. **Hooks, deep** 🟢 — ✅ **shipped → [Lesson 7.2](curriculum/07-advanced-patterns/02-hooks-deep.md)**. Every lifecycle event and handler type; patterns for enforcing rules,
    blocking danger, and reducing approval fatigue. *Hooks are how you make a best practice
    deterministic instead of hopeful.*
    [Claude Code hooks](https://code.claude.com/docs/en/hooks) ·

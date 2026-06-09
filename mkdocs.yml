@@ -104,6 +104,7 @@ nav:
       - Phase 7 — Advanced Patterns:
           - curriculum/07-advanced-patterns/index.md
           - Anatomy of a Skill: curriculum/07-advanced-patterns/01-anatomy-of-a-skill.md
+          - Hooks, deep: curriculum/07-advanced-patterns/02-hooks-deep.md
   - Roadmap: roadmap.md
   - Reference:
       - Translation Matrix: translation-matrix.md

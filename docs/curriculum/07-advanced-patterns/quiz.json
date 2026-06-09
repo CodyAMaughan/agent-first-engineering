@@ -49,6 +49,54 @@
       "answer": 1,
       "explanation": "Level-3 resources load only when accessed, and a script's code is executed via bash — only its output costs tokens, not its source. The distractors invent embedding storage, auto-truncation, and an automatic subagent that don't exist.",
       "citations": ["https://agentskills.io/specification"]
+    },
+    {
+      "id": "adv-04",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "02-hooks-deep.md",
+      "question": "What fundamentally distinguishes a hook from a rule written in CLAUDE.md?",
+      "options": [
+        "A hook is phrased more forcefully, so the model is more likely to obey it",
+        "The harness runs a hook deterministically on an event; the model cannot skip it",
+        "A hook is loaded into the context window earlier, so it has higher priority",
+        "A hook only applies to subagents, while CLAUDE.md applies to the main agent"
+      ],
+      "answer": 1,
+      "explanation": "A CLAUDE.md rule is advisory — followed only when the model attends to it. A hook is executed by the harness on the event, outside the model's control. It isn't about phrasing, load order, or subagents.",
+      "citations": ["https://code.claude.com/docs/en/hooks"]
+    },
+    {
+      "id": "adv-05",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "02-hooks-deep.md",
+      "question": "You want to reject any edit that writes a secret to a file before it happens. Which event and signal?",
+      "options": [
+        "PostToolUse on Edit|Write, then exit 2 to roll the edit back",
+        "PreToolUse on Edit|Write, then exit 2 to deny the call",
+        "Stop, then exit 2 so the agent re-reviews the file it wrote",
+        "SessionStart, then inject a reminder not to write secrets"
+      ],
+      "answer": 1,
+      "explanation": "Only pre-events can block, and exit 2 is the block signal. PostToolUse fires after the write (too late to prevent it), Stop is end-of-turn, and a SessionStart reminder is advisory, not enforcement.",
+      "citations": ["https://code.claude.com/docs/en/hooks"]
+    },
+    {
+      "id": "adv-06",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "02-hooks-deep.md",
+      "question": "A security hook works in Claude Code. Ported to Cursor unchanged, why might it silently stop protecting you?",
+      "options": [
+        "Cursor runs hooks on a slower interval, so fast actions complete before the hook fires",
+        "Cursor hooks fail open by default — a crash or timeout lets the action through unless failClosed is set",
+        "Cursor ignores exit codes entirely and only reads stdout JSON, which the script doesn't emit",
+        "Cursor disables all hooks during agent mode unless the repo is explicitly trusted"
+      ],
+      "answer": 1,
+      "explanation": "Cursor's documented default is fail-open: a crashed/timed-out hook allows the action unless you set failClosed: true. Claude Code and Codex treat exit 2 as a hard block. The other options describe behaviors that don't exist.",
+      "citations": ["https://cursor.com/docs/hooks"]
     }
   ]
 }

@@ -34,6 +34,7 @@ By the end of this phase you can:
 | # | Lesson | The one idea |
 |---|---|---|
 | 1 | [Anatomy of a Skill](01-anatomy-of-a-skill.md) | A skill is a `SKILL.md` directory; name+description load always, the rest on demand; portable across agents. |
+| 2 | [Hooks, deep](02-hooks-deep.md) | A hook is a deterministic command the harness runs on an event; exit 2 blocks. Prose → enforced. |
 
 ---
 
@@ -64,6 +65,8 @@ _The Advanced tier in compact form. Grows as the phase fills in._
 | **Skill** | "a custom command" | A `SKILL.md` directory the agent auto-discovers by `description` and loads progressively [^1]. |
 | **Progressive disclosure** | "lazy loading" | Only `name`+`description` stay in context; body loads on trigger, bundled files only when used [^2]. |
 | **`description`** | "a label" | The single load-bearing field — it's *all* the agent sees when deciding whether to reach for the skill [^2]. |
+| **Hook** | "a script" | A deterministic command the *harness* runs on a lifecycle event; **exit 2 blocks** [^3]. |
+| **Fail-open** | "it errored, so we're fine" | A guardrail that *allows* the action when it crashes — Cursor hooks' dangerous default [^4]. |
 
 ### Agent translation (same idea, different homes)
 
@@ -81,3 +84,5 @@ _The Advanced tier in compact form. Grows as the phase fills in._
 
 [^1]: [Agent Skills — Specification](https://agentskills.io/specification) — agentskills.io (the open standard)
 [^2]: [Agent Skills — Overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) — Anthropic
+[^3]: [Hooks reference](https://code.claude.com/docs/en/hooks) — Anthropic (Claude Code docs)
+[^4]: [Cursor hooks](https://cursor.com/docs/hooks) — Cursor (fail-open by default)

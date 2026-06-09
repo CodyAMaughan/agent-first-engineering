@@ -103,7 +103,7 @@ For more real, open-source skills to learn from, Anthropic maintains a public re
 Take a procedure you re-explain to your agent often (how you run tests, how you cut a release). Write a `SKILL.md`: `name` matching the directory, a **keyword-rich `description`** naming the trigger phrases, a body **under ~500 lines**, and push any long reference into a `references/` file. Then prove Level ① works: start a fresh session, describe the task in your *own* words (don't name the skill), and confirm the agent auto-invokes it. If it doesn't fire, your description — not your body — is the bug.
 
 ---
-← [Phase 7 home](index.md) · → [Check your understanding](quiz.json)
+← [Phase 7 home](index.md) · next → [Lesson 7.2 — Hooks, deep](02-hooks-deep.md)
 
 [^1]: [Agent Skills — Specification](https://agentskills.io/specification) — agentskills.io (the open standard)
 [^2]: [Agent Skills — Overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) — Anthropic
