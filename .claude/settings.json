@@ -6,6 +6,12 @@
     ],
     "Stop": [
       { "hooks": [{ "type": "command", "command": "sh .agent/hooks/test-gate.sh" }] }
+    ],
+    "PreCompact": [
+      { "hooks": [{ "type": "command", "command": "sh .agent/hooks/capture-learnings.sh" }] }
+    ],
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "sh .agent/hooks/load-memory.sh" }] }
     ]
   }
 }

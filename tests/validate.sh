@@ -4,7 +4,9 @@
 # Exits non-zero on any failure. Deterministic, no deps beyond POSIX sh + grep.
 
 set -u
-ROOT="${1:-.}"
+# Resolve to an absolute path: the capture-learnings check `cd`s into a temp dir, so a
+# relative ROOT (the default ".") would make "$ROOT/.agent/hooks/..." unreachable there.
+ROOT=$(cd "${1:-.}" 2>/dev/null && pwd) || { echo "validate.sh: no such directory: ${1:-.}"; exit 1; }
 fail=0
 ok()   { printf '  ok   %s\n' "$1"; }
 bad()  { printf '  FAIL %s\n' "$1"; fail=1; }

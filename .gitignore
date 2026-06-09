@@ -7,3 +7,7 @@ site/
 # Python caches
 __pycache__/
 *.pyc
+
+# Agent memory loop — transient buffers (the wiki .md files are committed)
+.agent/memory/_staging.md
+.agent/memory/session-log.md
