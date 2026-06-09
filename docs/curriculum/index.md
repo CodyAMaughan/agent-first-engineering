@@ -91,6 +91,7 @@ becomes automation of a process you understand.
 ### Phase 7 — [Advanced Patterns: encode & automate](07-advanced-patterns/index.md) *(Advanced tier)*
 1. [Anatomy of a Skill](07-advanced-patterns/01-anatomy-of-a-skill.md) — name+description load always; the rest on demand.
 2. [Hooks, deep](07-advanced-patterns/02-hooks-deep.md) — deterministic enforcement on lifecycle events; exit 2 blocks.
+3. [MCP, deep](07-advanced-patterns/03-mcp-deep.md) — one open protocol; servers expose Tools, Resources, Prompts.
 
 ---
 

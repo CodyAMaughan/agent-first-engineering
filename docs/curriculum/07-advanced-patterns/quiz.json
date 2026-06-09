@@ -97,6 +97,54 @@
       "answer": 1,
       "explanation": "Cursor's documented default is fail-open: a crashed/timed-out hook allows the action unless you set failClosed: true. Claude Code and Codex treat exit 2 as a hard block. The other options describe behaviors that don't exist.",
       "citations": ["https://cursor.com/docs/hooks"]
+    },
+    {
+      "id": "adv-07",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "03-mcp-deep.md",
+      "question": "What problem does MCP primarily solve?",
+      "options": [
+        "It replaces REST and GraphQL APIs with a faster binary wire format",
+        "It gives any MCP-speaking agent one standard way to reach your tools and data",
+        "It lets a model run with a larger context window by offloading tokens to a server",
+        "It encrypts all traffic between the agent and the language model provider"
+      ],
+      "answer": 1,
+      "explanation": "MCP is one open protocol that replaces N×M custom integrations — build a server once, any host connects. It doesn't replace APIs (servers usually wrap them), isn't about context size, and isn't a transport-encryption scheme.",
+      "citations": ["https://modelcontextprotocol.io/docs/getting-started/intro"]
+    },
+    {
+      "id": "adv-08",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "03-mcp-deep.md",
+      "question": "An MCP server exposes Tools, Resources, and Prompts. Which is controlled by the model?",
+      "options": [
+        "Resources — the model reads whichever data it judges relevant",
+        "Tools — the model decides when to invoke them to take actions",
+        "Prompts — the model selects and fills in the templates itself",
+        "All three are model-controlled once the server is connected"
+      ],
+      "answer": 1,
+      "explanation": "Only Tools are model-controlled (the model invokes them to act). Resources are application-controlled and Prompts are user-controlled — assuming all three are model-driven is the common mistake.",
+      "citations": ["https://modelcontextprotocol.io/docs/learn/server-concepts"]
+    },
+    {
+      "id": "adv-09",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "03-mcp-deep.md",
+      "question": "Why is connecting an MCP server that fetches external web content a security concern?",
+      "options": [
+        "MCP traffic is unencrypted, so the fetched content can be read in transit",
+        "Fetched content is untrusted and can carry instructions that prompt-inject the agent",
+        "The MCP protocol automatically grants the server write access to your filesystem",
+        "Remote servers bypass the host's permission model entirely by design"
+      ],
+      "answer": 1,
+      "explanation": "A server that pulls external content can deliver attacker-controlled text the agent then treats as instructions (indirect prompt injection); the spec also flags tool descriptions as untrusted. The distractors misstate MCP's transport, permission, and filesystem behavior.",
+      "citations": ["https://code.claude.com/docs/en/mcp"]
     }
   ]
 }

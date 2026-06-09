@@ -101,7 +101,7 @@ That's the lesson in miniature: a forgettable prose rule became a tripwire — l
 Take a rule you keep re-typing to your agent ("run the linter after editing", "don't touch `main`"). Decide the **event** (a `Pre` event to *block*, a `Post` event to *react*), write a small script that reads the stdin JSON and exits `2` to stop, and wire it as a hook. Test that it actually fires. Then ask the real question: should it *also* be a git/CI gate, so a human — or a different agent — can't bypass it?
 
 ---
-← [Lesson 7.1](01-anatomy-of-a-skill.md) · [Phase 7 home](index.md) · → [Check your understanding](quiz.json)
+← [Lesson 7.1](01-anatomy-of-a-skill.md) · [Phase 7 home](index.md) · next → [Lesson 7.3 — MCP, deep](03-mcp-deep.md)
 
 [^1]: [Hooks reference](https://code.claude.com/docs/en/hooks) — Anthropic (Claude Code docs)
 [^2]: [Codex hooks](https://developers.openai.com/codex/hooks) — OpenAI

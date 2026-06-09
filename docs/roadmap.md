@@ -46,7 +46,7 @@ The seven we'd write first, because they're mature *and* highest-leverage for an
    [Claude Code hooks](https://code.claude.com/docs/en/hooks) ·
    [Codex hooks](https://developers.openai.com/codex/hooks) ·
    [Cursor hooks](https://cursor.com/docs/hooks)
-3. **MCP, deep** 🟢 — designing Model Context Protocol servers to expose your codebase, data, and
+3. **MCP, deep** 🟢 — ✅ **shipped → [Lesson 7.3](curriculum/07-advanced-patterns/03-mcp-deep.md)**. Designing Model Context Protocol servers to expose your codebase, data, and
    tools to any agent over one open standard. *The portable way to give agents new capabilities.*
    [MCP specification](https://modelcontextprotocol.io/specification/2025-11-25) ·
    [modelcontextprotocol/modelcontextprotocol](https://github.com/modelcontextprotocol/modelcontextprotocol)
