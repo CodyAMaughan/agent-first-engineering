@@ -1,4 +1,4 @@
-# Lesson 7.8 — Plugins & marketplaces
+# Lesson 8.3 — Plugins & marketplaces
 
 > _A plugin is a convention pack; a marketplace is the tap your whole team installs from._
 
@@ -87,7 +87,7 @@ Takeaway: the **skills inside a plugin stay portable** (open standard) — packa
 Package this repo's `.claude/` into a plugin: `mkdir -p afe-plugin/.claude-plugin`, write `plugin.json` (`{"name":"agent-first-engineering","version":"1.0.0"}`), copy `skills/` and `agents/`, move the `settings.json` `hooks` object into `hooks/hooks.json` (rewriting paths to `${CLAUDE_PLUGIN_ROOT}/hooks/…`), and test with `claude --plugin-dir ./afe-plugin`. Then decide: which conventions belong in a **team** plugin, and which are personal and should stay in your `~/.claude/`?
 
 ---
-← [Lesson 7.7](07-computer-use-and-browser-agents.md) · [Phase 7 home](index.md) · → [Check your understanding](quiz.md)
+← [Lesson 8.2](02-computer-use-and-browser-agents.md) · [Phase 8 home](index.md) · → [Check your understanding](quiz.md)
 
 [^1]: [Create plugins](https://code.claude.com/docs/en/plugins) — Anthropic (Claude Code docs)
 [^2]: [Discover and install plugins](https://code.claude.com/docs/en/discover-plugins) — Anthropic (Claude Code docs)

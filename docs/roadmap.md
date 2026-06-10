@@ -58,10 +58,10 @@ The seven we'd write first, because they're mature *and* highest-leverage for an
    prompt-injection defense for agents that read untrusted input. *Non-negotiable before autonomy.*
    [Claude Code sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing) ·
    [OWASP Top 10 for LLM/Agentic Apps](https://genai.owasp.org/)
-6. **Prompt & context caching** 🟢 — ✅ **shipped → [Lesson 7.6](curriculum/07-advanced-patterns/06-prompt-and-context-caching.md)**. Cache stable prefixes (system prompt, `AGENTS.md`, big files) to
+6. **Prompt & context caching** 🟢 — ✅ **shipped → [Lesson 8.1](curriculum/08-production-patterns/01-prompt-and-context-caching.md)**. Cache stable prefixes (system prompt, `AGENTS.md`, big files) to
    cut cost and latency on long-running agents. *The cheapest token optimization that exists.*
    [Anthropic prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)
-7. **Computer use & browser/UI agents** 🟢 — ✅ **shipped → [Lesson 7.7](curriculum/07-advanced-patterns/07-computer-use-and-browser-agents.md)**. Vision + control so agents can test UIs, fill forms, and
+7. **Computer use & browser/UI agents** 🟢 — ✅ **shipped → [Lesson 8.2](curriculum/08-production-patterns/02-computer-use-and-browser-agents.md)**. Vision + control so agents can test UIs, fill forms, and
    self-verify visually. *Closes the loop for work that has no unit-test oracle.*
    [Anthropic advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use) ·
    [Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview)
@@ -73,7 +73,7 @@ The seven we'd write first, because they're mature *and* highest-leverage for an
 ### Theme 1 · Skills, Hooks & Plugins (extensibility)
 | Topic | What & why | Maturity | Source |
 |---|---|---|---|
-| Plugins & marketplaces ✅ [7.8](curriculum/07-advanced-patterns/08-plugins-and-marketplaces.md) | Bundle skills + commands + hooks + agents to share across a team/org | 🟢 | [Agent Skills spec](https://agentskills.io/specification) · [Claude agent skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) |
+| Plugins & marketplaces ✅ [8.3](curriculum/08-production-patterns/03-plugins-and-marketplaces.md) | Bundle skills + commands + hooks + agents to share across a team/org | 🟢 | [Agent Skills spec](https://agentskills.io/specification) · [Claude agent skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) |
 | Skill evals | Measure whether a skill triggers + performs; tune the description | 🟡 | [anthropics/skills](https://github.com/anthropics/skills) |
 
 ### Theme 2 · Advanced agent features

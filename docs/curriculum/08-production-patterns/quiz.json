@@ -1,0 +1,168 @@
+{
+  "phase": "08-production-patterns",
+  "title": "Production Patterns: optimize, extend & ship",
+  "questions": [
+    {
+      "id": "pp-01",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-prompt-and-context-caching.md",
+      "question": "What does prompt caching actually store and reuse?",
+      "options": [
+        "The model's previous answers, so it can repeat them for free",
+        "The processed input prefix, so it doesn't have to be reprocessed",
+        "A compressed copy of the whole conversation for later search",
+        "Your API key and settings, persisted between sessions"
+      ],
+      "answer": 1,
+      "explanation": "Caching stores processed input (the prefix), not outputs — so identical-prefix requests skip recomputation. It doesn't store answers, search history, or credentials, and it never changes the model's output.",
+      "citations": [
+        "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+      ]
+    },
+    {
+      "id": "pp-02",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "01-prompt-and-context-caching.md",
+      "question": "Which choice keeps the cache working across turns?",
+      "options": [
+        "Put the current timestamp in the system prompt so the model knows the time",
+        "Reorder the tool definitions each request to surface the relevant one",
+        "Freeze the system prompt and tools; append the new question at the end",
+        "Switch to a larger model partway through for the harder questions"
+      ],
+      "answer": 2,
+      "explanation": "The cache is an exact prefix match, so stable content must stay byte-identical and volatile content goes last. Interpolating a timestamp, reordering tools, or switching models all invalidate the prefix.",
+      "citations": [
+        "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+      ]
+    },
+    {
+      "id": "pp-03",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "01-prompt-and-context-caching.md",
+      "question": "Cache writes cost ~1.25× input and reads ~0.1×. When does caching a prefix LOSE money?",
+      "options": [
+        "When the prefix is read back many times within its TTL",
+        "When the prefix is written once and never read again before it expires",
+        "Whenever the prompt exceeds the model's minimum cacheable length",
+        "Whenever you use the default 5-minute TTL instead of the 1-hour one"
+      ],
+      "answer": 1,
+      "explanation": "A write costs more than base input, so an entry that's written but never read back is pure overhead. Repeated reads are exactly when caching pays off; exceeding the minimum length and the default TTL are not what cause a loss.",
+      "citations": [
+        "https://platform.claude.com/docs/en/build-with-claude/prompt-caching"
+      ]
+    },
+    {
+      "id": "pp-04",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "02-computer-use-and-browser-agents.md",
+      "question": "With Anthropic's computer-use tool, who actually executes the click and type actions?",
+      "options": [
+        "The model executes them directly on your screen",
+        "Your application runs each action on a VM and returns a screenshot",
+        "Anthropic's servers control your machine remotely",
+        "The browser extension runs them with no application code"
+      ],
+      "answer": 1,
+      "explanation": "The tool is schema-less and the model only requests actions; your harness executes them on a VM/container and feeds back a screenshot. The model has eyes; your code is its hands.",
+      "citations": [
+        "https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool"
+      ]
+    },
+    {
+      "id": "pp-05",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "02-computer-use-and-browser-agents.md",
+      "question": "For engineers, what is the highest-value use of a browser/UI agent?",
+      "options": [
+        "Filling out long web forms automatically",
+        "Scraping data from pages into a spreadsheet",
+        "Visual self-verification of UI that has no unit-test oracle",
+        "Replacing all unit tests with screenshots"
+      ],
+      "answer": 2,
+      "explanation": "The killer use is closing the loop where correctness is 'does the rendered UI look/behave right' — a browser becomes the oracle (Phase 3). Form-filling and scraping are minor; screenshots complement, not replace, unit tests.",
+      "citations": [
+        "https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"
+      ]
+    },
+    {
+      "id": "pp-06",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "02-computer-use-and-browser-agents.md",
+      "question": "A browser agent logged into your accounts, reading arbitrary pages, with network access — why is that dangerous?",
+      "options": [
+        "Screenshots are large and slow the model down",
+        "Browsers cannot be sandboxed, so there is no mitigation",
+        "The accessibility tree leaks DOM contents to the model",
+        "It has all three legs of the lethal trifecta, so injection can exfiltrate data"
+      ],
+      "answer": 3,
+      "explanation": "Private-data access + untrusted page content + network egress = the lethal trifecta; an indirect injection can then steal data. Browsers CAN be sandboxed (the mitigation), and the danger isn't latency or the a11y tree.",
+      "citations": [
+        "https://claude.com/blog/claude-for-chrome"
+      ]
+    },
+    {
+      "id": "pp-07",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "03-plugins-and-marketplaces.md",
+      "question": "What is a Claude Code plugin?",
+      "options": [
+        "A single skill packaged with a manifest file",
+        "One installable unit bundling skills, commands, hooks, subagents, and MCP servers",
+        "A marketplace catalog of other people's tools",
+        "A settings file that configures your editor theme"
+      ],
+      "answer": 1,
+      "explanation": "A plugin is a container for many extension types, not one thing — a one-skill plugin is the minimal case. It isn't a marketplace (that's the catalog) or a theme file.",
+      "citations": [
+        "https://code.claude.com/docs/en/plugins-reference"
+      ]
+    },
+    {
+      "id": "pp-08",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "03-plugins-and-marketplaces.md",
+      "question": "In a plugin's directory, where do skills/, hooks/, and agents/ go?",
+      "options": [
+        "At the plugin root, as top-level directories",
+        "Inside the .claude-plugin/ directory, next to plugin.json",
+        "In a single bundled .zip the marketplace unpacks",
+        "In your project's .claude/ directory, referenced by path"
+      ],
+      "answer": 0,
+      "explanation": "Only plugin.json lives in .claude-plugin/; every component directory sits at the plugin root. Putting them inside .claude-plugin/ is the single most common documented mistake.",
+      "citations": [
+        "https://code.claude.com/docs/en/plugins"
+      ]
+    },
+    {
+      "id": "pp-09",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "03-plugins-and-marketplaces.md",
+      "question": "Why should you treat adding a marketplace like granting shell access?",
+      "options": [
+        "Marketplaces charge your account a fee per plugin install",
+        "Adding a marketplace disables your other installed plugins",
+        "Plugins can ship hooks and MCP servers that run arbitrary code at your privileges",
+        "Marketplaces require you to upload your API key to the catalog"
+      ],
+      "answer": 2,
+      "explanation": "Plugins are highly trusted: their hooks/MCP servers execute arbitrary code on your machine with your privileges, inside the agent's trusted context. So add only trusted sources and pin to a commit/version — the other options are fabricated behaviors.",
+      "citations": [
+        "https://code.claude.com/docs/en/discover-plugins"
+      ]
+    }
+  ]
+}

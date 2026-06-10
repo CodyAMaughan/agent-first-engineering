@@ -16,7 +16,9 @@
       ],
       "answer": 1,
       "explanation": "Progressive disclosure: only name + description (~100 tokens/skill) load at startup. The body loads when the description matches a task, and bundled files load only when used.",
-      "citations": ["https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"]
+      "citations": [
+        "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
+      ]
     },
     {
       "id": "adv-02",
@@ -32,7 +34,9 @@
       ],
       "answer": 0,
       "explanation": "The agent selects a skill from name+description alone — it never sees the body at selection time. A weak description means it never fires; a bloated body is a separate anti-pattern. Sharpen the description and push detail into on-demand references/.",
-      "citations": ["https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"]
+      "citations": [
+        "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview"
+      ]
     },
     {
       "id": "adv-03",
@@ -48,7 +52,9 @@
       ],
       "answer": 1,
       "explanation": "Level-3 resources load only when accessed, and a script's code is executed via bash — only its output costs tokens, not its source. The distractors invent embedding storage, auto-truncation, and an automatic subagent that don't exist.",
-      "citations": ["https://agentskills.io/specification"]
+      "citations": [
+        "https://agentskills.io/specification"
+      ]
     },
     {
       "id": "adv-04",
@@ -64,7 +70,9 @@
       ],
       "answer": 1,
       "explanation": "A CLAUDE.md rule is advisory — followed only when the model attends to it. A hook is executed by the harness on the event, outside the model's control. It isn't about phrasing, load order, or subagents.",
-      "citations": ["https://code.claude.com/docs/en/hooks"]
+      "citations": [
+        "https://code.claude.com/docs/en/hooks"
+      ]
     },
     {
       "id": "adv-05",
@@ -80,7 +88,9 @@
       ],
       "answer": 1,
       "explanation": "Only pre-events can block, and exit 2 is the block signal. PostToolUse fires after the write (too late to prevent it), Stop is end-of-turn, and a SessionStart reminder is advisory, not enforcement.",
-      "citations": ["https://code.claude.com/docs/en/hooks"]
+      "citations": [
+        "https://code.claude.com/docs/en/hooks"
+      ]
     },
     {
       "id": "adv-06",
@@ -96,7 +106,9 @@
       ],
       "answer": 1,
       "explanation": "Cursor's documented default is fail-open: a crashed/timed-out hook allows the action unless you set failClosed: true. Claude Code and Codex treat exit 2 as a hard block. The other options describe behaviors that don't exist.",
-      "citations": ["https://cursor.com/docs/hooks"]
+      "citations": [
+        "https://cursor.com/docs/hooks"
+      ]
     },
     {
       "id": "adv-07",
@@ -112,7 +124,9 @@
       ],
       "answer": 1,
       "explanation": "MCP is one open protocol that replaces N×M custom integrations — build a server once, any host connects. It doesn't replace APIs (servers usually wrap them), isn't about context size, and isn't a transport-encryption scheme.",
-      "citations": ["https://modelcontextprotocol.io/docs/getting-started/intro"]
+      "citations": [
+        "https://modelcontextprotocol.io/docs/getting-started/intro"
+      ]
     },
     {
       "id": "adv-08",
@@ -128,7 +142,9 @@
       ],
       "answer": 1,
       "explanation": "Only Tools are model-controlled (the model invokes them to act). Resources are application-controlled and Prompts are user-controlled — assuming all three are model-driven is the common mistake.",
-      "citations": ["https://modelcontextprotocol.io/docs/learn/server-concepts"]
+      "citations": [
+        "https://modelcontextprotocol.io/docs/learn/server-concepts"
+      ]
     },
     {
       "id": "adv-09",
@@ -144,7 +160,9 @@
       ],
       "answer": 1,
       "explanation": "A server that pulls external content can deliver attacker-controlled text the agent then treats as instructions (indirect prompt injection); the spec also flags tool descriptions as untrusted. The distractors misstate MCP's transport, permission, and filesystem behavior.",
-      "citations": ["https://code.claude.com/docs/en/mcp"]
+      "citations": [
+        "https://code.claude.com/docs/en/mcp"
+      ]
     },
     {
       "id": "adv-10",
@@ -160,7 +178,9 @@
       ],
       "answer": 1,
       "explanation": "The lethal trifecta is private-data access + untrusted content + an exfiltration channel; when all three coexist, injection can steal data. The other options mix up unrelated concepts.",
-      "citations": ["https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"]
+      "citations": [
+        "https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/"
+      ]
     },
     {
       "id": "adv-11",
@@ -176,7 +196,9 @@
       ],
       "answer": 1,
       "explanation": "The model can't reliably privilege instructions by where they came from, so your rule and the injected payload compete on equal footing. It's a request, not an enforced boundary.",
-      "citations": ["https://genai.owasp.org/llmrisk/llm01-prompt-injection/"]
+      "citations": [
+        "https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+      ]
     },
     {
       "id": "adv-12",
@@ -192,7 +214,9 @@
       ],
       "answer": 1,
       "explanation": "Removing the exfiltration leg (network egress) is an enforced control that holds even if the agent is fully injected. A system prompt is advisory, a classifier is probabilistic and beatable by retry, and a bigger model still can't rank trust by origin.",
-      "citations": ["https://www.anthropic.com/engineering/claude-code-sandboxing"]
+      "citations": [
+        "https://www.anthropic.com/engineering/claude-code-sandboxing"
+      ]
     },
     {
       "id": "adv-13",
@@ -208,7 +232,9 @@
       ],
       "answer": 0,
       "explanation": "The body becomes the subagent's system prompt; it receives only that (plus basic environment details), not the full default system prompt. It isn't a picker label, a history, or ignored docs.",
-      "citations": ["https://code.claude.com/docs/en/sub-agents"]
+      "citations": [
+        "https://code.claude.com/docs/en/sub-agents"
+      ]
     },
     {
       "id": "adv-14",
@@ -224,7 +250,9 @@
       ],
       "answer": 2,
       "explanation": "Least-privilege: a reviewer needs read + inspect, never write/push — that both improves focus and shrinks the blast radius. Granting write/all tools invites exactly the actions a reviewer shouldn't take; granting none leaves it unable to read the code.",
-      "citations": ["https://code.claude.com/docs/en/sub-agents"]
+      "citations": [
+        "https://code.claude.com/docs/en/sub-agents"
+      ]
     },
     {
       "id": "adv-15",
@@ -240,151 +268,9 @@
       ],
       "answer": 3,
       "explanation": "The gain comes from parallel specialized subagents with separation of concerns (distinct contexts, tools, exploration paths). They do NOT share one context, the lead/worker models were Opus/Sonnet (not a bigger model only in one arm), and nothing was skipped.",
-      "citations": ["https://www.anthropic.com/engineering/multi-agent-research-system"]
-    },
-    {
-      "id": "adv-16",
-      "difficulty": "easy",
-      "type": "conceptual",
-      "lesson": "06-prompt-and-context-caching.md",
-      "question": "What does prompt caching actually store and reuse?",
-      "options": [
-        "The model's previous answers, so it can repeat them for free",
-        "The processed input prefix, so it doesn't have to be reprocessed",
-        "A compressed copy of the whole conversation for later search",
-        "Your API key and settings, persisted between sessions"
-      ],
-      "answer": 1,
-      "explanation": "Caching stores processed input (the prefix), not outputs — so identical-prefix requests skip recomputation. It doesn't store answers, search history, or credentials, and it never changes the model's output.",
-      "citations": ["https://platform.claude.com/docs/en/build-with-claude/prompt-caching"]
-    },
-    {
-      "id": "adv-17",
-      "difficulty": "medium",
-      "type": "practical",
-      "lesson": "06-prompt-and-context-caching.md",
-      "question": "Which choice keeps the cache working across turns?",
-      "options": [
-        "Put the current timestamp in the system prompt so the model knows the time",
-        "Reorder the tool definitions each request to surface the relevant one",
-        "Freeze the system prompt and tools; append the new question at the end",
-        "Switch to a larger model partway through for the harder questions"
-      ],
-      "answer": 2,
-      "explanation": "The cache is an exact prefix match, so stable content must stay byte-identical and volatile content goes last. Interpolating a timestamp, reordering tools, or switching models all invalidate the prefix.",
-      "citations": ["https://platform.claude.com/docs/en/build-with-claude/prompt-caching"]
-    },
-    {
-      "id": "adv-18",
-      "difficulty": "hard",
-      "type": "conceptual",
-      "lesson": "06-prompt-and-context-caching.md",
-      "question": "Cache writes cost ~1.25× input and reads ~0.1×. When does caching a prefix LOSE money?",
-      "options": [
-        "When the prefix is read back many times within its TTL",
-        "When the prefix is written once and never read again before it expires",
-        "Whenever the prompt exceeds the model's minimum cacheable length",
-        "Whenever you use the default 5-minute TTL instead of the 1-hour one"
-      ],
-      "answer": 1,
-      "explanation": "A write costs more than base input, so an entry that's written but never read back is pure overhead. Repeated reads are exactly when caching pays off; exceeding the minimum length and the default TTL are not what cause a loss.",
-      "citations": ["https://platform.claude.com/docs/en/build-with-claude/prompt-caching"]
-    },
-    {
-      "id": "adv-19",
-      "difficulty": "easy",
-      "type": "conceptual",
-      "lesson": "07-computer-use-and-browser-agents.md",
-      "question": "With Anthropic's computer-use tool, who actually executes the click and type actions?",
-      "options": [
-        "The model executes them directly on your screen",
-        "Your application runs each action on a VM and returns a screenshot",
-        "Anthropic's servers control your machine remotely",
-        "The browser extension runs them with no application code"
-      ],
-      "answer": 1,
-      "explanation": "The tool is schema-less and the model only requests actions; your harness executes them on a VM/container and feeds back a screenshot. The model has eyes; your code is its hands.",
-      "citations": ["https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool"]
-    },
-    {
-      "id": "adv-20",
-      "difficulty": "medium",
-      "type": "conceptual",
-      "lesson": "07-computer-use-and-browser-agents.md",
-      "question": "For engineers, what is the highest-value use of a browser/UI agent?",
-      "options": [
-        "Filling out long web forms automatically",
-        "Scraping data from pages into a spreadsheet",
-        "Visual self-verification of UI that has no unit-test oracle",
-        "Replacing all unit tests with screenshots"
-      ],
-      "answer": 2,
-      "explanation": "The killer use is closing the loop where correctness is 'does the rendered UI look/behave right' — a browser becomes the oracle (Phase 3). Form-filling and scraping are minor; screenshots complement, not replace, unit tests.",
-      "citations": ["https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"]
-    },
-    {
-      "id": "adv-21",
-      "difficulty": "hard",
-      "type": "conceptual",
-      "lesson": "07-computer-use-and-browser-agents.md",
-      "question": "A browser agent logged into your accounts, reading arbitrary pages, with network access — why is that dangerous?",
-      "options": [
-        "Screenshots are large and slow the model down",
-        "Browsers cannot be sandboxed, so there is no mitigation",
-        "The accessibility tree leaks DOM contents to the model",
-        "It has all three legs of the lethal trifecta, so injection can exfiltrate data"
-      ],
-      "answer": 3,
-      "explanation": "Private-data access + untrusted page content + network egress = the lethal trifecta; an indirect injection can then steal data. Browsers CAN be sandboxed (the mitigation), and the danger isn't latency or the a11y tree.",
-      "citations": ["https://claude.com/blog/claude-for-chrome"]
-    },
-    {
-      "id": "adv-22",
-      "difficulty": "easy",
-      "type": "conceptual",
-      "lesson": "08-plugins-and-marketplaces.md",
-      "question": "What is a Claude Code plugin?",
-      "options": [
-        "A single skill packaged with a manifest file",
-        "One installable unit bundling skills, commands, hooks, subagents, and MCP servers",
-        "A marketplace catalog of other people's tools",
-        "A settings file that configures your editor theme"
-      ],
-      "answer": 1,
-      "explanation": "A plugin is a container for many extension types, not one thing — a one-skill plugin is the minimal case. It isn't a marketplace (that's the catalog) or a theme file.",
-      "citations": ["https://code.claude.com/docs/en/plugins-reference"]
-    },
-    {
-      "id": "adv-23",
-      "difficulty": "medium",
-      "type": "practical",
-      "lesson": "08-plugins-and-marketplaces.md",
-      "question": "In a plugin's directory, where do skills/, hooks/, and agents/ go?",
-      "options": [
-        "At the plugin root, as top-level directories",
-        "Inside the .claude-plugin/ directory, next to plugin.json",
-        "In a single bundled .zip the marketplace unpacks",
-        "In your project's .claude/ directory, referenced by path"
-      ],
-      "answer": 0,
-      "explanation": "Only plugin.json lives in .claude-plugin/; every component directory sits at the plugin root. Putting them inside .claude-plugin/ is the single most common documented mistake.",
-      "citations": ["https://code.claude.com/docs/en/plugins"]
-    },
-    {
-      "id": "adv-24",
-      "difficulty": "hard",
-      "type": "conceptual",
-      "lesson": "08-plugins-and-marketplaces.md",
-      "question": "Why should you treat adding a marketplace like granting shell access?",
-      "options": [
-        "Marketplaces charge your account a fee per plugin install",
-        "Adding a marketplace disables your other installed plugins",
-        "Plugins can ship hooks and MCP servers that run arbitrary code at your privileges",
-        "Marketplaces require you to upload your API key to the catalog"
-      ],
-      "answer": 2,
-      "explanation": "Plugins are highly trusted: their hooks/MCP servers execute arbitrary code on your machine with your privileges, inside the agent's trusted context. So add only trusted sources and pin to a commit/version — the other options are fabricated behaviors.",
-      "citations": ["https://code.claude.com/docs/en/discover-plugins"]
+      "citations": [
+        "https://www.anthropic.com/engineering/multi-agent-research-system"
+      ]
     }
   ]
 }

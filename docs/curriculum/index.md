@@ -1,7 +1,7 @@
 # Curriculum — Agent-First Engineering
 
-From "vibe coding" to **systems engineer for agents**. Six foundations phases plus an **Advanced
-Patterns** tier, one competency each, taught one concept at a time with diagrams, worked examples, a
+From "vibe coding" to **systems engineer for agents**. Six foundations phases plus a two-phase
+**Advanced tier**, one competency each, taught one concept at a time with diagrams, worked examples, a
 hands-on exercise per lesson, and a hard quiz. Agent-agnostic (Claude Code / Codex / Cursor), built on
 open standards.
 
@@ -21,7 +21,8 @@ flowchart LR
     P4 --> P5[P5 · Spec-Driven Dev]
     P5 --> P6[P6 · Orchestration & Harness]
     P6 --> S[systems engineer for agents]
-    S --> P7["P7 · Advanced Patterns<br/>(encode & automate)"]
+    S --> P7["P7 · Advanced Patterns<br/>(building blocks)"]
+    P7 --> P8["P8 · Production Patterns<br/>(optimize · extend · ship)"]
 ```
 
 | # | Phase | You'll be able to… | Scaffolder artifact (lockstep) |
@@ -32,7 +33,8 @@ flowchart LR
 | 4 | [Session & Memory](04-session-and-memory/index.md) | Course-correct early; author and prune minimal `AGENTS.md`/skills; promote rules to hooks. | `AGENTS.md` + `.agents/skills/` |
 | 5 | [Spec-Driven Development](05-spec-driven-development/index.md) | Turn a vague idea into an executable spec; the spec is the source of truth. | Spec Kit hand-off |
 | 6 | [Orchestration & Harness](06-orchestration-and-harness/index.md) | Small focused agents, adversarial review, worktrees; design the environment, not the edit. | full guardrail + CI + adapters |
-| 7 | [Advanced Patterns](07-advanced-patterns/index.md) **(Advanced)** | Encode the disciplines into machinery: skills, hooks, MCP, security. | the internals of what the scaffolder emits |
+| 7 | [Advanced Patterns](07-advanced-patterns/index.md) **(Advanced)** | The building blocks: skills, hooks, MCP, security, subagents. | the internals of what the scaffolder emits |
+| 8 | [Production Patterns](08-production-patterns/index.md) **(Advanced)** | Operationalize them: caching (cost), computer use (capability), plugins (distribution). | — |
 
 ★★★ = load-bearing. If you internalize only two phases, make them **2 and 3** — context engineering
 and verification carry the most weight across every researched source.
@@ -94,11 +96,13 @@ becomes automation of a process you understand.
 3. [MCP, deep](07-advanced-patterns/03-mcp-deep.md) — one open protocol; servers expose Tools, Resources, Prompts.
 4. [Security & injection](07-advanced-patterns/04-security-and-injection.md) — enforce safety in the harness, not the prompt.
 5. [Anatomy of a Subagent](07-advanced-patterns/05-anatomy-of-a-subagent.md) — a focused specialist: own context, own tools, delegated by description.
-6. [Prompt & context caching](07-advanced-patterns/06-prompt-and-context-caching.md) — cache the stable prefix; reads cost ~0.1×.
-7. [Computer use & browser agents](07-advanced-patterns/07-computer-use-and-browser-agents.md) — eyes + hands; a browser as a visual oracle.
-8. [Plugins & marketplaces](07-advanced-patterns/08-plugins-and-marketplaces.md) — bundle skills+hooks+subagents into one shareable unit.
+
+### Phase 8 — [Production Patterns: optimize, extend & ship](08-production-patterns/index.md) *(Advanced tier)*
+1. [Prompt & context caching](08-production-patterns/01-prompt-and-context-caching.md) — cache the stable prefix; reads cost ~0.1×.
+2. [Computer use & browser agents](08-production-patterns/02-computer-use-and-browser-agents.md) — eyes + hands; a browser as a visual oracle.
+3. [Plugins & marketplaces](08-production-patterns/03-plugins-and-marketplaces.md) — bundle skills+hooks+subagents into one shareable unit.
 
 ---
 
-**What's next?** The **Advanced Patterns** tier (Phase 7) is now underway. See the
-**[Roadmap](../roadmap.md)** for the full backlog of advanced topics still to come.
+**What's next?** The **Advanced tier** (Phases 7–8) is now live. See the
+**[Roadmap](../roadmap.md)** for the backlog of further topics still to come.

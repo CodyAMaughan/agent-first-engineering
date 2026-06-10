@@ -122,7 +122,7 @@ is written; the `tools` line is why it *can't* secretly edit the file it's judgi
 Pick a recurring side task (review a diff, find call sites, check a migration). Write a subagent: a `name`, a `description` naming the trigger **+ "use proactively"**, the **narrowest** `tools` that finish the job (if "find call sites" needs write + push, you mis-scoped it), and a focused system-prompt body. Then describe the task in your *own* words and confirm the agent delegates. If it does the work but floods your main context afterward, your tools or description are too broad.
 
 ---
-← [Lesson 7.4](04-security-and-injection.md) · [Phase 7 home](index.md) · next → [Lesson 7.6 — Prompt & context caching](06-prompt-and-context-caching.md)
+← [Lesson 7.4](04-security-and-injection.md) · [Phase 7 home](index.md) · → [Check your understanding](quiz.md)
 
 [^1]: [Create custom subagents](https://code.claude.com/docs/en/sub-agents) — Anthropic (Claude Code docs)
 [^2]: [How we built our multi-agent research system](https://www.anthropic.com/engineering/multi-agent-research-system) — Anthropic Engineering (Jun 13, 2025)

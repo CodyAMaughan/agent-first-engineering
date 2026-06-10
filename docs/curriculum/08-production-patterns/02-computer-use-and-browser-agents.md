@@ -1,4 +1,4 @@
-# Lesson 7.7 — Computer use & browser/UI agents
+# Lesson 8.2 — Computer use & browser/UI agents
 
 > _Give the agent eyes and hands — then never leave it alone with the company credit card._
 
@@ -68,7 +68,7 @@ OpenAI's developer docs give the same loop and the same warning, as a rule: "Tre
 Take a change that has **no unit-test oracle** — a UI tweak, a rendered chart, a responsive layout. Drive a browser under the agent (Playwright or the Playwright MCP) to load the page, snapshot/screenshot it, and **assert** the behavior — that's your visual oracle. Then, before you'd ever let it run unattended, list the **trifecta legs** your setup has (Is it logged in? Does it read untrusted pages? Does it have network egress?) and cut at least one with an *enforced* control.
 
 ---
-← [Lesson 7.6](06-prompt-and-context-caching.md) · [Phase 7 home](index.md) · next → [Lesson 7.8 — Plugins & marketplaces](08-plugins-and-marketplaces.md)
+← [Lesson 8.1](01-prompt-and-context-caching.md) · [Phase 8 home](index.md) · next → [Lesson 8.3 — Plugins & marketplaces](03-plugins-and-marketplaces.md)
 
 [^1]: [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) — Anthropic (Claude docs)
 [^2]: [Introducing computer use, a new Claude 3.5 Sonnet, and Claude 3.5 Haiku](https://www.anthropic.com/news/3-5-models-and-computer-use) — Anthropic (Oct 22, 2024)

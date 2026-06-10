@@ -1,4 +1,4 @@
-# Lesson 7.6 — Prompt & context caching
+# Lesson 8.1 — Prompt & context caching
 
 > _Don't pay to re-read what hasn't changed — cache the stable prefix._
 
@@ -80,7 +80,7 @@ _Same prompt, one cache-busting mistake._
 Take a long-running agent prompt you control. Separate the **stable prefix** (tools, system, `AGENTS.md`) from the **volatile tail** (the question, timestamps, IDs). Is anything volatile sitting *inside* the prefix — an interpolated time, a session ID, a tool list you reorder? Move it after the breakpoint. Then watch `cache_read_input_tokens` rise across turns: that climbing number is money you stopped spending.
 
 ---
-← [Lesson 7.5](05-anatomy-of-a-subagent.md) · [Phase 7 home](index.md) · next → [Lesson 7.7 — Computer use & browser agents](07-computer-use-and-browser-agents.md)
+← [Phase 8 home](index.md) · next → [Lesson 8.2 — Computer use & browser agents](02-computer-use-and-browser-agents.md)
 
 [^1]: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — Anthropic
 [^2]: [How Claude Code uses prompt caching](https://code.claude.com/docs/en/prompt-caching) — Anthropic (Claude Code docs)
