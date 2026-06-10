@@ -38,6 +38,7 @@ By the end of this phase you can:
 | 3 | [MCP, deep](03-mcp-deep.md) | One open protocol so any agent reaches your data/tools; servers expose Tools, Resources, Prompts. |
 | 4 | [Security & injection](04-security-and-injection.md) | Agents read untrusted input — enforce safety in the harness (sandbox, least-privilege), not the prompt. |
 | 5 | [Anatomy of a Subagent](05-anatomy-of-a-subagent.md) | A subagent is a file whose body is its system prompt; own context, own tools, delegated by description. |
+| 6 | [Prompt & context caching](06-prompt-and-context-caching.md) | Cache the stable prefix (tools→system→context); reads cost ~0.1×. Keep volatile content last. |
 
 ---
 
@@ -76,6 +77,7 @@ _The Advanced tier in compact form. Grows as the phase fills in._
 | **Lethal trifecta** | "prompt injection" | Private-data access + untrusted content + an exfil channel — all three, and data can be stolen [^6]. |
 | **Prompt injection** | "a jailbreak" | Untrusted text (a README, an issue) the agent treats as instructions — OWASP's #1 LLM risk [^7]. |
 | **Subagent** | "a helper" | A file whose body is its system prompt; runs in its own context with its own tools, delegated by `description` [^8]. |
+| **Prompt caching** | "saving answers" | Reusing the processed *prefix* (tools→system→context); reads cost ~0.1×, output unchanged [^9]. |
 
 ### Agent translation (same idea, different homes)
 
@@ -99,3 +101,4 @@ _The Advanced tier in compact form. Grows as the phase fills in._
 [^6]: [The lethal trifecta for AI agents](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/) — Simon Willison
 [^7]: [LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — OWASP GenAI Security Project
 [^8]: [Create custom subagents](https://code.claude.com/docs/en/sub-agents) — Anthropic (Claude Code docs)
+[^9]: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — Anthropic

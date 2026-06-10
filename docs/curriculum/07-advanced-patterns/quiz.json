@@ -241,6 +241,54 @@
       "answer": 3,
       "explanation": "The gain comes from parallel specialized subagents with separation of concerns (distinct contexts, tools, exploration paths). They do NOT share one context, the lead/worker models were Opus/Sonnet (not a bigger model only in one arm), and nothing was skipped.",
       "citations": ["https://www.anthropic.com/engineering/multi-agent-research-system"]
+    },
+    {
+      "id": "adv-16",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "06-prompt-and-context-caching.md",
+      "question": "What does prompt caching actually store and reuse?",
+      "options": [
+        "The model's previous answers, so it can repeat them for free",
+        "The processed input prefix, so it doesn't have to be reprocessed",
+        "A compressed copy of the whole conversation for later search",
+        "Your API key and settings, persisted between sessions"
+      ],
+      "answer": 1,
+      "explanation": "Caching stores processed input (the prefix), not outputs — so identical-prefix requests skip recomputation. It doesn't store answers, search history, or credentials, and it never changes the model's output.",
+      "citations": ["https://platform.claude.com/docs/en/build-with-claude/prompt-caching"]
+    },
+    {
+      "id": "adv-17",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "06-prompt-and-context-caching.md",
+      "question": "Which choice keeps the cache working across turns?",
+      "options": [
+        "Put the current timestamp in the system prompt so the model knows the time",
+        "Reorder the tool definitions each request to surface the relevant one",
+        "Freeze the system prompt and tools; append the new question at the end",
+        "Switch to a larger model partway through for the harder questions"
+      ],
+      "answer": 2,
+      "explanation": "The cache is an exact prefix match, so stable content must stay byte-identical and volatile content goes last. Interpolating a timestamp, reordering tools, or switching models all invalidate the prefix.",
+      "citations": ["https://platform.claude.com/docs/en/build-with-claude/prompt-caching"]
+    },
+    {
+      "id": "adv-18",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "06-prompt-and-context-caching.md",
+      "question": "Cache writes cost ~1.25× input and reads ~0.1×. When does caching a prefix LOSE money?",
+      "options": [
+        "When the prefix is read back many times within its TTL",
+        "When the prefix is written once and never read again before it expires",
+        "Whenever the prompt exceeds the model's minimum cacheable length",
+        "Whenever you use the default 5-minute TTL instead of the 1-hour one"
+      ],
+      "answer": 1,
+      "explanation": "A write costs more than base input, so an entry that's written but never read back is pure overhead. Repeated reads are exactly when caching pays off; exceeding the minimum length and the default TTL are not what cause a loss.",
+      "citations": ["https://platform.claude.com/docs/en/build-with-claude/prompt-caching"]
     }
   ]
 }

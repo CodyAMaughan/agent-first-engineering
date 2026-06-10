@@ -58,7 +58,7 @@ The seven we'd write first, because they're mature *and* highest-leverage for an
    prompt-injection defense for agents that read untrusted input. *Non-negotiable before autonomy.*
    [Claude Code sandboxing](https://www.anthropic.com/engineering/claude-code-sandboxing) ·
    [OWASP Top 10 for LLM/Agentic Apps](https://genai.owasp.org/)
-6. **Prompt & context caching** 🟢 — cache stable prefixes (system prompt, `AGENTS.md`, big files) to
+6. **Prompt & context caching** 🟢 — ✅ **shipped → [Lesson 7.6](curriculum/07-advanced-patterns/06-prompt-and-context-caching.md)**. Cache stable prefixes (system prompt, `AGENTS.md`, big files) to
    cut cost and latency on long-running agents. *The cheapest token optimization that exists.*
    [Anthropic prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)
 7. **Computer use & browser/UI agents** 🟢 — vision + control so agents can test UIs, fill forms, and

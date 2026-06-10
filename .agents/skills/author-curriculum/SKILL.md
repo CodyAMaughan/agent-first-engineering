@@ -85,7 +85,7 @@ Grade every lesson/phase against this. **Mandatory** = a defect if missing (the 
 | Component | Tier |
 |---|---|
 | Schema-valid JSON (no trailing commas/comments) — `check-json` pre-commit enforces it | **Mandatory** |
-| 9–15 questions (≈2–3 per lesson), spread **≥3 easy / ≥3 medium / ≥3 hard** | **Mandatory** |
+| ≈2–3 questions per lesson (≥9 total; scales with lesson count), spread **≥3 easy / ≥3 medium / ≥3 hard** | **Mandatory** |
 | Every question has a `lesson` field grounding it in a lesson | **Mandatory** |
 | `answer` = 0-based index; 3–4 options; normalized option length | **Mandatory** |
 | Hard questions use plausible distractors (true-but-irrelevant statements) | **Mandatory** |
