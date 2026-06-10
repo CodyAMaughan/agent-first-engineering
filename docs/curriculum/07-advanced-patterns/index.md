@@ -40,6 +40,7 @@ By the end of this phase you can:
 | 5 | [Anatomy of a Subagent](05-anatomy-of-a-subagent.md) | A subagent is a file whose body is its system prompt; own context, own tools, delegated by description. |
 | 6 | [Prompt & context caching](06-prompt-and-context-caching.md) | Cache the stable prefix (tools→system→context); reads cost ~0.1×. Keep volatile content last. |
 | 7 | [Computer use & browser agents](07-computer-use-and-browser-agents.md) | Eyes + hands: screenshot→act loop; a browser as a visual oracle — but untrusted screen = injection. |
+| 8 | [Plugins & marketplaces](08-plugins-and-marketplaces.md) | Bundle skills+hooks+subagents+MCP into one installable, versioned unit; share via a marketplace. |
 
 ---
 
@@ -58,6 +59,7 @@ flowchart TB
     M --> R
     SEC --> R
     SUB --> R
+    R --> OPS["then operationalize it —<br/>cache it cheap (L6) · give it eyes (L7) · package & ship it (L8)"]
 ```
 
 ---
@@ -80,6 +82,7 @@ _The Advanced tier in compact form. Grows as the phase fills in._
 | **Subagent** | "a helper" | A file whose body is its system prompt; runs in its own context with its own tools, delegated by `description` [^8]. |
 | **Prompt caching** | "saving answers" | Reusing the processed *prefix* (tools→system→context); reads cost ~0.1×, output unchanged [^9]. |
 | **Computer use** | "it can use my PC" | A tool to screenshot + click/type a screen in a reason→act loop; untrusted screen content can inject it [^10]. |
+| **Plugin** | "an extension" | One installable unit bundling skills+commands+hooks+subagents+MCP/LSP; shared via a marketplace [^11]. |
 
 ### Agent translation (same idea, different homes)
 
@@ -105,3 +108,4 @@ _The Advanced tier in compact form. Grows as the phase fills in._
 [^8]: [Create custom subagents](https://code.claude.com/docs/en/sub-agents) — Anthropic (Claude Code docs)
 [^9]: [Prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — Anthropic
 [^10]: [Computer use tool](https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool) — Anthropic
+[^11]: [Create plugins](https://code.claude.com/docs/en/plugins) — Anthropic (Claude Code docs)

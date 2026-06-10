@@ -337,6 +337,54 @@
       "answer": 3,
       "explanation": "Private-data access + untrusted page content + network egress = the lethal trifecta; an indirect injection can then steal data. Browsers CAN be sandboxed (the mitigation), and the danger isn't latency or the a11y tree.",
       "citations": ["https://claude.com/blog/claude-for-chrome"]
+    },
+    {
+      "id": "adv-22",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "08-plugins-and-marketplaces.md",
+      "question": "What is a Claude Code plugin?",
+      "options": [
+        "A single skill packaged with a manifest file",
+        "One installable unit bundling skills, commands, hooks, subagents, and MCP servers",
+        "A marketplace catalog of other people's tools",
+        "A settings file that configures your editor theme"
+      ],
+      "answer": 1,
+      "explanation": "A plugin is a container for many extension types, not one thing — a one-skill plugin is the minimal case. It isn't a marketplace (that's the catalog) or a theme file.",
+      "citations": ["https://code.claude.com/docs/en/plugins-reference"]
+    },
+    {
+      "id": "adv-23",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "08-plugins-and-marketplaces.md",
+      "question": "In a plugin's directory, where do skills/, hooks/, and agents/ go?",
+      "options": [
+        "At the plugin root, as top-level directories",
+        "Inside the .claude-plugin/ directory, next to plugin.json",
+        "In a single bundled .zip the marketplace unpacks",
+        "In your project's .claude/ directory, referenced by path"
+      ],
+      "answer": 0,
+      "explanation": "Only plugin.json lives in .claude-plugin/; every component directory sits at the plugin root. Putting them inside .claude-plugin/ is the single most common documented mistake.",
+      "citations": ["https://code.claude.com/docs/en/plugins"]
+    },
+    {
+      "id": "adv-24",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "08-plugins-and-marketplaces.md",
+      "question": "Why should you treat adding a marketplace like granting shell access?",
+      "options": [
+        "Marketplaces charge your account a fee per plugin install",
+        "Adding a marketplace disables your other installed plugins",
+        "Plugins can ship hooks and MCP servers that run arbitrary code at your privileges",
+        "Marketplaces require you to upload your API key to the catalog"
+      ],
+      "answer": 2,
+      "explanation": "Plugins are highly trusted: their hooks/MCP servers execute arbitrary code on your machine with your privileges, inside the agent's trusted context. So add only trusted sources and pin to a commit/version — the other options are fabricated behaviors.",
+      "citations": ["https://code.claude.com/docs/en/discover-plugins"]
     }
   ]
 }

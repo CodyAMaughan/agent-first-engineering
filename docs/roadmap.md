@@ -73,7 +73,7 @@ The seven we'd write first, because they're mature *and* highest-leverage for an
 ### Theme 1 · Skills, Hooks & Plugins (extensibility)
 | Topic | What & why | Maturity | Source |
 |---|---|---|---|
-| Plugins & marketplaces | Bundle skills + commands + hooks + agents to share across a team/org | 🟢 | [Agent Skills spec](https://agentskills.io/specification) · [Claude agent skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) |
+| Plugins & marketplaces ✅ [7.8](curriculum/07-advanced-patterns/08-plugins-and-marketplaces.md) | Bundle skills + commands + hooks + agents to share across a team/org | 🟢 | [Agent Skills spec](https://agentskills.io/specification) · [Claude agent skills](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) |
 | Skill evals | Measure whether a skill triggers + performs; tune the description | 🟡 | [anthropics/skills](https://github.com/anthropics/skills) |
 
 ### Theme 2 · Advanced agent features
