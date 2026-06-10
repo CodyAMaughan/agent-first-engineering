@@ -69,7 +69,7 @@ This repo already contains exactly the pieces a plugin bundles:
 | `.agent/hooks/*.sh` wired via `.claude/settings.json` | `hooks/hooks.json` (move the `hooks` object verbatim) |
 | `.claude/agents/lesson-reviewer.md` | `agents/lesson-reviewer.md` |
 
-The one caveat to teach: an installed plugin is copied to a cache and **cannot reference files outside its own root** — so the hook scripts must live *inside* the plugin and use the `${CLAUDE_PLUGIN_ROOT}` variable in their paths, not `.agent/hooks/...` [^1].
+The one caveat to teach: an installed plugin is copied to a cache and **cannot reference files outside its own root** — so the hook scripts must live *inside* the plugin and use the `${CLAUDE_PLUGIN_ROOT}` variable in their paths, not `.agent/hooks/...` [^1][^3].
 
 ## Agent-agnostic
 _Skills are portable (the open standard); the bundle/marketplace layer is richest in Claude Code; Cursor/Codex distribute conventions by committing rule/`AGENTS.md` files to git [^5][^6][^7]._

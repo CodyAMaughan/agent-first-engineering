@@ -57,12 +57,12 @@ The documented mitigations are your checklist [^1]:
 4. A **human confirms** consequential, real-world actions.
 
 > 🧠 **Test Yourself:** "Anthropic added a prompt-injection classifier, so browser agents are safe now." What's wrong?
-> <details><summary>Answer</summary>Safeguards cut the attack-success rate to ~11% — roughly 1 in 9 still gets through — and Anthropic says the precautions "remain important even with the classifier defense layer in place." Untrusted screen content is untrusted input; the boundary is the sandbox, not the classifier [^3].</details>
+> <details><summary>Answer</summary>Safeguards cut the attack-success rate to ~11% — roughly 1 in 9 still gets through [^3] — and Anthropic says the precautions "remain important even with the classifier defense layer in place" [^1]. Untrusted screen content is untrusted input; the boundary is the sandbox, not the classifier.</details>
 
 ## Agent-agnostic
 _Claude computer use, OpenAI's computer-use tool, and Playwright MCP all run the screenshot→act loop; the split is vision vs structured [^1][^5][^6]._
 
-OpenAI's developer docs give the same loop and the same warning, as a rule: "Treat screenshots, page text, tool outputs… as untrusted input. Only direct instructions from the user count as permission… Run Computer use in an isolated browser or VM, keep a human in the loop for high-impact actions" [^6]. (Note: OpenAI's standalone *Operator* product was folded into ChatGPT Agent in 2025; the capability now ships via the Responses-API computer-use tool [^6].)
+OpenAI's developer docs give the same loop and the same warning, as a rule: "Treat screenshots, page text, tool outputs… as untrusted input. Only direct instructions from the user count as permission… Run Computer use in an isolated browser or VM, keep a human in the loop for high-impact actions" [^6]. (OpenAI ships this capability as the Responses-API computer-use tool [^6].)
 
 ## Your turn (exercise)
 Take a change that has **no unit-test oracle** — a UI tweak, a rendered chart, a responsive layout. Drive a browser under the agent (Playwright or the Playwright MCP) to load the page, snapshot/screenshot it, and **assert** the behavior — that's your visual oracle. Then, before you'd ever let it run unattended, list the **trifecta legs** your setup has (Is it logged in? Does it read untrusted pages? Does it have network egress?) and cut at least one with an *enforced* control.
