@@ -95,6 +95,7 @@ becomes automation of a process you understand.
 4. [Security & injection](07-advanced-patterns/04-security-and-injection.md) — enforce safety in the harness, not the prompt.
 5. [Anatomy of a Subagent](07-advanced-patterns/05-anatomy-of-a-subagent.md) — a focused specialist: own context, own tools, delegated by description.
 6. [Prompt & context caching](07-advanced-patterns/06-prompt-and-context-caching.md) — cache the stable prefix; reads cost ~0.1×.
+7. [Computer use & browser agents](07-advanced-patterns/07-computer-use-and-browser-agents.md) — eyes + hands; a browser as a visual oracle.
 
 ---
 

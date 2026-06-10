@@ -119,6 +119,7 @@ nav:
           - Security & injection: curriculum/07-advanced-patterns/04-security-and-injection.md
           - Anatomy of a Subagent: curriculum/07-advanced-patterns/05-anatomy-of-a-subagent.md
           - Prompt & context caching: curriculum/07-advanced-patterns/06-prompt-and-context-caching.md
+          - Computer use & browser agents: curriculum/07-advanced-patterns/07-computer-use-and-browser-agents.md
   - Roadmap: roadmap.md
   - Reference:
       - Translation Matrix: translation-matrix.md

@@ -61,7 +61,7 @@ The seven we'd write first, because they're mature *and* highest-leverage for an
 6. **Prompt & context caching** 🟢 — ✅ **shipped → [Lesson 7.6](curriculum/07-advanced-patterns/06-prompt-and-context-caching.md)**. Cache stable prefixes (system prompt, `AGENTS.md`, big files) to
    cut cost and latency on long-running agents. *The cheapest token optimization that exists.*
    [Anthropic prompt caching](https://platform.claude.com/docs/en/build-with-claude/prompt-caching)
-7. **Computer use & browser/UI agents** 🟢 — vision + control so agents can test UIs, fill forms, and
+7. **Computer use & browser/UI agents** 🟢 — ✅ **shipped → [Lesson 7.7](curriculum/07-advanced-patterns/07-computer-use-and-browser-agents.md)**. Vision + control so agents can test UIs, fill forms, and
    self-verify visually. *Closes the loop for work that has no unit-test oracle.*
    [Anthropic advanced tool use](https://www.anthropic.com/engineering/advanced-tool-use) ·
    [Managed Agents overview](https://platform.claude.com/docs/en/managed-agents/overview)

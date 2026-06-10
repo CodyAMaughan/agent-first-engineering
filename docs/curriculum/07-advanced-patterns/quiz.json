@@ -289,6 +289,54 @@
       "answer": 1,
       "explanation": "A write costs more than base input, so an entry that's written but never read back is pure overhead. Repeated reads are exactly when caching pays off; exceeding the minimum length and the default TTL are not what cause a loss.",
       "citations": ["https://platform.claude.com/docs/en/build-with-claude/prompt-caching"]
+    },
+    {
+      "id": "adv-19",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "07-computer-use-and-browser-agents.md",
+      "question": "With Anthropic's computer-use tool, who actually executes the click and type actions?",
+      "options": [
+        "The model executes them directly on your screen",
+        "Your application runs each action on a VM and returns a screenshot",
+        "Anthropic's servers control your machine remotely",
+        "The browser extension runs them with no application code"
+      ],
+      "answer": 1,
+      "explanation": "The tool is schema-less and the model only requests actions; your harness executes them on a VM/container and feeds back a screenshot. The model has eyes; your code is its hands.",
+      "citations": ["https://platform.claude.com/docs/en/agents-and-tools/tool-use/computer-use-tool"]
+    },
+    {
+      "id": "adv-20",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "07-computer-use-and-browser-agents.md",
+      "question": "For engineers, what is the highest-value use of a browser/UI agent?",
+      "options": [
+        "Filling out long web forms automatically",
+        "Scraping data from pages into a spreadsheet",
+        "Visual self-verification of UI that has no unit-test oracle",
+        "Replacing all unit tests with screenshots"
+      ],
+      "answer": 2,
+      "explanation": "The killer use is closing the loop where correctness is 'does the rendered UI look/behave right' — a browser becomes the oracle (Phase 3). Form-filling and scraping are minor; screenshots complement, not replace, unit tests.",
+      "citations": ["https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents"]
+    },
+    {
+      "id": "adv-21",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "07-computer-use-and-browser-agents.md",
+      "question": "A browser agent logged into your accounts, reading arbitrary pages, with network access — why is that dangerous?",
+      "options": [
+        "Screenshots are large and slow the model down",
+        "Browsers cannot be sandboxed, so there is no mitigation",
+        "The accessibility tree leaks DOM contents to the model",
+        "It has all three legs of the lethal trifecta, so injection can exfiltrate data"
+      ],
+      "answer": 3,
+      "explanation": "Private-data access + untrusted page content + network egress = the lethal trifecta; an indirect injection can then steal data. Browsers CAN be sandboxed (the mitigation), and the danger isn't latency or the a11y tree.",
+      "citations": ["https://claude.com/blog/claude-for-chrome"]
     }
   ]
 }
