@@ -1,0 +1,14 @@
+{
+  "name": "agent-first-toolkit",
+  "displayName": "Agent-First Toolkit",
+  "version": "1.0.0",
+  "description": "The agent-first toolkit from the Agent-First Engineering curriculum: skills (scaffold a repo agent-first; author and quiz curriculum), a least-privilege lesson-reviewer subagent, and deterministic guardrail hooks — git-safety, secret-scan, test-gate, plus the capture-learnings memory loop.",
+  "author": {
+    "name": "Cody A. Maughan",
+    "url": "https://github.com/CodyAMaughan"
+  },
+  "homepage": "https://codyamaughan.github.io/agent-first-engineering/",
+  "repository": "https://github.com/CodyAMaughan/agent-first-engineering",
+  "license": "MIT",
+  "keywords": ["agents", "agent-first", "skills", "hooks", "subagents", "scaffold", "guardrails"]
+}

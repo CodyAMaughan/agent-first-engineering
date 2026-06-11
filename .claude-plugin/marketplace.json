@@ -1,0 +1,18 @@
+{
+  "name": "agent-first-engineering",
+  "owner": {
+    "name": "Cody A. Maughan",
+    "url": "https://github.com/CodyAMaughan"
+  },
+  "metadata": {
+    "description": "Marketplace for the Agent-First Engineering curriculum's tooling.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "agent-first-toolkit",
+      "source": "./plugin",
+      "description": "Skills (scaffold-agent-project, author-curriculum, check-understanding), a lesson-reviewer subagent, and guardrail hooks (git-safety, secret-scan, test-gate, capture-learnings memory loop)."
+    }
+  ]
+}
