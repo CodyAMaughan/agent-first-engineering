@@ -1,0 +1,198 @@
+{
+  "phase": "09-project-lifecycles",
+  "title": "Project Lifecycles: the loop you ship into",
+  "questions": [
+    {
+      "id": "lc-01",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "01-the-lifecycle-is-a-loop.md",
+      "question": "What's wrong with treating 'done' as 'shipped'?",
+      "options": [
+        "Shipping is the loop's midpoint; operate, monitor, and improve are stages inside the loop",
+        "Nothing — once code is in production the project is genuinely complete",
+        "Shipping only counts as done for AI systems, not for classic software",
+        "'Done' should mean code-complete, measured before any testing or release"
+      ],
+      "answer": 0,
+      "explanation": "Real systems are loops, not lines: release is the midpoint, and most of a system's lifetime cost lives in operate/monitor/improve. The loop only 'closes' by feeding learning back into the next iteration.",
+      "citations": ["https://www.lean.org/lexicon-terms/pdca/"]
+    },
+    {
+      "id": "lc-02",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "01-the-lifecycle-is-a-loop.md",
+      "question": "A deployed fraud model nobody has touched in six months starts missing fraud. No code changed. What most likely happened?",
+      "options": [
+        "A dependency upgrade silently broke the model's code path",
+        "The world changed — data/concept drift moved fraud patterns under a static model",
+        "The model was never actually deployed to production",
+        "Random model non-determinism caused a temporary dip"
+      ],
+      "answer": 1,
+      "explanation": "AI/ML systems can fail when the world changes and you change nothing — fraud patterns (the data) drifted under a static model. Monitoring should catch the quality drop; continuous training closes the loop.",
+      "citations": ["https://proceedings.neurips.cc/paper_files/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf"]
+    },
+    {
+      "id": "lc-03",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "01-the-lifecycle-is-a-loop.md",
+      "question": "What fundamentally distinguishes how classic software fails from how AI/ML systems fail?",
+      "options": [
+        "AI/ML systems never fail once they pass their initial evaluation",
+        "Classic software fails only in production, while AI/ML fails only in training",
+        "Classic software fails when you change it; AI/ML can fail when the world changes and you change nothing",
+        "Classic software fails on data drift, while AI/ML fails on code bugs"
+      ],
+      "answer": 2,
+      "explanation": "This is why monitoring and retraining are mandatory loop stages for AI/ML, not optional ops: the world (data distribution or the input→output rule) can move under a static model. The distractors invert or fabricate the failure modes.",
+      "citations": ["https://proceedings.neurips.cc/paper_files/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf"]
+    },
+    {
+      "id": "lc-04",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "02-software-lifecycle.md",
+      "question": "What did Agile change about the software lifecycle?",
+      "options": [
+        "It removed the testing stage in favor of continuous deployment",
+        "It made the lifecycle iterative — small increments, welcoming changing requirements",
+        "It merged the development and operations teams into one role",
+        "It replaced human requirements with automatically generated specs"
+      ],
+      "answer": 1,
+      "explanation": "Agile made the loop iterative ('welcome changing requirements, even late'). Fusing dev and ops is DevOps, not Agile; Agile didn't remove testing or automate requirements away.",
+      "citations": ["https://agilemanifesto.org/principles.html"]
+    },
+    {
+      "id": "lc-05",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "02-software-lifecycle.md",
+      "question": "Why do modern teams draw Release and Deploy as two separate stages?",
+      "options": [
+        "Deploy is only for staging environments; Release is only for production",
+        "They are the same thing; the split is purely historical",
+        "Deploy = code running in prod; Release = users exposed to it — decoupling them (flags/canary/blue-green) enables safe on-demand shipping and clean rollback",
+        "Release always happens before deploy in the pipeline order"
+      ],
+      "answer": 2,
+      "explanation": "Decoupling deploy from release is what lets elite teams ship safely and roll back by flipping a flag or switching the router. The catch is state — schema changes can't be flipped, so migrations are sequenced (expand→migrate→contract).",
+      "citations": ["https://martinfowler.com/articles/feature-toggles.html"]
+    },
+    {
+      "id": "lc-06",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "02-software-lifecycle.md",
+      "question": "A team says '100% uptime is our goal.' What would an SRE say?",
+      "options": [
+        "Agree — 100% is the only acceptable reliability target",
+        "100% is the wrong target; pick an SLO below 100% so the error budget can fund feature velocity",
+        "Uptime doesn't matter as long as deploys are frequent",
+        "100% is fine, but only if it's measured monthly rather than continuously"
+      ],
+      "answer": 1,
+      "explanation": "SRE deliberately targets below 100%; the resulting error budget is what funds velocity. Spend none of it and you're shipping too cautiously. The measurement-cadence and deploy-frequency distractors miss the point.",
+      "citations": ["https://sre.google/sre-book/service-level-objectives/"]
+    },
+    {
+      "id": "lc-07",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "03-ai-application-lifecycle.md",
+      "question": "Since you can't assertEqual a non-deterministic LLM, what plays the role of the correctness oracle?",
+      "options": [
+        "Lowering the temperature until outputs become deterministic",
+        "Swapping in a larger model that is right more often",
+        "Evals — the heartbeat that tells you whether a change is an improvement or a regression",
+        "The detailed instructions written in the system prompt"
+      ],
+      "answer": 2,
+      "explanation": "Evals are the oracle for a non-deterministic system; without a harness you literally can't tell whether a change helped. Temperature, model size, and prompt wording don't give you a measurable verdict.",
+      "citations": ["https://hamel.dev/blog/posts/evals/"]
+    },
+    {
+      "id": "lc-08",
+      "difficulty": "medium",
+      "type": "conceptual",
+      "lesson": "03-ai-application-lifecycle.md",
+      "question": "Which two properties does an LLM app add that the classic software lifecycle never had to model?",
+      "options": [
+        "Version control and continuous integration",
+        "Non-determinism and a data feedback loop (production traces become the next eval set)",
+        "Load balancing and horizontal scaling",
+        "Static typing and compile-time checks"
+      ],
+      "answer": 1,
+      "explanation": "Non-determinism means you can't unit-test with assertEqual, and the data feedback loop makes trace-mining a first-class stage. The other options are ordinary software concerns that predate LLM apps.",
+      "citations": ["https://hamel.dev/blog/posts/evals/"]
+    },
+    {
+      "id": "lc-09",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "03-ai-application-lifecycle.md",
+      "question": "Your LLM-as-judge agrees with your gold set 92% of the time. Is it safe to trust it blindly?",
+      "options": [
+        "Yes — above 90% agreement means the judge is reliable",
+        "Yes, as long as you used a larger model as the judge",
+        "No — judges carry position/verbosity/self-enhancement bias and need ongoing validation against human labels; offline agreement is not online ground truth",
+        "No — judges are never useful and should be replaced entirely by code assertions"
+      ],
+      "answer": 2,
+      "explanation": "An unvalidated judge launders vibes into fake rigor; it needs its own continuing eval against fresh human labels. Judges ARE useful (so the last option overcorrects), and a bigger model doesn't remove the bias.",
+      "citations": ["https://arxiv.org/abs/2306.05685"]
+    },
+    {
+      "id": "lc-10",
+      "difficulty": "easy",
+      "type": "conceptual",
+      "lesson": "04-ml-data-science-lifecycle.md",
+      "question": "Per the data-centric view, where should you look first to improve a model's accuracy?",
+      "options": [
+        "The choice of algorithm and its hyperparameters",
+        "The data — quality, labeling consistency, and train/serve feature parity",
+        "A bigger GPU so you can train for longer",
+        "The model's random seed"
+      ],
+      "answer": 1,
+      "explanation": "The trained model is the small black box; most leverage lives in the data and feature pipelines around it. Better data usually beats a better algorithm in practice.",
+      "citations": ["https://proceedings.neurips.cc/paper_files/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf"]
+    },
+    {
+      "id": "lc-11",
+      "difficulty": "medium",
+      "type": "practical",
+      "lesson": "04-ml-data-science-lifecycle.md",
+      "question": "Live accuracy drops 8 points overnight. Why is 'just retrain on fresh data' the wrong default first move?",
+      "options": [
+        "Retraining is always too expensive to be worth considering",
+        "The cause may be a broken pipeline, training-serving skew, or a feedback loop — diagnose the failure type first; blind retraining on contaminated data can accelerate decay",
+        "Fresh data is never available quickly enough to retrain",
+        "You should always roll back the model instead of ever retraining"
+      ],
+      "answer": 1,
+      "explanation": "Different causes (skew, pipeline breakage, feedback loops, label drift) need different fixes; retraining on drifted or feedback-contaminated data can make decay worse. The absolutes ('always too expensive', 'never available', 'always roll back') are wrong.",
+      "citations": ["https://developers.google.com/machine-learning/guides/rules-of-ml"]
+    },
+    {
+      "id": "lc-12",
+      "difficulty": "hard",
+      "type": "conceptual",
+      "lesson": "04-ml-data-science-lifecycle.md",
+      "question": "What is the difference between data drift and concept drift?",
+      "options": [
+        "Data drift changes the model's code; concept drift changes its weights",
+        "Data drift is the input distribution P(X) shifting; concept drift is the input→output relationship P(Y|X) shifting",
+        "They are two names for the same phenomenon",
+        "Data drift only affects training, while concept drift only affects serving"
+      ],
+      "answer": 1,
+      "explanation": "Data drift = the inputs move (P(X)); concept drift = the rule mapping inputs to outputs moves (P(Y|X)). They need different detection (distribution proxies vs. live accuracy) and different responses, which is why 'accuracy dropped → retrain' is too blunt.",
+      "citations": ["https://doi.org/10.1145/2523813"]
+    }
+  ]
+}

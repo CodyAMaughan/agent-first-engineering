@@ -1,7 +1,7 @@
 # Curriculum — Agent-First Engineering
 
-From "vibe coding" to **systems engineer for agents**. Six foundations phases plus a two-phase
-**Advanced tier**, one competency each, taught one concept at a time with diagrams, worked examples, a
+From "vibe coding" to **systems engineer for agents**. Six foundations phases, a two-phase
+**Advanced tier**, and a **Project Lifecycles** module, one competency each, taught one concept at a time with diagrams, worked examples, a
 hands-on exercise per lesson, and a hard quiz. Agent-agnostic (Claude Code / Codex / Cursor), built on
 open standards.
 
@@ -23,6 +23,7 @@ flowchart LR
     P6 --> S[systems engineer for agents]
     S --> P7["P7 · Advanced Patterns<br/>(building blocks)"]
     P7 --> P8["P8 · Production Patterns<br/>(optimize · extend · ship)"]
+    P8 --> P9["P9 · Project Lifecycles<br/>(map → automate)"]
 ```
 
 | # | Phase | You'll be able to… | Scaffolder artifact (lockstep) |
@@ -35,6 +36,7 @@ flowchart LR
 | 6 | [Orchestration & Harness](06-orchestration-and-harness/index.md) | Small focused agents, adversarial review, worktrees; design the environment, not the edit. | full guardrail + CI + adapters |
 | 7 | [Advanced Patterns](07-advanced-patterns/index.md) **(Advanced)** | The building blocks: skills, hooks, MCP, security, subagents. | the internals of what the scaffolder emits |
 | 8 | [Production Patterns](08-production-patterns/index.md) **(Advanced)** | Operationalize them: caching (cost), computer use (capability), plugins (distribution). | — |
+| 9 | [Project Lifecycles](09-project-lifecycles/index.md) **(Module)** | Map the full lifecycle (software · AI apps · ML/DS) end to end — the loop you'll later automate. | — |
 
 ★★★ = load-bearing. If you internalize only two phases, make them **2 and 3** — context engineering
 and verification carry the most weight across every researched source.
@@ -101,6 +103,12 @@ becomes automation of a process you understand.
 1. [Prompt & context caching](08-production-patterns/01-prompt-and-context-caching.md) — cache the stable prefix; reads cost ~0.1×.
 2. [Computer use & browser agents](08-production-patterns/02-computer-use-and-browser-agents.md) — eyes + hands; a browser as a visual oracle.
 3. [Plugins & marketplaces](08-production-patterns/03-plugins-and-marketplaces.md) — bundle skills+hooks+subagents into one shareable unit.
+
+### Phase 9 — [Project Lifecycles: the loop you ship into](09-project-lifecycles/index.md) *(module)*
+1. [The lifecycle is a loop](09-project-lifecycles/01-the-lifecycle-is-a-loop.md) — "done" spans creation AND operation; release is the midpoint.
+2. [The software lifecycle](09-project-lifecycles/02-software-lifecycle.md) — SDLC → Agile → DevOps/CI-CD → DORA → SRE.
+3. [The AI application lifecycle](09-project-lifecycles/03-ai-application-lifecycle.md) — non-determinism + a data loop; evals are the oracle.
+4. [The ML / data-science lifecycle](09-project-lifecycles/04-ml-data-science-lifecycle.md) — data-centric build→deploy→monitor→retrain.
 
 ---
 

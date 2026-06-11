@@ -123,6 +123,12 @@ nav:
           - Prompt & context caching: curriculum/08-production-patterns/01-prompt-and-context-caching.md
           - Computer use & browser agents: curriculum/08-production-patterns/02-computer-use-and-browser-agents.md
           - Plugins & marketplaces: curriculum/08-production-patterns/03-plugins-and-marketplaces.md
+      - Phase 9 — Project Lifecycles:
+          - curriculum/09-project-lifecycles/index.md
+          - The lifecycle is a loop: curriculum/09-project-lifecycles/01-the-lifecycle-is-a-loop.md
+          - The software lifecycle: curriculum/09-project-lifecycles/02-software-lifecycle.md
+          - The AI application lifecycle: curriculum/09-project-lifecycles/03-ai-application-lifecycle.md
+          - The ML / data-science lifecycle: curriculum/09-project-lifecycles/04-ml-data-science-lifecycle.md
   - Roadmap: roadmap.md
   - Reference:
       - Translation Matrix: translation-matrix.md
