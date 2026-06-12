@@ -22,8 +22,8 @@ optional ops — for ML systems [^2]. The throughline: **map the lifecycle first
 By the end of this phase you can:
 - **See any project as a loop** — name the seven stages and the feedback edge that closes them.
 - **Map the software lifecycle** — requirements→deploy→operate→maintain, made iterative by Agile and automated by DevOps/CI-CD and SRE.
-- **Map the AI application lifecycle** — the normal lifecycle plus non-determinism and a data feedback loop, with **evals as the heartbeat**.
 - **Map the ML / data-science lifecycle** — a data-centric build→deploy→monitor→retrain loop that closes because the world drifts under the model.
+- **Map the AI application lifecycle** — the normal lifecycle plus non-determinism and a data feedback loop, with **evals as the heartbeat**.
 
 ---
 
@@ -37,8 +37,8 @@ By the end of this phase you can:
 |---|---|---|
 | 1 | [The lifecycle is a loop](01-the-lifecycle-is-a-loop.md) | "Done" spans creation **and** operation; AI/ML systems can rot with zero code changes because the data moves under them. |
 | 2 | [The software lifecycle](02-software-lifecycle.md) | A continuous loop (requirements→deploy→operate→maintain); Agile made it iterative, DevOps/CI-CD fused dev+ops, SRE made ops engineering. |
-| 3 | [The AI application lifecycle](03-ai-application-lifecycle.md) | The normal lifecycle plus non-determinism + a data feedback loop; **evals are the oracle** you can't `assertEqual` your way around. |
-| 4 | [The ML / data-science lifecycle](04-ml-data-science-lifecycle.md) | A data-centric build→deploy→monitor→retrain loop; the model is the smallest part, and the world drifts under it. |
+| 3 | [The ML / data-science lifecycle](03-ml-data-science-lifecycle.md) | A data-centric build→deploy→monitor→retrain loop; the model is the smallest part, and the world drifts under it. |
+| 4 | [The AI application lifecycle](04-ai-application-lifecycle.md) | The normal lifecycle plus non-determinism + a data feedback loop; **evals are the oracle** you can't `assertEqual` your way around. |
 
 ---
 
@@ -48,8 +48,8 @@ By the end of this phase you can:
 flowchart LR
     L["the universal loop<br/>(Lesson 1)"]
     L --> SW["CLASSIC SOFTWARE<br/>fails when *you* change it (L2)"]
-    L --> AI["AI / LLM APPS<br/>non-determinism + evals (L3)"]
-    L --> ML["ML / DATA<br/>data & concept drift (L4)"]
+    L --> ML["ML / DATA<br/>data & concept drift (L3)"]
+    L --> AI["AI / LLM APPS<br/>non-determinism + evals (L4)"]
     SW --> M["one loop, three decay modes —<br/>mapped, ready to automate"]
     AI --> M
     ML --> M

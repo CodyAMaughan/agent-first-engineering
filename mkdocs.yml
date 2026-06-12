@@ -127,8 +127,8 @@ nav:
           - curriculum/09-project-lifecycles/index.md
           - The lifecycle is a loop: curriculum/09-project-lifecycles/01-the-lifecycle-is-a-loop.md
           - The software lifecycle: curriculum/09-project-lifecycles/02-software-lifecycle.md
-          - The AI application lifecycle: curriculum/09-project-lifecycles/03-ai-application-lifecycle.md
-          - The ML / data-science lifecycle: curriculum/09-project-lifecycles/04-ml-data-science-lifecycle.md
+          - The ML / data-science lifecycle: curriculum/09-project-lifecycles/03-ml-data-science-lifecycle.md
+          - The AI application lifecycle: curriculum/09-project-lifecycles/04-ai-application-lifecycle.md
   - Roadmap: roadmap.md
   - Reference:
       - Translation Matrix: translation-matrix.md

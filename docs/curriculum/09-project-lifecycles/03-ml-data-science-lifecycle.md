@@ -1,4 +1,4 @@
-# Lesson 9.4 — The ML / data-science lifecycle
+# Lesson 9.3 — The ML / data-science lifecycle
 
 > _You don't build a chair, you tend a garden — the seed (the model) is the smallest part; the soil, water, and weekly weeding are the job._
 
@@ -76,7 +76,7 @@ _Every box and arrow above is a future automation target — but we are only **m
 Each stage — data validation, feature pipelines, experiment tracking, slice evaluation, drift monitoring, retraining triggers — is something a later module will hand to agents and deterministic loops. The **outer loop itself** (monitor → decide → retrain) is the highest-value thing to automate, because it's the part that never ends. For now, just hold the map: a closed loop, data-centric, with the model as the small box inside a large system [^3][^4].
 
 ---
-← [Lesson 9.3](03-ai-application-lifecycle.md) · [Phase 9 home](index.md) · → [Check your understanding](quiz.md)
+← [Lesson 9.2](02-software-lifecycle.md) · [Phase 9 home](index.md) · next → [Lesson 9.4 — The AI application lifecycle](04-ai-application-lifecycle.md)
 
 [^1]: [CRISP-DM 1.0: Step-by-step data mining guide](https://public.dhe.ibm.com/software/analytics/spss/documentation/modeler/14.2/es/CRISP-DM.pdf) — Chapman et al., CRISP-DM consortium (NCR, DaimlerChrysler, SPSS, OHRA), 2000 — primary consortium document, IBM/SPSS-hosted (6 phases, cyclical model)
 [^2]: [The Team Data Science Process lifecycle](https://learn.microsoft.com/en-us/azure/architecture/data-science-process/lifecycle) — Microsoft Learn / Azure Architecture Center (5 iterative stages incl. Business Understanding + Customer Acceptance)

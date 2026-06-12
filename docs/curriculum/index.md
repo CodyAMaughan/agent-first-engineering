@@ -36,7 +36,7 @@ flowchart LR
 | 6 | [Orchestration & Harness](06-orchestration-and-harness/index.md) | Small focused agents, adversarial review, worktrees; design the environment, not the edit. | full guardrail + CI + adapters |
 | 7 | [Advanced Patterns](07-advanced-patterns/index.md) **(Advanced)** | The building blocks: skills, hooks, MCP, security, subagents. | the internals of what the scaffolder emits |
 | 8 | [Production Patterns](08-production-patterns/index.md) **(Advanced)** | Operationalize them: caching (cost), computer use (capability), plugins (distribution). | — |
-| 9 | [Project Lifecycles](09-project-lifecycles/index.md) **(Module)** | Map the full lifecycle (software · AI apps · ML/DS) end to end — the loop you'll later automate. | — |
+| 9 | [Project Lifecycles](09-project-lifecycles/index.md) **(Module)** | Map the full lifecycle (software · ML/DS · AI apps) end to end — the loop you'll later automate. | — |
 
 ★★★ = load-bearing. If you internalize only two phases, make them **2 and 3** — context engineering
 and verification carry the most weight across every researched source.
@@ -107,8 +107,8 @@ becomes automation of a process you understand.
 ### Phase 9 — [Project Lifecycles: the loop you ship into](09-project-lifecycles/index.md) *(module)*
 1. [The lifecycle is a loop](09-project-lifecycles/01-the-lifecycle-is-a-loop.md) — "done" spans creation AND operation; release is the midpoint.
 2. [The software lifecycle](09-project-lifecycles/02-software-lifecycle.md) — SDLC → Agile → DevOps/CI-CD → DORA → SRE.
-3. [The AI application lifecycle](09-project-lifecycles/03-ai-application-lifecycle.md) — non-determinism + a data loop; evals are the oracle.
-4. [The ML / data-science lifecycle](09-project-lifecycles/04-ml-data-science-lifecycle.md) — data-centric build→deploy→monitor→retrain.
+3. [The ML / data-science lifecycle](09-project-lifecycles/03-ml-data-science-lifecycle.md) — data-centric build→deploy→monitor→retrain.
+4. [The AI application lifecycle](09-project-lifecycles/04-ai-application-lifecycle.md) — non-determinism + a data loop; evals are the oracle.
 
 ---
 

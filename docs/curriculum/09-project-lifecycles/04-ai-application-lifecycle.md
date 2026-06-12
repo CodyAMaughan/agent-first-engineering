@@ -1,10 +1,10 @@
-# Lesson 9.3 — The AI application lifecycle
+# Lesson 9.4 — The AI application lifecycle
 
 > _The recipe is not the dish — the taste test is. For an LLM app, evals are the taste test._
 
 _TL;DR: Building **on top of** a foundation model is the normal software lifecycle plus two new properties it was never designed for — **non-determinism** (same input, different output) and a **data feedback loop** (production traces become tomorrow's eval set). Because you can't `assertEqual` a probabilistic system, **evals are the oracle** — the heartbeat that tells you whether a change is an improvement or a regression [^1]. Teams that fail almost always fail for the same reason: no robust evaluation system [^1]._
 
-> This lesson **maps** the lifecycle you'll later automate with agents. We explain the loop here; we don't build automation. This is also *not* about training models — that's [Lesson 9.4](04-ml-data-science-lifecycle.md). This is about apps built **on** models you don't train.
+> This lesson **maps** the lifecycle you'll later automate with agents. We explain the loop here; we don't build automation. This is also *not* about training models — that's [Lesson 9.3](03-ml-data-science-lifecycle.md). This is about apps built **on** models you don't train.
 
 ## ELI5: the improvisational kitchen
 _A brilliant chef who never cooks a dish the same way twice forces you to taste-test continuously instead of trusting the recipe._
@@ -92,7 +92,7 @@ _Every stage in the loop is a job a future module hands to agents — but mappin
 Each box in the lifecycle diagram is something a later phase will automate: an agent that drafts eval cases from production traces, a judge-agent that scores them, a red-team agent that probes for injection, a monitor that opens an issue on quality drift. The point of **Phase 9** is to *map* these loops first — you can only safely put an agent on a stage once you know what "good" looks like and have the eval gate to catch it when the agent gets it wrong.
 
 ---
-← [Lesson 9.2](02-software-lifecycle.md) · [Phase 9 home](index.md) · next → [Lesson 9.4 — The ML / data-science lifecycle](04-ml-data-science-lifecycle.md)
+← [Lesson 9.3](03-ml-data-science-lifecycle.md) · [Phase 9 home](index.md) · → [Check your understanding](quiz.md)
 
 [^1]: [Your AI Product Needs Evals](https://hamel.dev/blog/posts/evals/) — Hamel Husain
 [^2]: [Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena](https://arxiv.org/abs/2306.05685) — Zheng et al., NeurIPS 2023

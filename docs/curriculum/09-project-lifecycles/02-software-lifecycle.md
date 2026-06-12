@@ -82,7 +82,7 @@ Pick one feature you've shipped (or a release of any app you use). **Walk it aro
 Every stage in that loop is a place a future module will put an **agent in a loop** — drafting acceptance criteria from a request, proposing an ADR, writing code behind tests, triaging a failing deploy, summarizing a postmortem into the next backlog item. The lifecycle is the *map*; the automation comes later. For now, just notice that the loop's feedback edges — the back-arrows — are exactly where agents earn their keep.
 
 ---
-← [Lesson 9.1](01-the-lifecycle-is-a-loop.md) · [Phase 9 home](index.md) · next → [Lesson 9.3 — The AI application lifecycle](03-ai-application-lifecycle.md)
+← [Lesson 9.1](01-the-lifecycle-is-a-loop.md) · [Phase 9 home](index.md) · next → [Lesson 9.3 — The ML / data-science lifecycle](03-ml-data-science-lifecycle.md)
 
 [^1]: [Manifesto for Agile Software Development & the Twelve Principles](https://agilemanifesto.org/principles.html) — Beck, Cunningham, Fowler, et al. (2001)
 [^2]: [Continuous Delivery / DevOps — *Accelerate*](https://itrevolution.com/product/accelerate/) — Forsgren, Humble, Kim, IT Revolution (2018)
