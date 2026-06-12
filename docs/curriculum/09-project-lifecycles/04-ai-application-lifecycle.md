@@ -2,7 +2,7 @@
 
 > _The recipe is not the dish — the taste test is. For an LLM app, evals are the taste test._
 
-_TL;DR: Building **on top of** a foundation model is the normal software lifecycle plus two new properties it was never designed for — **non-determinism** (same input, different output) and a **data feedback loop** (production traces become tomorrow's eval set). Because you can't `assertEqual` a probabilistic system, **evals are the oracle** — the heartbeat that tells you whether a change is an improvement or a regression [^1]. Teams that fail almost always fail for the same reason: no robust evaluation system [^1]._
+_TL;DR: Building **on top of** a foundation model is the normal software lifecycle plus two new properties it was never designed for — **non-determinism** (same input, different output) and a **data feedback loop** (production traces become tomorrow's eval set). Because you can't `assertEqual` a probabilistic system, **evals are the oracle** — the heartbeat that tells you whether a change is an improvement or a regression [^1][^8]. Teams that fail almost always fail for the same reason: no robust evaluation system [^1]._
 
 > This lesson **maps** the lifecycle you'll later automate with agents. We explain the loop here; we don't build automation. This is also *not* about training models — that's [Lesson 9.3](03-ml-data-science-lifecycle.md). This is about apps built **on** models you don't train.
 
@@ -39,7 +39,7 @@ _Seven stages; the early ones decide complexity, evaluation is the oracle that m
 |---|---|---|---|---|
 | 0 | **Scope** | Decide if it needs an LLM at all; define measurable "good" | Without a measurable target, every later eval is ungrounded; over-scoping to agents is the most common waste [^3] | Start with the simplest thing that works; reserve agents for open-ended tasks you can't hardcode [^3][^4] |
 | 1 | **Design** | Pick the least-complex architecture: prompt → augmented LLM (retrieval/tools/memory) → workflow → agent | Complexity compounds errors, cost, and latency; agents *amplify* failures [^3] | Build on the "augmented LLM"; add complexity only when it *demonstrably* helps; invest in the tool interface as much as the prompt [^3]; mirror RAG/agent failure modes [^7] |
-| 2 | **Evaluate** | A measurement harness built **before** you scale | The only oracle for a non-deterministic system; powers debugging, regression detection, and the data flywheel [^1] | Three levels (below) + golden/offline sets + regression evals on every change [^1] |
+| 2 | **Evaluate** | A measurement harness built **before** you scale | The only oracle for a non-deterministic system; powers debugging, regression detection, and the data flywheel [^1] | Three levels (below) + golden/offline sets + regression evals on every change [^1][^8] |
 | 3 | **Safety** | Defend against prompt injection, leakage, excessive agency | RAG and tool-use open injection paths; **neither RAG nor fine-tuning fully fixes injection** [^5] | Defense-in-depth: least-privilege tools, output handling, human approval for high-risk actions, adversarial red-teaming [^5][^6] |
 | 4 | **Deploy** | Ship behind controls | Non-determinism makes staged exposure essential | Sandboxed testing + guardrails before autonomy [^3]; canary/gated rollout tied to eval gates |
 | 5 | **Monitor** | Observe quality, hallucination, drift, cost, latency, abuse, feedback in prod | Offline evals never cover the real input distribution; quality silently drifts as models/data change [^7] | Trace-level observability, online metrics, capture implicit + explicit user feedback [^7]; track confabulation/hallucination and integrity risks [^6] |
@@ -65,7 +65,7 @@ flowchart TB
 - **L2 — human + LLM-as-judge over traces.** A judge model scores logged traces. GPT-4-class judges reach **>80% agreement with humans** [^2] — credible, *but* they carry **position, verbosity, and self-enhancement bias** [^2], so the judge needs **its own** eval against human labels, checked continuously [^1][^2]. "Remove all friction from looking at data" — error analysis on real traces is the actual work [^1].
 - **L3 — A/B / online.** Real-user comparison; the only ground truth for user-facing quality [^1].
 
-Around all three: a pinned **golden set** and **regression evals** so an edit can't silently break untouched cases — the LLM-app equivalent of shipping without tests [^1].
+Around all three: a pinned **golden set** and **regression evals** so an edit can't silently break untouched cases — the LLM-app equivalent of shipping without tests [^1][^8].
 
 > 🧠 **Test Yourself:** Your LLM-as-judge agrees with your gold set 92% of the time. Safe to trust it blindly?
 > <details><summary>Answer</summary>No. Judges carry position/verbosity/self-enhancement bias [^2]; an unvalidated judge launders vibes into fake rigor. You must keep validating it against fresh human labels — the judge needs its own ongoing eval, and offline agreement ≠ online ground truth [^1][^2].</details>
@@ -98,6 +98,7 @@ Each box in the lifecycle diagram is something a later phase will automate: an a
 [^2]: [Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena](https://arxiv.org/abs/2306.05685) — Zheng et al., NeurIPS 2023
 [^3]: [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) — Anthropic
 [^4]: [A Practical Guide to Building Agents](https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf) — OpenAI
-[^5]: [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/) — OWASP GenAI Security Project (LLM01 Prompt Injection, LLM06 Excessive Agency)
+[^5]: [LLM01:2025 Prompt Injection](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — OWASP GenAI Security Project, Top 10 for LLM Applications 2025 (direct/indirect prompt injection; mitigations: least-privilege, output handling, human approval, adversarial testing)
 [^6]: [Artificial Intelligence Risk Management Framework: Generative AI Profile (NIST AI 600-1)](https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf) — NIST
 [^7]: [AI Engineering: Building Applications with Foundation Models](https://www.oreilly.com/library/view/ai-engineering/9781098166298/) — Chip Huyen, O'Reilly
+[^8]: [Evaluating model performance](https://developers.openai.com/api/docs/guides/evals) — OpenAI Platform docs (write evals to measure an app against expectations, run them as test inputs, and catch prompt regressions before shipping)

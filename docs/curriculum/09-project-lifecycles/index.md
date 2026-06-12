@@ -86,7 +86,7 @@ flowchart LR
 
 ← [Phase 8 — Production Patterns](../08-production-patterns/index.md) · [Curriculum home](../index.md) · more topics → [Roadmap](../../roadmap.md)
 
-[^1]: [What we learned from a year of building with LLMs (evaluation)](https://applied-llms.org/) — Yan, Bartolo, et al.
+[^1]: [Your AI Product Needs Evals](https://hamel.dev/blog/posts/evals/) — Hamel Husain (evals are the correctness oracle for non-deterministic LLM apps; the canonical evals reference, also used in Lesson 9.4)
 [^2]: [MLOps: Continuous Delivery and Automation Pipelines in Machine Learning](https://docs.cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning) — Google Cloud
 [^3]: [Hidden Technical Debt in Machine Learning Systems](https://proceedings.neurips.cc/paper_files/paper/2015/file/86df7dcfd896fcaf2674f757a2463eba-Paper.pdf) — Sculley et al., NeurIPS 2015
 [^4]: [Plan, Do, Check, Act (PDCA)](https://www.lean.org/lexicon-terms/pdca/) — Lean Enterprise Institute
