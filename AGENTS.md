@@ -51,12 +51,22 @@ under every subsection, and **agent-agnostic** framing (per-agent specifics go i
 - **`author-curriculum`** — add/update/audit a lesson, phase, or doc against the authoring standard.
 - **`scaffold-agent-project`** — turn a repo agent-first (the curriculum's capstone artifact).
 - **`check-understanding`** — quiz the user on a phase from its `quiz.json`.
+- **`feature-lifecycle`** — drive a feature request → review-ready branch through verified, looping
+  stages (spec → plan → implement → test-gate → review). Config in `.agent/lifecycle.conf`.
 
 ## Subagents (Claude Code: `.claude/agents/`)
 - **`lesson-reviewer`** — adversarial, fresh-context review of a lesson/phase against the authoring
   checklist + citation verification (read-only). Use after writing or editing a lesson (Phase 6.2's
-  reviewer pattern). Subagent *definitions* are still per-tool (Codex/Cursor use their own
-  custom-agent/mode files) — unlike `SKILL.md`, there's no shared cross-tool standard yet.
+  reviewer pattern).
+- **`code-reviewer`** — least-privilege (read + inspect) reviewer of a diff for correctness, security,
+  and gamed gates; the review gate in the feature pipeline.
+
+Subagent *definitions* are still per-tool (Codex/Cursor use their own custom-agent/mode files) —
+unlike `SKILL.md`, there's no shared cross-tool standard yet.
+
+## Workflows (Claude Code: `.claude/workflows/`)
+- **`feature-pipeline`** — the orchestrator for `feature-lifecycle`: runs the staged loops, gates each
+  on a reviewer subagent or `TEST_CMD`, and stops before the PR for human sign-off.
 
 ## Agent guardrails & memory (`.agent/`)
 Deterministic hooks (registered in `.claude/settings.json`) run on agent events: `git-safety` +
