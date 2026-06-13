@@ -45,12 +45,15 @@ while IFS= read -r line || [ -n "$line" ]; do
     "## "*)
       flush
       current=$(printf '%s' "$line" | sed 's/^## *//')
-      if [ -n "$current" ]; then
-        tmp=$(mktemp 2>/dev/null || echo "$MEM_DIR/.tmp.$$")
-        printf '# %s\n' "$current" > "$tmp"
-      else
-        unsaved=1                      # empty "## " heading -> section can't be persisted
-      fi
+      # Reject a path that is empty, absolute, or traverses upward ("..") — staged content is
+      # attacker-influenceable, so a heading like "## ../../OUTSIDE" must not escape the memory lane.
+      case "$current" in
+        ""|/*|*..*) current=""; unsaved=1 ;;   # can't persist -> keep staging to fix
+        *)
+          tmp=$(mktemp 2>/dev/null || echo "$MEM_DIR/.tmp.$$")
+          printf '# %s\n' "$current" > "$tmp"
+          ;;
+      esac
       ;;
     *)
       [ -n "$current" ] && printf '%s\n' "$line" >> "$tmp"
