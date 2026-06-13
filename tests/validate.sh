@@ -107,6 +107,29 @@ if [ -x "$LOADER" ]; then
   rm -rf "$td"
 fi
 
+# 4d. Regression: git-safety must block the leading-`+` refspec force-push form, not just --force/-f.
+# `git push origin +main` and `git push origin +refs/heads/main` are exactly equivalent to a
+# force-push of that ref (they rewrite shared history) — the precise harm line 19 exists to prevent.
+# The line-19 case only matches the literal substrings "--force" / "git push -f", so the `+`-refspec
+# form slips through (exit 0) even from a non-protected feature branch. Contract: a `+`-prefixed
+# push refspec MUST be blocked with exit 2, just like --force. Control: --force already blocks.
+GITSAFE="$ROOT/.agent/hooks/git-safety.sh"
+if [ -x "$GITSAFE" ]; then
+  # Control — proves the hook blocks the canonical force-push (must exit 2).
+  printf '%s' '{"command":"git push origin main --force"}' | sh "$GITSAFE" >/dev/null 2>&1
+  ctl=$?
+  # The gap — semantically-equivalent leading-`+` refspec force-pushes.
+  printf '%s' '{"command":"git push origin +refs/heads/main"}' | sh "$GITSAFE" >/dev/null 2>&1
+  r1=$?
+  printf '%s' '{"command":"git push origin +main"}' | sh "$GITSAFE" >/dev/null 2>&1
+  r2=$?
+  if [ "$ctl" -eq 2 ] && [ "$r1" -eq 2 ] && [ "$r2" -eq 2 ]; then
+    ok "git-safety: blocks leading-'+' refspec force-push (+main / +refs/heads/main)"
+  else
+    bad "git-safety: leading-'+' refspec force-push slips through (control --force rc=$ctl, +refs/heads/main rc=$r1, +main rc=$r2; all must be 2)"
+  fi
+fi
+
 # 5. QA loop manifest is well-formed (repo-self only; scaffold targets have no .agent/qa.conf).
 if [ -f "$ROOT/.agent/qa.conf" ]; then
   if ( cd "$ROOT" && sh tests/check-qa-manifest.sh >/dev/null 2>&1 ); then
