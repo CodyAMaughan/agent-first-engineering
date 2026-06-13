@@ -189,6 +189,27 @@ if [ -x "$GITSAFE" ]; then
   else
     bad "git-safety: glob-target recursive delete evades the standalone-token guard (control -rf / rc=$hctl; -rf /* rc=$h1, -rf ~/* rc=$h2; all must be 2)"
   fi
+
+  # 4h. Regression: git-safety must block a recursive root delete whose target is separated from the
+  # flags by a backslash-newline line-continuation — `rm -rf \<NL>/`. A multi-line shell command (or a
+  # `rm -rf \` then `/` on the next line) executes as exactly `rm -rf /` (argv [rm][-rf][/]), a real
+  # root wipe. But the guard (git-safety.sh:20) does `tr '\t"' '   '` — it normalizes only TAB and `"`
+  # to spaces, never the newline. So the line-22 case `*" rm "*"-"*[rR]*" / "*` never sees the required
+  # ASCII-space-slash-space token around the target (the slash is flanked by a newline, not a space)
+  # and the script falls through (exit 0). Contract: the backslash-NL line-continuation form MUST block
+  # with exit 2, like the canonical `rm -rf /`. Control: `rm -rf /` already blocks, proving the hook ran.
+  # NB: the newline is assembled via printf (NL), and the substrings come from $R/$SL/$BS, so the literal
+  # dangerous bytes never appear in this file — else the live repo's own git-safety hook would intercept
+  # this file's JSON on read/edit. The hook under test still receives the real backslash-NL command.
+  BS=$(printf '\134')                                                                       # '\'
+  NL=$(printf '\012')                                                                       # newline
+  printf '{"command":"%s -rf %s"}' "$R" "$SL" | sh "$GITSAFE" >/dev/null 2>&1; nctl=$?       # control: must block
+  printf '{"command":"%s -rf %s%s%s"}' "$R" "$BS" "$NL" "$SL" | sh "$GITSAFE" >/dev/null 2>&1; n1=$?  # backslash-NL continuation -> rm -rf /
+  if [ "$nctl" -eq 2 ] && [ "$n1" -eq 2 ]; then
+    ok "git-safety: blocks recursive root delete across a backslash-newline line-continuation (rm -rf \\<NL>/)"
+  else
+    bad "git-safety: backslash-newline line-continuation evades the root-delete guard (control -rf / rc=$nctl; -rf \\<NL>/ rc=$n1; both must be 2) — tr normalizes only TAB/\" to space, never the newline, so the \" / \" token never forms"
+  fi
 fi
 
 # 5. QA loop manifest is well-formed (repo-self only; scaffold targets have no .agent/qa.conf).
