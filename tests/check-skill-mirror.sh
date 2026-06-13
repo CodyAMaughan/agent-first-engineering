@@ -17,6 +17,14 @@ claude=$(names "$CL" | grep -v '^speckit-')   # our skills only
 
 echo "Checking skill mirror parity: $AG  <->  $CL"
 
+# 0. There must be at least one first-party skill to mirror. With both sides empty
+#    names() returns "", the parity test "" != "" is false, and the for-loops below
+#    iterate zero times — a wiped skills library would otherwise pass as clean.
+if [ -z "$agents" ] && [ -z "$claude" ]; then
+  echo "  FAIL no first-party skills found in $AG or $CL — nothing is being mirrored"
+  fail=1
+fi
+
 # 1. The set of first-party skills must be the same on both sides.
 if [ "$agents" != "$claude" ]; then
   echo "  FAIL skill sets differ (a skill is missing from one side)"
