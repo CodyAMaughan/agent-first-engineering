@@ -10,7 +10,41 @@ set -u
 
 CONF="${SCAFFOLD_CONF:-.agent/guardrails.conf}"
 TEST_CMD=""
+TEST_TIMEOUT=""
 [ -f "$CONF" ] && . "$CONF" 2>/dev/null || true
+
+# How long any single TEST_CMD run may take before the gate reaps it. An
+# unbounded run would block this hook — and the Stop event it is bound to — for
+# the command's full duration, so a hung or pathologically slow suite would
+# wedge the agent forever. Configurable (TEST_TIMEOUT in $CONF) for slow real
+# suites; the default is a conservative ceiling.
+TIMEOUT_SECS="${TEST_TIMEOUT:-15}"
+
+# run_bounded <cmd...>: run a command but kill it after $TIMEOUT_SECS. Returns
+# the command's own exit status on completion, or 124 (timeout convention) if it
+# was reaped. Prefers GNU `timeout`/`gtimeout`; falls back to a portable perl
+# alarm wrapper (perl is on every macOS / Linux) so the bound holds even where
+# coreutils `timeout` is absent.
+run_bounded() {
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$TIMEOUT_SECS" "$@"
+  elif command -v gtimeout >/dev/null 2>&1; then
+    gtimeout "$TIMEOUT_SECS" "$@"
+  else
+    perl -e '
+      my $t = shift;
+      my $pid = fork();
+      if (!defined $pid) { exit 127; }
+      if ($pid == 0) { exec @ARGV or exit 127; }
+      $SIG{ALRM} = sub { kill("TERM", $pid); sleep 2; kill("KILL", $pid); exit 124; };
+      alarm $t;
+      waitpid($pid, 0);
+      my $rc = $?;
+      alarm 0;
+      exit($rc & 127 ? 128 + ($rc & 127) : $rc >> 8);
+    ' "$TIMEOUT_SECS" "$@"
+  fi
+}
 
 # Drain the stdin event.
 cat >/dev/null 2>&1 || true
@@ -21,14 +55,38 @@ if [ -z "${TEST_CMD:-}" ]; then
   exit 0
 fi
 
-if sh -c "$TEST_CMD" >/tmp/test-gate.out 2>&1; then
+# Per-run output file (mktemp + PID): a concurrent stop must not clobber the
+# file this run tails to build its `reason`, or it would leak another session's
+# output. Fall back to a PID-suffixed path if mktemp is unavailable.
+OUT=$(mktemp "${TMPDIR:-/tmp}/test-gate.$$.XXXXXX" 2>/dev/null) || OUT="/tmp/test-gate.$$.out"
+trap 'rm -f "$OUT"' EXIT
+
+# Bound the run: an unbounded `sh -c "$TEST_CMD"` would block this hook (and the
+# Stop turn) for the command's full duration, so a hung/slow suite is reaped at
+# $TIMEOUT_SECS and treated as a failure (block with a reason) rather than hanging.
+run_bounded sh -c "$TEST_CMD" >"$OUT" 2>&1
+RC=$?
+if [ "$RC" -eq 0 ]; then
   exit 0
 fi
 
-# Tests failed -> block the stop and tell the agent why.
-REASON="Tests are failing — do not finish yet. Fix them and re-run \`$TEST_CMD\`. Last output:
-$(tail -n 30 /tmp/test-gate.out 2>/dev/null)"
+# Tests failed (or timed out) -> block the stop and tell the agent why.
+if [ "$RC" -eq 124 ]; then
+  REASON="Tests timed out after ${TIMEOUT_SECS}s — do not finish yet. The suite (\`$TEST_CMD\`) did not complete within the gate's budget; it may be hung or too slow. Speed it up or raise TEST_TIMEOUT in $CONF, then re-run. Last output:
+$(tail -n 30 "$OUT" 2>/dev/null)"
+else
+  REASON="Tests are failing — do not finish yet. Fix them and re-run \`$TEST_CMD\`. Last output:
+$(tail -n 30 "$OUT" 2>/dev/null)"
+fi
 
 # JSON form (Claude/Codex): a structured block decision.
-printf '{"decision":"block","reason":%s}\n' "$(printf '%s' "$REASON" | sed 's/\\/\\\\/g; s/"/\\"/g; s/$/\\n/' | tr -d '\n')"
+# Encode REASON as a proper JSON string: escape backslashes and quotes, turn
+# control chars (TAB, CR, and the line-ending newlines) into their \uXXXX-free
+# short escapes, then wrap the result in double quotes. Without the quotes and
+# control-char escaping a TAB or unquoted value yields a payload a consumer
+# can't json.loads() — losing the block reason.
+ESCAPED=$(printf '%s' "$REASON" \
+  | sed 's/\\/\\\\/g; s/"/\\"/g; s/	/\\t/g; s/\r/\\r/g; s/$/\\n/' \
+  | tr -d '\n\r')
+printf '{"decision":"block","reason":"%s"}\n' "$ESCAPED"
 exit 2

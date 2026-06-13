@@ -7,7 +7,7 @@ set -u
 INPUT=$(cat 2>/dev/null || true)
 
 # Secret-ish path patterns (files the agent should never read/commit by default).
-PATTERN='\.env($|\.|[^a-zA-Z])|\.pem|\.key($|[^a-zA-Z])|id_rsa|id_ed25519|credentials|\.pfx|\.p12|secrets?\.(ya?ml|json|toml)|\.aws/credentials|service-account.*\.json'
+PATTERN='\.env($|[^a-zA-Z])|\.envrc|\.pem|\.key($|[^a-zA-Z])|id_rsa|id_dsa|id_ecdsa|id_ed25519|credentials|\.pfx|\.p12|secrets?\.(ya?ml|json|toml)|\.aws/credentials|service-account.*\.json'
 
 block() {
   reason="secret-scan: blocked — this action touches a likely secret ($1). Read it manually if truly needed, or add an explicit allow."

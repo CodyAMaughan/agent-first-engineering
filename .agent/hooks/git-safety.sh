@@ -13,10 +13,20 @@ block() {
   exit 2
 }
 
+# Recursive delete of a top-level path. The flag bundle is attacker-controlled, so detect ANY
+# recursive `rm` (-r/-R, bundled with -f and reordered: -rf, -fr, -Rf, -f -r) whose target is
+# exactly / or ~ — not just the literal "rm -rf /" substring. We pad with spaces and require the
+# target to be a standalone token (" / " / " ~ ") so legit paths like /tmp/foo don't false-trip.
+npad=" $(printf '%s' "$INPUT" | tr '\t"' '   ') "
+case "$npad" in
+  *" rm "*"-"*[rR]*" / "*|*" rm "*"-"*[rR]*" ~ "*)
+                                              block "recursive delete of a top-level path" ;;
+esac
+
 # Destructive / irreversible commands.
 case "$INPUT" in
-  *"rm -rf /"*|*"rm -rf ~"*)                 block "recursive delete of a top-level path" ;;
   *"git push"*"--force"*|*"git push -f"*)    block "force-push (rewrites shared history)" ;;
+  *"git push"*" +"*)                          block "force-push via leading-'+' refspec (rewrites shared history)" ;;
   *"git reset --hard"*)                       block "git reset --hard (discards uncommitted work)" ;;
   *"git clean -"*[fF]*)                        block "git clean -f (deletes untracked files)" ;;
   *"git checkout ."*|*"git restore ."*)       block "wholesale discard of working-tree changes" ;;

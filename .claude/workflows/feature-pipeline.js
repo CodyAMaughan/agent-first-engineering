@@ -113,6 +113,7 @@ for (let i = 1; i <= conf.maxReviewRounds; i++) {
     `${JSON.stringify(revGate.issues)}. Then re-run TEST_CMD from .agent/lifecycle.conf to confirm still green. Report what changed.`,
     { label: `review:fix#${i}`, phase: 'Review' })
 }
+if (!revGate.pass) return { stoppedAt: 'Review', reason: `unresolved must-fix review findings after ${conf.maxReviewRounds} rounds — surfacing to a human`, branch, gate: revGate }
 
 phase('Ready')
 log(`Pipeline complete — branch ${branch} is ready for human PR review.`)
