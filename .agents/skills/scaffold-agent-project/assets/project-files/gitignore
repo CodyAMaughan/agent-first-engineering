@@ -21,3 +21,7 @@ coverage/
 
 # Agent-first: keep the curated memory wiki, ignore the volatile staging buffer
 .agent/memory/_staging.md
+
+# Budget guardrail: transient cost artifacts (cached price table + per-run ledger)
+.agent/budget/price-table.cache.json
+.agent/budget/runs/*.ndjson

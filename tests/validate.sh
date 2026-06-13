@@ -78,6 +78,17 @@ if [ -f "$ROOT/.agent/qa.conf" ]; then
   fi
 fi
 
+# 6. Budget guardrail / cost core fires (repo-self only; scaffold targets have no cost core yet).
+# The cost suite (node --test + the breaker fixture) is the confidence gate for the guardrail —
+# wire it in so the agent-first layer is incomplete unless the kill-switch actually aborts.
+if [ -f "$ROOT/tests/check-budget.sh" ] && [ -d "$ROOT/.claude/workflows/lib" ]; then
+  if ( cd "$ROOT" && sh tests/check-budget.sh >/dev/null 2>&1 ); then
+    ok "budget guardrail well-formed (cost priced correctly; breaker aborts in a fixture)"
+  else
+    bad "budget guardrail broken (run: sh tests/check-budget.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"

@@ -1,0 +1,60 @@
+# Opt-in, local-first observability preset for agent workflows (P0).
+# Brings up an OpenTelemetry Collector + Arize Phoenix (Apache-2.0) so you can "check in on a
+# running agent": live per-agent token/cost totals, current step, tool calls, and run status —
+# WITHOUT any usage data leaving the host (FR-017, FR-018).
+#
+# Enable:
+#   cp assets/observability/env.observability.example .env.observability && set -a && . ./.env.observability
+#   docker compose -f assets/observability/docker-compose.yml up -d
+# The budget guardrail does NOT depend on this — it reads local logs and works with this OFF
+# (FR-006, FR-014). This is observation, not enforcement.
+#
+# NOTE: Grafana/Prometheus are offered as an OPTIONAL, clearly-flagged preset below (Grafana is
+# AGPL — copyleft). Phoenix is the permissive default; leave the optional profile off unless you
+# want the token/cost panels + threshold alerts.
+services:
+  # OTel Collector: receives OTLP from Claude Code (CLAUDE_CODE_ENABLE_TELEMETRY=1) and fans it
+  # out to the local dashboard(s). No exporter points off-host.
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    command: ["--config=/etc/otel-collector.yaml"]
+    volumes:
+      - ./otel-collector.yaml:/etc/otel-collector.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+    depends_on:
+      - phoenix
+
+  # Arize Phoenix: agent-graph / trace-waterfall view, purpose-built for agent traces. Local-only.
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    ports:
+      - "6006:6006"   # Phoenix UI  -> http://localhost:6006
+      - "4319:4317"   # Phoenix's own OTLP gRPC ingest (collector forwards here)
+    environment:
+      - PHOENIX_WORKING_DIR=/phoenix
+    volumes:
+      - phoenix-data:/phoenix
+
+  # ---- OPTIONAL token/cost panels + threshold alerts (profile: metrics) --------------------
+  # Prometheus is Apache-2.0; Grafana is AGPL (copyleft) — enable only if you accept that.
+  #   docker compose --profile metrics -f assets/observability/docker-compose.yml up -d
+  prometheus:
+    image: prom/prometheus:latest
+    profiles: ["metrics"]
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana-oss:latest   # AGPL — optional, copyleft; not a core dependency
+    profiles: ["metrics"]
+    ports:
+      - "3000:3000"   # Grafana UI -> http://localhost:3000
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+    depends_on:
+      - prometheus
+
+volumes:
+  phoenix-data:
