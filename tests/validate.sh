@@ -69,6 +69,15 @@ if [ -x "$HOOK" ]; then
   rm -rf "$td"
 fi
 
+# 5. Curriculum footnote integrity (repo-self only; scaffold targets have no docs/curriculum).
+if [ -d "$ROOT/docs/curriculum" ]; then
+  if ( cd "$ROOT" && sh tests/check-footnotes.sh >/dev/null 2>&1 ); then
+    ok "curriculum footnotes balanced"
+  else
+    bad "curriculum footnote imbalance (run: sh tests/check-footnotes.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"

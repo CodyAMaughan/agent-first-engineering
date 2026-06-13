@@ -32,6 +32,9 @@ jobs:
       - name: Validate agent-first layer (AGENTS.md, skills, hooks, memory loop)
         run: sh tests/validate.sh
 
+      - name: Footnote integrity (curriculum [^n] balance)
+        run: sh tests/check-footnotes.sh
+
       - name: Check external links (advisory)
         uses: lycheeverse/lychee-action@v2
         continue-on-error: true
