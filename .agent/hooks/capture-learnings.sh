@@ -35,10 +35,38 @@ trap 'rmdir "$LOCK" 2>/dev/null' EXIT INT TERM
 
 [ -s "$STAGING" ] || exit 0           # nothing staged -> done
 
+# Atomically SNAPSHOT staging before we read it, so the producer (agent/user) can
+# keep appending learnings to _staging.md DURING this flush without losing them.
+# Without this, the read loop + truncate (`: > "$STAGING"`) was a non-atomic
+# test-read-truncate of the SAME live file: a section appended AFTER the read loop
+# hit EOF but BEFORE the truncate was read by nobody and then wiped (silent lost
+# write, rc=0). The lockdir above only serializes capture-vs-capture; it takes no
+# lock against the producer. Renaming the live file out of the way (rename is
+# atomic on one filesystem) decouples us from the producer: every section we act on
+# is the snapshot, and any append the producer makes lands on a FRESH _staging.md
+# that this run never touches, so it survives to the next flush. We deliberately
+# rename WITHOUT the external `mv` binary (a shell-internal claim) and keep the
+# per-section flush as the only `mv`, so the merge below is unaffected.
+SNAP="$MEM_DIR/.staging.$$"
+# Hardlink-then-unlink is an atomic claim: SNAP names the staged inode, then we
+# drop the _staging.md name. A producer append after this point either created a
+# brand-new _staging.md (its open(O_CREAT) lost the race only against our unlink,
+# never against our read) which we leave intact. ln/rm avoids the `mv` binary the
+# per-section flush (and its test shim) relies on.
+if ln "$STAGING" "$SNAP" 2>/dev/null; then
+  rm -f "$STAGING"
+else
+  # No hardlink support (or cross-device): fall back to a copy. Still safe — we
+  # truncate ONLY the bytes we copied, leaving any concurrently-appended tail.
+  cp "$STAGING" "$SNAP" 2>/dev/null || exit 0
+  rm -f "$STAGING"
+fi
+[ -s "$SNAP" ] || { rm -f "$SNAP"; exit 0; }
+
 # Append a dated rollup (append-only audit trail).
 {
   printf '\n## %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || echo session)"
-  cat "$STAGING"
+  cat "$SNAP"
 } >> "$LOG"
 
 # Merge by semantic path. Each "## <path>" heading => .agent/memory/<path>.md (replace, not append).
@@ -84,10 +112,24 @@ while IFS= read -r line || [ -n "$line" ]; do
       [ -n "$current" ] && printf '%s\n' "$line" >> "$tmp"
       ;;
   esac
-done < "$STAGING"
+done < "$SNAP"
 flush
 
-# Only clear staging if every section was persisted; otherwise leave it intact so the
-# malformed section (empty "## " path) can be fixed instead of silently lost.
-[ "$unsaved" -eq 0 ] && : > "$STAGING"
+# Staging was already claimed (renamed to $SNAP) atomically, so a producer append
+# during this flush is safe in the live _staging.md and untouched here.
+#   unsaved==0: every section persisted -> drop the snapshot.
+#   unsaved!=0: a malformed section (e.g. empty "## " path) couldn't be persisted ->
+#     PREPEND the snapshot back onto the live _staging.md (ahead of anything the
+#     producer appended meanwhile) so the bad section can be fixed instead of lost.
+if [ "$unsaved" -eq 0 ]; then
+  rm -f "$SNAP"
+else
+  restore="$MEM_DIR/.restore.$$"
+  if [ -s "$STAGING" ]; then
+    cat "$SNAP" "$STAGING" > "$restore" 2>/dev/null && mv "$restore" "$STAGING"
+  else
+    mv "$SNAP" "$STAGING" 2>/dev/null
+  fi
+  rm -f "$SNAP" "$restore"
+fi
 exit 0
