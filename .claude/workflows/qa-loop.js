@@ -83,12 +83,13 @@ while (round < conf.maxRounds && dryStreak < conf.dryStreakStop) {
   // ---- Generate (fan-out, one agent per lens) --------------------------------------------
   phase('Generate')
   const batches = await parallel(conf.lenses.map((lens) => () => agent(
-    `You are the qa-adversary. Lens: "${lens}". Targets: ${JSON.stringify(conf.targets)}. Round ${round}. ` +
-    `Read the real code and produce candidate FAILURE findings for THIS lens only, each with file:line, a ` +
-    `one-line claim, and a concrete repro recipe (literal input + exact command + expected-vs-actual). ` +
-    `THREAT MODEL: ${conf.threatModel} Do NOT report findings that presuppose file-write/RCE. ` +
+    `First read .claude/agents/qa-adversary.md and ADOPT that role fully. Then: lens = "${lens}". ` +
+    `Targets: ${JSON.stringify(conf.targets)}. Round ${round}. Read the real code and produce candidate ` +
+    `FAILURE findings for THIS lens only, each with file:line, a one-line claim, and a concrete repro recipe ` +
+    `(literal input + exact command + expected-vs-actual). THREAT MODEL: ${conf.threatModel} ` +
+    `Do NOT report findings that presuppose file-write/RCE. ` +
     `Do NOT re-report these already-seen ids: ${JSON.stringify([...seen])}. Read-only; edit nothing.`,
-    { label: `gen:${lens}#${round}`, phase: 'Generate', schema: FINDINGS, agentType: 'qa-adversary' }
+    { label: `gen:${lens}#${round}`, phase: 'Generate', schema: FINDINGS }
   )))
 
   // ---- Dedup (plain JS) ------------------------------------------------------------------
@@ -108,13 +109,14 @@ while (round < conf.maxRounds && dryStreak < conf.dryStreakStop) {
   let confirmedThisRound = 0
   for (const f of fresh) {
     const v = await agent(
-      `You are the qa-verifier — a hostile skeptic. Candidate: ${JSON.stringify(f)}. ` +
-      `REPRODUCE it against the real code or REJECT it: (1) mktemp -d; (2) write the minimal failing input ` +
-      `there and run the real target (e.g. \`echo '<json>' | sh ${f.target}\` or \`sh ${f.target} <tmp>\`), ` +
-      `capturing exit code + output; (3) rm -rf the temp dir. CONFIRMED requires reproduced=true AND the ` +
-      `literal command + captured output in evidence. DEFAULT TO REJECTING — a claim you cannot reproduce ` +
-      `is WORKS-AS-INTENDED, never CONFIRMED. Threat model: ${conf.threatModel} Edit nothing tracked.`,
-      { label: `verify:${f.id}`, phase: 'Verify', schema: VERDICT, agentType: 'qa-verifier' })
+      `First read .claude/agents/qa-verifier.md and ADOPT that role fully (hostile skeptic). ` +
+      `Candidate: ${JSON.stringify(f)}. REPRODUCE it against the real code or REJECT it: (1) mktemp -d; ` +
+      `(2) write the minimal failing input there and run the real target (e.g. \`echo '<json>' | sh ${f.target}\` ` +
+      `or \`sh ${f.target} <tmp>\`), capturing exit code + output; (3) rm -rf the temp dir. CONFIRMED requires ` +
+      `reproduced=true AND the literal command + captured output in evidence. DEFAULT TO REJECTING — a claim ` +
+      `you cannot reproduce is WORKS-AS-INTENDED, never CONFIRMED. Threat model: ${conf.threatModel} ` +
+      `Edit nothing tracked.`,
+      { label: `verify:${f.id}`, phase: 'Verify', schema: VERDICT })
 
     const confirmed = v.verdict === 'CONFIRMED' && v.reproduced === true
     if (!confirmed) { triage.rejected.push({ id: f.id, severity: f.severity, verdict: v.verdict, why: v.evidence }); continue }
