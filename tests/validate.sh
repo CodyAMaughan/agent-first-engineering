@@ -228,6 +228,15 @@ if [ -f "$ROOT/tests/check-feature-pipeline-review-gate.sh" ]; then
   fi
 fi
 
+# 11. load-memory.sh caps its session-start re-injection (one oversized learning can't flood context).
+if [ -f "$ROOT/tests/check-load-memory-budget.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-load-memory-budget.sh >/dev/null 2>&1 ); then
+    ok "load-memory re-injection is byte-bounded (no context-flood from one staged learning)"
+  else
+    bad "load-memory.sh re-injects memory with NO byte budget: one ~40k-line staged learning emits >256 KB to stdout every session — context-flood DoS (run: sh tests/check-load-memory-budget.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"
