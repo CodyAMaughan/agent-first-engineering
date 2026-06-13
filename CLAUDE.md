@@ -11,7 +11,6 @@ in `meta/PHASE_AUTHORING_GUIDE.md`. The `.claude/skills/` copy is a byte-identic
 canonical `.agents/skills/` one — keep them in sync.
 
 <!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan:
-`specs/004-steerable-bounded-qa-loop/plan.md`
+No active Spec Kit feature. When you start one, this marker will point at the
+current `specs/<feature>/plan.md` (see `.specify/` and the `speckit-*` skills).
 <!-- SPECKIT END -->
