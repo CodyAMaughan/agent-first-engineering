@@ -264,6 +264,15 @@ if [ -f "$ROOT/tests/check-load-memory-budget.sh" ]; then
   fi
 fi
 
+# 11b. load-memory.sh re-injects a CONSISTENT memory snapshot (no half-applied-merge tearing).
+if [ -f "$ROOT/tests/check-load-memory-merge-snapshot.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-load-memory-merge-snapshot.sh >/dev/null 2>&1 ); then
+    ok "load-memory: re-injected wiki is a consistent snapshot (never a mix of pre- and post-merge sections)"
+  else
+    bad "load-memory.sh takes no lock, so a session.start re-injection firing mid-flush reads across capture's per-section mv loop and emits a torn wiki (stale + merged sections) (run: sh tests/check-load-memory-merge-snapshot.sh)"
+  fi
+fi
+
 # 12. test-gate.sh bounds TEST_CMD runtime so a hung/slow suite can't wedge the Stop turn.
 if [ -f "$ROOT/tests/check-test-gate-timeout.sh" ]; then
   if ( cd "$ROOT" && sh tests/check-test-gate-timeout.sh >/dev/null 2>&1 ); then
