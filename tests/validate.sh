@@ -201,6 +201,15 @@ if [ -f "$ROOT/tests/check-capture-learnings-crlf.sh" ]; then
   fi
 fi
 
+# 7b. capture-learnings does not reject a benign embedded-'..' (non-traversal) heading.
+if [ -f "$ROOT/tests/check-capture-learnings-dotdot.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-capture-learnings-dotdot.sh >/dev/null 2>&1 ); then
+    ok "capture-learnings: a heading containing '..' (no '..' path segment) is persisted, log stays bounded"
+  else
+    bad "capture-learnings: '## tools/v1.2..3' is wrongly rejected as traversal -> staging wedged + session-log grows unbounded (run: sh tests/check-capture-learnings-dotdot.sh)"
+  fi
+fi
+
 # 8. git-safety blocks destructive git commands regardless of token whitespace.
 if [ -f "$ROOT/tests/check-git-safety-whitespace.sh" ]; then
   if ( cd "$ROOT" && sh tests/check-git-safety-whitespace.sh >/dev/null 2>&1 ); then
