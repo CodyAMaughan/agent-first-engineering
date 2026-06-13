@@ -33,6 +33,7 @@ cat >/dev/null 2>&1 || true           # drain stdin so the agent isn't blocked
 # Merge by semantic path. Each "## <path>" heading => .agent/memory/<path>.md (replace, not append).
 current=""
 tmp=""
+unsaved=0                              # 1 if any section had no valid path -> keep staging to fix
 flush() {
   [ -n "$current" ] || return 0
   target="$MEM_DIR/$current.md"
@@ -44,8 +45,12 @@ while IFS= read -r line || [ -n "$line" ]; do
     "## "*)
       flush
       current=$(printf '%s' "$line" | sed 's/^## *//')
-      tmp=$(mktemp 2>/dev/null || echo "$MEM_DIR/.tmp.$$")
-      printf '# %s\n' "$current" > "$tmp"
+      if [ -n "$current" ]; then
+        tmp=$(mktemp 2>/dev/null || echo "$MEM_DIR/.tmp.$$")
+        printf '# %s\n' "$current" > "$tmp"
+      else
+        unsaved=1                      # empty "## " heading -> section can't be persisted
+      fi
       ;;
     *)
       [ -n "$current" ] && printf '%s\n' "$line" >> "$tmp"
@@ -54,5 +59,7 @@ while IFS= read -r line || [ -n "$line" ]; do
 done < "$STAGING"
 flush
 
-: > "$STAGING"                         # clear staging now that it's persisted
+# Only clear staging if every section was persisted; otherwise leave it intact so the
+# malformed section (empty "## " path) can be fixed instead of silently lost.
+[ "$unsaved" -eq 0 ] && : > "$STAGING"
 exit 0
