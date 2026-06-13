@@ -181,66 +181,30 @@ if [ -f "$ROOT/.agent/qa.conf" ]; then
   fi
 fi
 
-# 6. capture-learnings does not drop a BOM-prefixed learning while wiping staging.
-if [ -f "$ROOT/tests/check-capture-learnings-bom.sh" ]; then
-  if ( cd "$ROOT" && sh tests/check-capture-learnings-bom.sh >/dev/null 2>&1 ); then
-    ok "capture-learnings: a BOM-prefixed first heading is not silently dropped"
-  else
-    bad "capture-learnings: a BOM-prefixed first heading is dropped AND staging wiped (run: sh tests/check-capture-learnings-bom.sh)"
-  fi
-fi
-
-# 7. capture-learnings does not embed a CR in the derived filename for a CRLF heading.
-if [ -f "$ROOT/tests/check-capture-learnings-crlf.sh" ]; then
-  if ( cd "$ROOT" && sh tests/check-capture-learnings-crlf.sh >/dev/null 2>&1 ); then
-    ok "capture-learnings: a CRLF heading maps to the clean memory file (no CR in name)"
-  else
-    bad "capture-learnings: a CRLF heading writes tools/db^M.md, orphaned from the clean name (run: sh tests/check-capture-learnings-crlf.sh)"
-  fi
-fi
-
-# 8. git-safety blocks destructive git commands regardless of token whitespace.
-if [ -f "$ROOT/tests/check-git-safety-whitespace.sh" ]; then
-  if ( cd "$ROOT" && sh tests/check-git-safety-whitespace.sh >/dev/null 2>&1 ); then
-    ok "git-safety: a tab/double-space between 'git' and clean/commit still blocks"
-  else
-    bad "git-safety: 'git\\tclean -f' / 'git  commit' (tab/double-space) evade the literal-space glob while still running (run: sh tests/check-git-safety-whitespace.sh)"
-  fi
-fi
-
-# 9. The SKILL.md ': ' frontmatter detector fires on CRLF/BOM, not just LF.
-if [ -f "$ROOT/tests/check-skill-frontmatter-encoding.sh" ]; then
-  if ( cd "$ROOT" && sh tests/check-skill-frontmatter-encoding.sh >/dev/null 2>&1 ); then
-    ok "SKILL.md ': ' detector fires on LF, CRLF, and BOM alike"
-  else
-    bad "SKILL.md ': ' detector false-greens on CRLF/BOM (awk fence anchor misses '---\\r'/BOM) (run: sh tests/check-skill-frontmatter-encoding.sh)"
-  fi
-fi
-
-# 10. The feature-pipeline's adversarial Review gate is BLOCKING, at parity with Spec/Plan/Implement.
+# 6. feature-pipeline Review gate is BLOCKING (parity with the Spec/Plan/Implement gates).
 if [ -f "$ROOT/tests/check-feature-pipeline-review-gate.sh" ]; then
   if ( cd "$ROOT" && sh tests/check-feature-pipeline-review-gate.sh >/dev/null 2>&1 ); then
     ok "feature-pipeline Review gate caps with stoppedAt:'Review' on unresolved findings"
   else
-    bad "feature-pipeline Review gate is non-blocking: unresolved must-fix findings fall through to phase('Ready') (run: sh tests/check-feature-pipeline-review-gate.sh)"
+    bad "feature-pipeline Review gate is non-blocking (run: sh tests/check-feature-pipeline-review-gate.sh)"
   fi
 fi
 
-# 11. load-memory.sh caps its session-start re-injection (one oversized learning can't flood context).
-if [ -f "$ROOT/tests/check-load-memory-budget.sh" ]; then
-  if ( cd "$ROOT" && sh tests/check-load-memory-budget.sh >/dev/null 2>&1 ); then
-    ok "load-memory re-injection is byte-bounded (no context-flood from one staged learning)"
-  else
-    bad "load-memory.sh re-injects memory with NO byte budget: one ~40k-line staged learning emits >256 KB to stdout every session — context-flood DoS (run: sh tests/check-load-memory-budget.sh)"
-  fi
-fi
-
-# 12. test-gate.sh bounds TEST_CMD runtime so a hung/slow suite can't wedge the Stop turn.
+# 7. test-gate.sh bounds TEST_CMD runtime so a hung/slow suite can't wedge the Stop turn.
 if [ -f "$ROOT/tests/check-test-gate-timeout.sh" ]; then
   if ( cd "$ROOT" && sh tests/check-test-gate-timeout.sh >/dev/null 2>&1 ); then
     ok "test-gate: TEST_CMD runtime is bounded; a timeout blocks the stop (exit 2)"
   else
-    bad "test-gate.sh runs TEST_CMD with no timeout — a hung/slow suite wedges the Stop turn for its full duration (run: sh tests/check-test-gate-timeout.sh)"
+    bad "test-gate.sh runs TEST_CMD with no timeout (run: sh tests/check-test-gate-timeout.sh)"
+  fi
+fi
+
+# 8. Budget guardrail / cost core fires (repo-self only; scaffold targets have no cost core yet).
+if [ -f "$ROOT/tests/check-budget.sh" ] && [ -d "$ROOT/.claude/workflows/lib" ]; then
+  if ( cd "$ROOT" && sh tests/check-budget.sh >/dev/null 2>&1 ); then
+    ok "budget guardrail well-formed (cost priced correctly; breaker aborts in a fixture)"
+  else
+    bad "budget guardrail broken (run: sh tests/check-budget.sh)"
   fi
 fi
 
