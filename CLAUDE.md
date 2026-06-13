@@ -12,5 +12,6 @@ canonical `.agents/skills/` one — keep them in sync.
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+shell commands, and other important information, read the current plan:
+`specs/004-steerable-bounded-qa-loop/plan.md`
 <!-- SPECKIT END -->
