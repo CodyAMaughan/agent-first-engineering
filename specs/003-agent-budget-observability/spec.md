@@ -34,6 +34,11 @@ dashboard), **P1 = budget guardrail** (the MVP, extends the runtime's existing `
 
 The spec describes **what** these capabilities must do and **why**, not how to build them.
 
+## Clarifications
+
+### Session 2026-06-13
+- Q: Should the scaffolder ship a default cost/token budget ceiling, or require each project to set one? → A: **Ship a conservative default** ceiling out of the box (safe by default) — low enough to stop a runaway, user-tunable, with a soft-alert before the hard abort. A fresh repo must not be able to run away.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - A runaway workflow is aborted at its budget ceiling (Priority: P1)
@@ -196,9 +201,11 @@ total notional cost, per-agent breakdown, the workflow type, and the associated 
   **optional** scaffolder feature, consistent with the project's open-standard-first, opt-in conventions
   (Claude Code is the reference target; the design must not hardcode a single agent's paths or syntax in
   the portable core).
-- **FR-022**: The default per-task and per-workflow budget ceilings shipped by the scaffolder MUST be
-  [NEEDS CLARIFICATION: what default token / notional-cost ceiling (if any) should ship out of the box —
-  a concrete conservative default, or no default ceiling and require explicit opt-in configuration?].
+- **FR-022**: The scaffolder MUST ship a **conservative default** per-task/per-workflow budget ceiling
+  out of the box, so a freshly scaffolded repo is bounded even with no user configuration (safe by
+  default). The default MUST be low enough to stop a runaway yet user-tunable (raise/lower in config),
+  and a soft-alert MUST fire before the hard ceiling aborts. (No-default / require-opt-in is rejected:
+  a fresh repo must not be able to run away.)
 
 ### Future Scope (NOT in this feature's MVP)
 
