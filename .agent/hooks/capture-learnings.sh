@@ -52,6 +52,12 @@ flush() {
   mv "$tmp" "$target"
 }
 while IFS= read -r line || [ -n "$line" ]; do
+  # Strip a leading UTF-8 BOM (bytes EF BB BF) so a BOM-prefixed first heading is still
+  # recognized by the "## " glob below — otherwise the section would be misclassified as
+  # body, never persisted, and staging wiped (silent memory loss).
+  case "$line" in
+    "$(printf '\357\273\277')"*) line=${line#"$(printf '\357\273\277')"} ;;
+  esac
   case "$line" in
     "## "*)
       flush
