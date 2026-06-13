@@ -208,6 +208,27 @@ if [ -f "$ROOT/tests/check-budget.sh" ] && [ -d "$ROOT/.claude/workflows/lib" ];
   fi
 fi
 
+# 9. Steerable/bounded QA-loop: the decision-logic unit tests + the post-mortem replay fixture fire.
+# The replay proves the redesign's invariants HOLD (report-first touches no code, theoretical-edge →
+# backlog, the moderate bar, bar-keyed convergence, a budget/fix-cap abort → partial report) — not
+# merely that the files exist. Repo-self only; scaffold targets have no qa decision core yet.
+if [ -f "$ROOT/tests/check-qa-loop.sh" ] && [ -f "$ROOT/.claude/workflows/lib/qa-classify.js" ]; then
+  if command -v node >/dev/null 2>&1; then
+    if ( cd "$ROOT" && node --test tests/qa-classify.test.js tests/qa-convergence.test.js >/dev/null 2>&1 ); then
+      ok "QA decision-logic unit tests (qa-classify + qa-convergence) green"
+    else
+      bad "QA decision-logic unit tests failed (run: node --test tests/qa-classify.test.js tests/qa-convergence.test.js)"
+    fi
+    if ( cd "$ROOT" && sh tests/check-qa-loop.sh >/dev/null 2>&1 ); then
+      ok "QA-loop replay fires (report-first, impact bar, convergence, budget/fix-cap abort → partial report)"
+    else
+      bad "QA-loop replay broken (run: sh tests/check-qa-loop.sh)"
+    fi
+  else
+    echo "  note node not found (skipped QA decision-logic checks)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"

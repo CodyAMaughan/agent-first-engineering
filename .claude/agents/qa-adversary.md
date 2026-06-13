@@ -31,6 +31,11 @@ reproduces each. You generate; they confirm.
   find something new.
 - **Be honest about severity.** `high` = a real guard bypass or false-green; `med` = robustness bug
   that bites realistic inputs; `low` = edge case unlikely in this repo.
+- **Tag a proposed impact (advisory).** Add a `proposedImpact` hint
+  (`data-loss|security|correctness|robustness|theoretical-edge`) under the threat model — the verifier
+  decides authoritatively, but an honest hint helps ranking. If your finding is a reproducible-but-
+  implausible edge case (exotic encoding, a race on a never-concurrent hook), call it
+  `theoretical-edge` yourself rather than inflating it; the loop won't fix those, so don't pad the list.
 
 ## Lenses (you are assigned exactly one)
 - **boundary** — empty/missing files, zero-length input, first/last line, unborn git HEAD, off-by-one.
@@ -44,5 +49,5 @@ reproduces each. You generate; they confirm.
 
 ## Output
 Return the structured findings (the workflow gives you the schema). Each finding: `{target, line,
-class, claim, repro, severity}`. Keep claims to one sentence; put the real detail in `repro`. Default
-to **fewer, sharper, reproducible** findings over a long noisy list.
+class, claim, repro, proposedSeverity, proposedImpact}`. Keep claims to one sentence; put the real
+detail in `repro`. Default to **fewer, sharper, reproducible** findings over a long noisy list.
