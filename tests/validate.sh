@@ -264,6 +264,15 @@ if [ -f "$ROOT/tests/check-test-gate-timeout.sh" ]; then
   fi
 fi
 
+# 13. test-gate.sh JSON block decision stays parseable when test output carries a raw C0 control char.
+if [ -f "$ROOT/tests/check-test-gate-control-chars.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-test-gate-control-chars.sh >/dev/null 2>&1 ); then
+    ok "test-gate: structured block decision is valid JSON even with a raw control char (e.g. 0x01) in test output"
+  else
+    bad "test-gate.sh leaks raw C0 control chars (0x00-0x08,0x0b,0x0c,0x0e-0x1f) into the JSON reason — a JSON-only consumer can't parse the block decision (run: sh tests/check-test-gate-control-chars.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"
