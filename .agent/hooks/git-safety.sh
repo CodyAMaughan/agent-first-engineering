@@ -20,7 +20,9 @@ block() {
 # A glob target (`rm -rf /*` / `rm -rf ~/*`) deletes every top-level entry — semantically identical
 # to `rm -rf /` — yet the slash is glued to "*", so it would dodge the standalone-token check; also
 # match the glob forms " /*" / " ~/*" / " ~*" (slash/tilde followed by a glob, not a path component).
-npad=" $(printf '%s' "$INPUT" | tr '\t"' '   ') "
+# Also fold TAB, newline and the backslash line-continuation to spaces, so a target split from its
+# flags by `\<NL>` (a real `rm -rf /`, argv [rm][-rf][/]) still presents the standalone " / " token.
+npad=" $(printf '%s' "$INPUT" | tr '\t\n\\"' '    ') "
 case "$npad" in
   *" rm "*"-"*[rR]*" / "*|*" rm "*"-"*[rR]*" ~ "*|\
   *" rm "*"-"*[rR]*" /*"*|*" rm "*"-"*[rR]*" ~/*"*|*" rm "*"-"*[rR]*" ~*"*)
