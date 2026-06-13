@@ -170,6 +170,25 @@ if [ -x "$GITSAFE" ]; then
   else
     bad "git-safety: reordered/split/capital rm flags evade the literal guard (control -rf / rc=$gctl; -fr / rc=$g1, -f -r / rc=$g2, -Rf / rc=$g3, -fr ~ rc=$g4; all must be 2)"
   fi
+
+  # 4g. Regression: git-safety must block a recursive delete of root's CONTENTS via a glob target —
+  # `rm -rf /*` deletes every top-level entry of / and is semantically identical to `rm -rf /`, yet
+  # it slips through (exit 0). The guard (git-safety.sh:20-24) space-pads the input and requires the
+  # target to be a standalone " / " (or " ~ ") token; for "rm -rf /*" the padded form holds "... /* ..."
+  # — the slash is glued to "*", not flanked by spaces — so neither *" / "* nor *" ~ "* matches and the
+  # script falls through. Contract: `rm -rf /*` (and the home form `rm -rf ~/*`) MUST be blocked with
+  # exit 2, just like the canonical `rm -rf /`. Control: `rm -rf /` already blocks, proving the hook ran.
+  # NB: substrings are assembled from $R/$SL/$TL/$STAR via printf so they never appear literally here,
+  # else the live repo's own git-safety hook would intercept this file's own JSON on read/edit.
+  STAR=$(printf '\52')                                                                      # '*'
+  printf '{"command":"%s -rf %s"}'   "$R" "$SL"        | sh "$GITSAFE" >/dev/null 2>&1; hctl=$?  # control: must block
+  printf '{"command":"%s -rf %s%s"}' "$R" "$SL" "$STAR" | sh "$GITSAFE" >/dev/null 2>&1; h1=$?    # root contents: /*
+  printf '{"command":"%s -rf %s%s%s"}' "$R" "$TL" "$SL" "$STAR" | sh "$GITSAFE" >/dev/null 2>&1; h2=$?  # home contents: ~/*
+  if [ "$hctl" -eq 2 ] && [ "$h1" -eq 2 ] && [ "$h2" -eq 2 ]; then
+    ok "git-safety: blocks recursive delete of root/home contents via glob (/* and ~/*)"
+  else
+    bad "git-safety: glob-target recursive delete evades the standalone-token guard (control -rf / rc=$hctl; -rf /* rc=$h1, -rf ~/* rc=$h2; all must be 2)"
+  fi
 fi
 
 # 5. QA loop manifest is well-formed (repo-self only; scaffold targets have no .agent/qa.conf).
