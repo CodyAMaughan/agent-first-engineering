@@ -88,6 +88,25 @@ if [ -x "$HOOK" ]; then
   rm -rf "$td"
 fi
 
+# 4c. Regression: a memory file whose path contains a SPACE must be re-injected by load-memory.sh.
+# capture-learnings takes a heading verbatim (e.g. "## tools/test db") and writes "<path>.md", so a
+# spaced filename is reachable end-to-end. load-memory.sh:14 uses an unquoted `for f in $(find ...)`,
+# which word-splits the path on the space; the per-token `cat "$f"` then fails and the learning body
+# is silently dropped from session-start context (rc=0). Contract: the body MUST appear in stdout.
+LOADER="$ROOT/.agent/hooks/load-memory.sh"
+if [ -x "$LOADER" ]; then
+  td=$(mktemp -d)
+  mkdir -p "$td/.agent/memory/tools"
+  printf '# mem\nNeeds --no-sandbox locally.\n' > "$td/.agent/memory/tools/test db.md"
+  out=$( cd "$td" && echo '{}' | sh "$LOADER" 2>/dev/null )
+  if printf '%s' "$out" | grep -q 'Needs --no-sandbox locally.'; then
+    ok "load-memory: re-injects a learning whose path contains a space"
+  else
+    bad "load-memory: a memory path with a space is word-split and dropped from stdout (learning lost, rc=0)"
+  fi
+  rm -rf "$td"
+fi
+
 # 5. QA loop manifest is well-formed (repo-self only; scaffold targets have no .agent/qa.conf).
 if [ -f "$ROOT/.agent/qa.conf" ]; then
   if ( cd "$ROOT" && sh tests/check-qa-manifest.sh >/dev/null 2>&1 ); then
