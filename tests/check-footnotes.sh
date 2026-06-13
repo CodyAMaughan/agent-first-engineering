@@ -109,7 +109,13 @@ echo "Checking curriculum footnote integrity: docs/curriculum/**/*.md"
 self_test
 
 # --- real scan --------------------------------------------------------------------------
-for f in $(find docs/curriculum -name '*.md' 2>/dev/null | sort); do
+# Read the file list via a temp file + input redirection (NOT `for f in $(...)`, which
+# word-splits on whitespace — a path with a space would silently false-pass — and NOT a
+# `find | while` pipe, whose subshell would lose `fail`).
+flist=$(mktemp) || { echo "FAIL (mktemp failed)"; exit 1; }
+find docs/curriculum -name '*.md' 2>/dev/null | sort > "$flist"
+while IFS= read -r f; do
+  [ -n "$f" ] || continue
   out=$(check_file "$f")
   if [ -z "$out" ]; then
     echo "  ok   $f"
@@ -118,7 +124,8 @@ for f in $(find docs/curriculum -name '*.md' 2>/dev/null | sort); do
     echo "$out" | sed 's/^/         /'
     fail=1
   fi
-done
+done < "$flist"
+rm -f "$flist"
 
 echo
 if [ "$fail" -eq 0 ]; then
