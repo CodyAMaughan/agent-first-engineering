@@ -101,6 +101,27 @@ for case in "JSON \\u002e unicode-escape|$json_unicode" "percent-encode %2e|$jso
   fi
 done
 
+# --- regression: LETTER-byte \u00XX escapes must ALSO block -------------------
+# secret-scan.sh:22 decodes a JSON \u00XX escape to %XX but only round-trips
+# %2e->'.' and %2f->'/'. Any escaped LETTER byte (e.g. i = 'i') becomes
+# %69 and is never reconstructed, so `id_rsa` written as `id_rsa` matches
+# neither the raw input (holds `i...`) nor the decoded form (holds `%69...`).
+# The agent runtime decodes `i`->'i' so the OS runs `cat id_rsa`, but the
+# hook returns exit 0 — a real secret read that evades the gate.
+json_letter_idrsa=$(printf '{"command":"cat \\u0069d_rsa"}')  # i='i' -> id_rsa
+json_letter_key=$(printf '{"file_path":"my.\\u006bey"}')      # k='k' -> my.key
+
+for case in "JSON \\u0069 letter-escape (id_rsa)|$json_letter_idrsa" "JSON \\u006b letter-escape (.key)|$json_letter_key"; do
+  label=${case%%|*}; body=${case#*|}
+  run_hook_raw "$body"; rc=$?
+  if [ "$rc" -eq 2 ]; then
+    echo "  ok   blocked (letter-encoded): $label  [$body]"
+  else
+    echo "  FAIL not blocked (letter-encoded): $label  [$body] (exit $rc, expected 2) — \\u00XX letter-escape evades the decoder (only %2e/%2f are round-tripped)"
+    fail=1
+  fi
+done
+
 echo
 if [ "$fail" -eq 0 ]; then
   echo "PASS — secret-scan blocks .envrc / id_dsa and friends (no letter-boundary evasion)."
