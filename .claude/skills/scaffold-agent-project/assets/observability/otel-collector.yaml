@@ -1,0 +1,39 @@
+# OTel Collector config for the local-first agent-observability preset.
+# OTLP in (from Claude Code's native exporter) -> Phoenix (traces/spans) + Prometheus (metrics),
+# all on-host. Built on OTel GenAI semantic conventions. No exporter sends data off the machine
+# (FR-018).
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch: {}
+
+exporters:
+  # Forward traces/spans to Phoenix's OTLP ingest (the agent-graph / waterfall view).
+  otlp/phoenix:
+    endpoint: phoenix:4317
+    tls:
+      insecure: true
+  # Expose Claude Code metrics (claude_code.token.usage by type+model; claude_code.cost.usage USD)
+  # for the OPTIONAL Prometheus/Grafana panels. Scrape http://otel-collector:8889/metrics.
+  prometheus:
+    endpoint: 0.0.0.0:8889
+  # Helpful while wiring things up; remove for quieter logs.
+  debug:
+    verbosity: basic
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/phoenix, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus, debug]
