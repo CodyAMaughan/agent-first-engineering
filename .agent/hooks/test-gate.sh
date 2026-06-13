@@ -30,5 +30,13 @@ REASON="Tests are failing — do not finish yet. Fix them and re-run \`$TEST_CMD
 $(tail -n 30 /tmp/test-gate.out 2>/dev/null)"
 
 # JSON form (Claude/Codex): a structured block decision.
-printf '{"decision":"block","reason":%s}\n' "$(printf '%s' "$REASON" | sed 's/\\/\\\\/g; s/"/\\"/g; s/$/\\n/' | tr -d '\n')"
+# Encode REASON as a proper JSON string: escape backslashes and quotes, turn
+# control chars (TAB, CR, and the line-ending newlines) into their \uXXXX-free
+# short escapes, then wrap the result in double quotes. Without the quotes and
+# control-char escaping a TAB or unquoted value yields a payload a consumer
+# can't json.loads() — losing the block reason.
+ESCAPED=$(printf '%s' "$REASON" \
+  | sed 's/\\/\\\\/g; s/"/\\"/g; s/	/\\t/g; s/\r/\\r/g; s/$/\\n/' \
+  | tr -d '\n\r')
+printf '{"decision":"block","reason":"%s"}\n' "$ESCAPED"
 exit 2
