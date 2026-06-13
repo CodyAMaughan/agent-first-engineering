@@ -18,8 +18,10 @@ block() {
 
 # Defeat encoding evasions: a secret path hidden as a JSON \uXXXX escape or a
 # percent-encoded byte never contains the literal pattern, so decode both forms
-# to canonical bytes before matching (e.g. .env and %2eenv -> .env).
-DECODED=$(printf '%s' "$INPUT" | sed -E 's/\\u00([0-9a-fA-F]{2})/%\1/g; s/%2[eE]/./g; s/%2[fF]/\//g')
+# to their actual bytes before matching (e.g. .env, %2eenv, and .env ->
+# .env; id_rsa -> id_rsa). Decode EVERY hex byte, not just %2e/%2f —
+# a letter escape like i ('i') must round-trip too or it evades the scan.
+DECODED=$(printf '%s' "$INPUT" | perl -pe 's/\\u00([0-9a-fA-F]{2})/chr(hex($1))/ge; s/%([0-9a-fA-F]{2})/chr(hex($1))/ge')
 
 # Match a secret path anywhere in the tool input (covers Read targets and Bash commands like cat/git add).
 # Scan both the raw and the decoded bytes so encoded representations can't slip past.
