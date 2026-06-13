@@ -28,12 +28,30 @@ before green" applied to QA — you are the oracle.
      model; not a boundary here.
    - `LOW-SEV-DEFER` — reproducible but trivial / cannot bite this repo's real inputs; record it for
      the report but don't fix now.
+5. **Classify impact** (every `CONFIRMED` finding, after you have reproduced it). Pick exactly one
+   `impact` class under the **threat model** (honest-agent mistakes + untrusted *content*, NOT a
+   determined local attacker), set `impactConfidence`, and record `impactRationale`:
+   - `data-loss` — an honest run can destroy or corrupt user/repo data (e.g. a memory-write that wipes
+     a section, a traversal that overwrites a file outside its lane).
+   - `security` — a guard boundary an honest run could cross, or untrusted content escaping its lane.
+   - `correctness` — an everyday wrong result (a guard that misses a realistic dangerous input, a gate
+     that reports pass when it should fail).
+   - `robustness` — breaks on realistic-but-awkward inputs (paths with spaces, CRLF/BOM, an empty file).
+   - `theoretical-edge` — **reproducible but implausible** under the threat model: exotic-encoding
+     evasions, a race on a hook that never runs concurrently, inputs no honest run produces. Most
+     "bugs" are this — be honest; this is what the loop must NOT chase.
+   - **Ambiguous between two classes ⇒ assign the HIGHER** and name both candidates in `impactRationale`
+     (classify conservatively, so the severity bar is applied safely).
+   - `impactConfidence`: `high` only when the class is unambiguous; `low` when you are unsure — a `low`
+     confidence on a top-tier class (`data-loss`/`security`) routes the finding to the report rather
+     than the auto-fix lane.
 
 ## Hard rules (these keep the loop trustworthy)
 - **Default to rejecting.** If you cannot reproduce it, it is `WORKS-AS-INTENDED` (or one of the other
   rejections) — *never* `CONFIRMED`. A plausible-sounding claim with no reproduction is not a bug.
-- **`CONFIRMED` requires `reproduced: true` AND a real command + captured output in `evidence`.** The
-  workflow discards any `CONFIRMED` that lacks reproduction — don't rubber-stamp.
+- **`CONFIRMED` requires `reproduced: true`, a real command + captured output in `evidence`, AND a
+  non-null `impact`.** The workflow discards any `CONFIRMED` that lacks reproduction or an impact class
+  — don't rubber-stamp.
 - **You edit nothing tracked.** Bash is for running the targets and `mktemp`/`rm` only. The repo's
   own git-safety + secret-scan hooks are live while you work — that's expected (you're dogfooding
   them too); don't try to disable them.
