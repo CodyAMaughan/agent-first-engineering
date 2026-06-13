@@ -237,6 +237,15 @@ if [ -f "$ROOT/tests/check-load-memory-budget.sh" ]; then
   fi
 fi
 
+# 12. test-gate.sh bounds TEST_CMD runtime so a hung/slow suite can't wedge the Stop turn.
+if [ -f "$ROOT/tests/check-test-gate-timeout.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-test-gate-timeout.sh >/dev/null 2>&1 ); then
+    ok "test-gate: TEST_CMD runtime is bounded; a timeout blocks the stop (exit 2)"
+  else
+    bad "test-gate.sh runs TEST_CMD with no timeout — a hung/slow suite wedges the Stop turn for its full duration (run: sh tests/check-test-gate-timeout.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"
