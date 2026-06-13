@@ -219,6 +219,15 @@ if [ -f "$ROOT/tests/check-git-safety-whitespace.sh" ]; then
   fi
 fi
 
+# 8b. git-safety blocks destructive clean/checkout/restore behind a git global option (-C/--git-dir/-c).
+if [ -f "$ROOT/tests/check-git-safety-global-flags.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-git-safety-global-flags.sh >/dev/null 2>&1 ); then
+    ok "git-safety: 'git -C <dir> clean -f' / checkout . / restore . still block behind a global option"
+  else
+    bad "git-safety: a leading 'git -C <dir>' (or --git-dir/-c) splits the 'git clean'/'git checkout'/'git restore' substring so the destructive command runs unblocked (run: sh tests/check-git-safety-global-flags.sh)"
+  fi
+fi
+
 # 9. The SKILL.md ': ' frontmatter detector fires on CRLF/BOM, not just LF.
 if [ -f "$ROOT/tests/check-skill-frontmatter-encoding.sh" ]; then
   if ( cd "$ROOT" && sh tests/check-skill-frontmatter-encoding.sh >/dev/null 2>&1 ); then
