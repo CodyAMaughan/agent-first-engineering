@@ -17,14 +17,20 @@ block() {
 # recursive `rm` (-r/-R, bundled with -f and reordered: -rf, -fr, -Rf, -f -r) whose target is
 # exactly / or ~ — not just the literal "rm -rf /" substring. We pad with spaces and require the
 # target to be a standalone token (" / " / " ~ ") so legit paths like /tmp/foo don't false-trip.
-npad=" $(printf '%s' "$INPUT" | tr '\t"' '   ') "
+# $nsq: whitespace-collapsed $INPUT — tabs/newlines→spaces and runs squeezed to one
+# (`tr -s`), so the destructive-git globs below match `git\tclean`/`git  clean` the
+# same as `git clean`. The shell collapses inter-token whitespace before exec, so a
+# tab or double space must NOT let a destructive command slip past a single-space glob.
+nsq=$(printf '%s' "$INPUT" | tr '\t\n"' '   ' | tr -s ' ')
+npad=" $nsq "
 case "$npad" in
   *" rm "*"-"*[rR]*" / "*|*" rm "*"-"*[rR]*" ~ "*)
                                               block "recursive delete of a top-level path" ;;
 esac
 
-# Destructive / irreversible commands.
-case "$INPUT" in
+# Destructive / irreversible commands. Match the whitespace-collapsed $nsq (not raw
+# $INPUT) so tab/double-space token separators can't evade these single-space globs.
+case "$nsq" in
   *"git push"*"--force"*|*"git push -f"*)    block "force-push (rewrites shared history)" ;;
   *"git push"*" +"*)                          block "force-push via leading-'+' refspec (rewrites shared history)" ;;
   *"git reset --hard"*)                       block "git reset --hard (discards uncommitted work)" ;;
@@ -54,7 +60,7 @@ if [ -n "${PROTECTED_BRANCHES:-}" ]; then
   [ -n "$branch" ] || branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
   for pb in $PROTECTED_BRANCHES; do
     [ "$branch" = "$pb" ] || continue
-    case "$INPUT" in
+    case "$nsq" in
       *"git commit"*|*"git push"*) block "writing directly to the protected '$branch' branch — create a feature branch first (set PROTECTED_BRANCHES in $CONF to change)" ;;
     esac
   done
