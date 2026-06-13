@@ -34,8 +34,8 @@ esac
 # anchor on, so a destructive command would run unblocked. Build $ngit by iteratively peeling those
 # leading global-option tokens off the `git ` invocation, re-collapsing `git <subcmd>` to be
 # contiguous again, then run the same globs against it. Pure POSIX parameter expansion (no `sed`
-# alternation — BSD/macOS sed lacks BRE `\|`). $ngit is used ONLY for the destructive subcommand
-# match below; the protected-branch check keeps using $nsq.
+# alternation — BSD/macOS sed lacks BRE `\|`). $ngit is used for the destructive subcommand
+# match AND the protected-branch check, so a leading global option can't split either substring.
 ngit=" $nsq "
 while :; do
   case "$ngit" in
@@ -89,7 +89,7 @@ if [ -n "${PROTECTED_BRANCHES:-}" ]; then
   [ -n "$branch" ] || branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
   for pb in $PROTECTED_BRANCHES; do
     [ "$branch" = "$pb" ] || continue
-    case "$nsq" in
+    case "$ngit" in
       *"git commit"*|*"git push"*) block "writing directly to the protected '$branch' branch — create a feature branch first (set PROTECTED_BRANCHES in $CONF to change)" ;;
     esac
   done
