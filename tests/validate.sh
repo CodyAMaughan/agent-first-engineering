@@ -210,6 +210,15 @@ if [ -f "$ROOT/tests/check-capture-learnings-dotdot.sh" ]; then
   fi
 fi
 
+# 7c. capture-learnings does not lose a learning the producer appends during a flush.
+if [ -f "$ROOT/tests/check-capture-learnings-staging-race.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-capture-learnings-staging-race.sh >/dev/null 2>&1 ); then
+    ok "capture-learnings: a learning appended to staging during a flush is not silently wiped"
+  else
+    bad "capture-learnings: an append racing the EOF->truncate window is read by nobody then wiped by line 92 (silent lost write) (run: sh tests/check-capture-learnings-staging-race.sh)"
+  fi
+fi
+
 # 8. git-safety blocks destructive git commands regardless of token whitespace.
 if [ -f "$ROOT/tests/check-git-safety-whitespace.sh" ]; then
   if ( cd "$ROOT" && sh tests/check-git-safety-whitespace.sh >/dev/null 2>&1 ); then
