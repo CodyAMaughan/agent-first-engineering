@@ -17,6 +17,7 @@ block() {
 case "$INPUT" in
   *"rm -rf /"*|*"rm -rf ~"*)                 block "recursive delete of a top-level path" ;;
   *"git push"*"--force"*|*"git push -f"*)    block "force-push (rewrites shared history)" ;;
+  *"git push"*" +"*)                          block "force-push via leading-'+' refspec (rewrites shared history)" ;;
   *"git reset --hard"*)                       block "git reset --hard (discards uncommitted work)" ;;
   *"git clean -"*[fF]*)                        block "git clean -f (deletes untracked files)" ;;
   *"git checkout ."*|*"git restore ."*)       block "wholesale discard of working-tree changes" ;;
