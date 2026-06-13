@@ -11,7 +11,7 @@ cat >/dev/null 2>&1 || true            # drain stdin
 [ -d "$MEM_DIR" ] || exit 0
 
 found=0
-for f in $(find "$MEM_DIR" -type f -name '*.md' 2>/dev/null | grep -v '_staging.md' | grep -v 'session-log.md' | sort); do
+find "$MEM_DIR" -type f -name '*.md' 2>/dev/null | grep -v '_staging.md' | grep -v 'session-log.md' | sort | while IFS= read -r f; do
   if [ "$found" -eq 0 ]; then
     printf '# Project memory (persisted learnings)\n\n'
     found=1
