@@ -21,13 +21,19 @@ if [ -z "${TEST_CMD:-}" ]; then
   exit 0
 fi
 
-if sh -c "$TEST_CMD" >/tmp/test-gate.out 2>&1; then
+# Per-run output file (mktemp + PID): a concurrent stop must not clobber the
+# file this run tails to build its `reason`, or it would leak another session's
+# output. Fall back to a PID-suffixed path if mktemp is unavailable.
+OUT=$(mktemp "${TMPDIR:-/tmp}/test-gate.$$.XXXXXX" 2>/dev/null) || OUT="/tmp/test-gate.$$.out"
+trap 'rm -f "$OUT"' EXIT
+
+if sh -c "$TEST_CMD" >"$OUT" 2>&1; then
   exit 0
 fi
 
 # Tests failed -> block the stop and tell the agent why.
 REASON="Tests are failing — do not finish yet. Fix them and re-run \`$TEST_CMD\`. Last output:
-$(tail -n 30 /tmp/test-gate.out 2>/dev/null)"
+$(tail -n 30 "$OUT" 2>/dev/null)"
 
 # JSON form (Claude/Codex): a structured block decision.
 # Encode REASON as a proper JSON string: escape backslashes and quotes, turn
