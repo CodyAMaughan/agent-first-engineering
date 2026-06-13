@@ -61,7 +61,12 @@ while IFS= read -r line || [ -n "$line" ]; do
   case "$line" in
     "## "*)
       flush
-      current=$(printf '%s' "$line" | sed 's/^## *//')
+      # Strip the leading "## " AND a trailing carriage return: with CRLF staging
+      # (Windows editors / cross-platform pipelines) IFS=read keeps the \r in $line,
+      # so without this the path becomes "tools/db\r" and the file is written as
+      # tools/db^M.md — orphaned from the clean "tools/db.md" a later LF heading writes,
+      # breaking the living-document replace guarantee.
+      current=$(printf '%s' "$line" | sed 's/^## *//; s/'"$(printf '\r')"'$//')
       # Reject a path that is empty, absolute, or traverses upward ("..") — staged content is
       # attacker-influenceable, so a heading like "## ../../OUTSIDE" must not escape the memory lane.
       case "$current" in
