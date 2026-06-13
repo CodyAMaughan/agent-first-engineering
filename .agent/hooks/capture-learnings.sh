@@ -22,6 +22,17 @@ LOG="$MEM_DIR/session-log.md"
 
 mkdir -p "$MEM_DIR"
 cat >/dev/null 2>&1 || true           # drain stdin so the agent isn't blocked
+
+# Serialize concurrent runs: rollup-append + per-section merge + staging-truncate is a
+# read-modify-write of shared files with no atomicity. Two near-simultaneous compact.pre/
+# session.end runs would both see non-empty staging and both append, duplicating/tearing the
+# audit trail (and racing the per-section mv/:>). `mkdir` is atomic, so exactly one run wins
+# the lock; a loser exits cleanly (the winner persists the staged content, and load-memory.sh
+# re-injects it). Released on exit so a crash can't wedge the next session.
+LOCK="$MEM_DIR/.capture.lock"
+mkdir "$LOCK" 2>/dev/null || exit 0   # another run owns this flush -> it will persist staging
+trap 'rmdir "$LOCK" 2>/dev/null' EXIT INT TERM
+
 [ -s "$STAGING" ] || exit 0           # nothing staged -> done
 
 # Append a dated rollup (append-only audit trail).
