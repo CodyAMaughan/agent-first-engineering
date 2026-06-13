@@ -63,6 +63,12 @@ concurrently) is **below the bar** because it does not correspond to a realistic
 map to data loss, a security boundary an honest run could cross, or everyday correctness are **at or
 above the bar**.
 
+## Clarifications
+
+### Session 2026-06-13
+- Q: Should a fully-autonomous "fix everything" mode exist, or is report-first → approve → fix-subset the only path? → A: A **narrow autonomous lane only** — the loop MAY auto-fix unambiguous **top-tier** findings (data-loss / security) without approval; every other finding is report-first → human-approved scoped fix. Auto-fix still honors all ceilings and the severity bar.
+- Q: What default severity/impact bar (`QA_MIN_SEVERITY`) should the loop ship with? → A: The **"moderate"** bar — data-loss, security, correctness, **and** robustness findings reach the fix tier; only purely theoretical edge cases go to the won't-fix backlog.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - The QA-loop produces a ranked report and stops without touching code (Priority: P1)
@@ -215,24 +221,29 @@ update mid-run and the run can be aborted from there.
   fix cap and report are not inflated by re-discoveries.
 - **A finding's severity is ambiguous** between two classes: it is classified at the higher impact and
   the rationale is recorded, so the bar is applied conservatively.
-- **Opt-in full-auto-fix mode (if offered)** is invoked: it must still honor the ceilings and the
-  severity bar — "auto" changes who approves, not whether bounds apply. [NEEDS CLARIFICATION: should an
-  opt-in full-auto-fix mode exist at all, or is report-first → scoped-fix the only supported path?]
+- **Auto-fix lane vs. opt-in full-auto-fix**: the default run auto-fixes only unambiguous top-tier
+  (data-loss / security) findings; a broader opt-in auto-fix mode, if invoked, must still honor the
+  ceilings and the severity bar — "auto" changes who approves, not whether bounds apply.
 
 ## Requirements *(mandatory)*
 
 ### Capability A — Report-first default mode
 
-- **FR-A1**: The QA-loop MUST default to a **report-first** mode: generate candidate findings, verify
-  them, produce a ranked triage report, and **stop** — creating no branch and changing no code.
+- **FR-A1**: For every finding **below the top tier**, the QA-loop MUST behave **report-first**:
+  generate candidate findings, verify them, produce a ranked triage report, and **stop** — creating no
+  branch and changing no code for those findings.
 - **FR-A2**: The ranked report MUST order findings by real-world impact and MUST show, per finding, its
   severity/impact class, a reproduction, its tier (fix vs. backlog/won't-fix), and a recommendation.
-- **FR-A3**: Acting on findings MUST require an explicit human approval step; the default run MUST NOT
-  fix anything on its own.
-- **FR-A4**: Auto-fixing all findings MUST NOT be the default; if any non-interactive auto-fix mode
-  exists, it MUST be an explicit opt-in selection, never the implied behavior of a bare run.
+- **FR-A3**: The QA-loop MAY auto-fix, **without** human approval, ONLY **unambiguous top-tier**
+  findings (data-loss / security). Any finding whose top-tier classification is ambiguous MUST be
+  routed to the report, not auto-fixed. All **non-top-tier** findings MUST require an explicit human
+  approval step before any fix (report-first → approve → scoped fix).
+- **FR-A4**: Auto-fixing the **full** set of findings non-interactively MUST NOT be the default or
+  implicit; any auto-fix beyond the narrow top-tier lane MUST be an explicit opt-in. Top-tier
+  auto-fixes MUST still honor all ceilings (budget, fix-cap, rounds) and MUST be recorded in the report.
 
-*Default behavior is "find, rank, stop for review"; auto-fixing is opt-in, never implicit.*
+*Default: report-first for everything except a narrow autonomous lane for unambiguous data-loss/
+security findings; broader auto-fixing is opt-in, never implicit.*
 
 ### Capability B — Severity / impact bar
 
@@ -293,9 +304,9 @@ cleanly with a partial report.*
   (`QA_MAX_FIXES`), the rounds cap, the budget ceiling, and the target scope.
 - **FR-CFG2**: With no QA-loop config present, the workflow MUST adopt the safe defaults defined here
   (report-first, ceilings on) rather than reverting to unbounded auto-fix.
-- **FR-CFG3**: The default `QA_MIN_SEVERITY` SHOULD be a high bar so that, out of the box, only
-  high-impact findings reach the fix tier. [NEEDS CLARIFICATION: exact default value for
-  `QA_MIN_SEVERITY` — e.g. "high" vs. "correctness-and-above" vs. a named threshold?]
+- **FR-CFG3**: The default `QA_MIN_SEVERITY` MUST be the **"moderate"** bar: data-loss, security,
+  correctness, **and** robustness findings reach the fix tier, while purely theoretical edge cases are
+  routed to the won't-fix backlog.
 
 ### Key Entities
 
