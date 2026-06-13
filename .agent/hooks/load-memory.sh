@@ -5,6 +5,12 @@
 # Deterministic, NO LLM call. Excludes the staging buffer and the append-only log.
 
 set -u
+# Force a byte-oriented locale so ${#var} counts BYTES, not characters. The byte
+# budget below is bounded with `head -c` (bytes), but the `used` accumulator uses
+# ${#...}; under a UTF-8 locale that counts characters, undercounting multibyte
+# (2-3 byte) content ~2-3x and letting the cap be exceeded every session.
+LC_ALL=C
+export LC_ALL
 MEM_DIR="${SCAFFOLD_MEMORY_DIR:-.agent/memory}"
 cat >/dev/null 2>&1 || true            # drain stdin
 
