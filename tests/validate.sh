@@ -69,6 +69,15 @@ if [ -x "$HOOK" ]; then
   rm -rf "$td"
 fi
 
+# 5. QA loop manifest is well-formed (repo-self only; scaffold targets have no .agent/qa.conf).
+if [ -f "$ROOT/.agent/qa.conf" ]; then
+  if ( cd "$ROOT" && sh tests/check-qa-manifest.sh >/dev/null 2>&1 ); then
+    ok "QA manifest well-formed (every system-under-test exists)"
+  else
+    bad "QA manifest broken (run: sh tests/check-qa-manifest.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"
