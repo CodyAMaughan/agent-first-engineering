@@ -32,6 +32,15 @@ case "$INPUT" in
   *"git checkout ."*|*"git restore ."*)       block "wholesale discard of working-tree changes" ;;
 esac
 
+# Wholesale discard where the `.` pathspec follows the subcommand after intervening tokens that don't
+# narrow the scope — the idiomatic `git checkout -- .` (`--` end-of-options) and
+# `git restore --staged --worktree .` discard the entire tree exactly like the bare forms above. Match
+# `git checkout`/`git restore` anywhere ahead of a standalone `.` token, using the space-padded $npad
+# so a path like `foo.txt` or `./x` (no surrounding spaces) can't false-trip.
+case "$npad" in
+  *" git checkout "*" . "*|*" git restore "*" . "*) block "wholesale discard of working-tree changes" ;;
+esac
+
 # Commits/pushes onto a protected branch. Configurable via .agent/guardrails.conf:
 #   PROTECTED_BRANCHES="main master"   (default)   |   PROTECTED_BRANCHES=""  disables it.
 # Some repos (solo, docs, trunk-based) legitimately commit to main — found via dogfooding.
