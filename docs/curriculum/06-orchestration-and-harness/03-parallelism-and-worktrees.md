@@ -103,7 +103,7 @@ flowchart LR
     One -->|"works?"| Three -->|"works?"| N
 ```
 
-This is *own your control flow* (#8) [^3]: *you* decide the orchestration — one, then three, then
+This is *own your control flow* (#8) [^3] — *you* decide the orchestration — one, then three, then
 many — rather than hoping a big parallel launch works first try.
 
 > 🧠 **Test Yourself:** You must run one migration across 30 packages. What do you do *first*?

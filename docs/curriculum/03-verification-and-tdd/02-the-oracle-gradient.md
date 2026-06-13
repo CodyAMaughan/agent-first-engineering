@@ -5,6 +5,8 @@
 _TL;DR: There's a four-rung ladder from "name the check in your prompt" to "a fresh-context subagent reviews the diff." You climb it as the stakes rise; each rung removes one way the check gets skipped [^1]._
 
 ## ELI5: a ladder of locks
+_Four ways to keep a door shut — from an ignorable sticky note to a guard who re-checks; the higher the stakes, the higher the rung you climb._
+
 Think of four ways to keep a door shut. Rung ① is a **sticky note** on the door saying "please check
 this is locked" — easy to ignore or forget. Rung ③ is a **door that won't open until the lock is
 actually engaged** — you *can't* leave it unlocked. Rung ④ is a **second guard** who never watched

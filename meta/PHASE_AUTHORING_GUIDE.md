@@ -48,7 +48,8 @@ any paragraph that can be shown instead of told.
 docs/curriculum/NN-name/
 ├── index.md           # exec summary, objectives, lesson map, phase diagram, cheatsheet, sources
 ├── 01-*.md … 0N-*.md  # lessons (keep existing filenames/nav)
-└── quiz.json          # graded quiz (REPLACES quiz.md — delete quiz.md if present)
+├── quiz.json          # graded quiz — the single source of truth (questions/answers/citations)
+└── quiz.md            # thin render page: hosts the interactive widget (quiz.js) over quiz.json
 ```
 
 ## Lesson file skeleton

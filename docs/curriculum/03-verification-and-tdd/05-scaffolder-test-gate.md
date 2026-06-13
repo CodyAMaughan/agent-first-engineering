@@ -8,6 +8,8 @@ _TL;DR: Phase 3's scaffolder artifact is the **`Stop`-gate** — a deterministic
 > don't hand-build it. Phase 3's artifact is the **`Stop`-gate** + **post-edit hooks.**
 
 ## ELI5: a turnstile, not a reminder
+_A reminder you can ignore; a turnstile you can't — the `Stop`-gate is the turnstile at the exit._
+
 Imagine telling someone "please check the lights are off on your way out" — they might, they might
 not. A **`Stop`-gate** is instead a **turnstile at the exit**: it won't let the agent leave the
 building until the build, tests, and lint are all green. No asking, no trusting — the door simply
