@@ -27,6 +27,13 @@ sh tests/validate.sh              # assert the agent-first layer is well-formed
 | `.claude/skills/` | Claude Code mirror of the skills (+ third-party `speckit-*`) |
 | `mkdocs.yml` | Site nav — **edit this when you add a lesson/phase**, or it's invisible |
 | `tests/validate.sh` | Deterministic check of the agent-first layer |
+| `scripts/build-plugin.sh` | Regenerates the **git-ignored** `plugin/` from canonical sources — never hand-edit `plugin/` |
+| `.claude-plugin/marketplace.json` | The marketplace catalog (committed; points at the generated `plugin/`) |
+
+The Claude Code **plugin** in `plugin/` is **generated, not hand-maintained**: run `sh scripts/build-plugin.sh`
+to (re)build it from the canonical `.agents/skills/` + `.agent/hooks/` + `.claude/agents/`. `plugin/` is
+git-ignored; only the generator and `.claude-plugin/marketplace.json` are committed. Editing `plugin/`
+by hand reintroduces the drift the generator exists to kill.
 
 ## Authoring or editing the curriculum
 

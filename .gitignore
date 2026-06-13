@@ -15,3 +15,10 @@ __pycache__/
 # Budget guardrail — transient cost artifacts (cache + per-run ledger; the .gitkeep stays)
 .agent/budget/price-table.cache.json
 .agent/budget/runs/*.ndjson
+
+# Claude Code plugin — GENERATED from canonical sources via `sh scripts/build-plugin.sh`
+# (.agents/skills/ + .agent/hooks/ + .claude/agents/). The generator + marketplace.json stay tracked.
+plugin/
+
+# QA triage reports — generated per run by the qa-loop workflow (the .gitkeep stays)
+qa/reports/

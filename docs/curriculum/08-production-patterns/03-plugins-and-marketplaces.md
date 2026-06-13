@@ -86,6 +86,9 @@ Takeaway: the **skills inside a plugin stay portable** (open standard) — packa
 ## Your turn (exercise)
 Package this repo's `.claude/` into a plugin: `mkdir -p afe-plugin/.claude-plugin`, write `plugin.json` (`{"name":"agent-first-engineering","version":"1.0.0"}`), copy `skills/` and `agents/`, move the `settings.json` `hooks` object into `hooks/hooks.json` (rewriting paths to `${CLAUDE_PLUGIN_ROOT}/hooks/…`), and test with `claude --plugin-dir ./afe-plugin`. Then decide: which conventions belong in a **team** plugin, and which are personal and should stay in your `~/.claude/`?
 
+!!! tip "How this repo does it — generate, don't hand-maintain"
+    A plugin is a **copy** of your canonical skills/hooks/agents, so a hand-maintained one drifts the moment the originals change. This repo treats `plugin/` as a **build artifact**: it's git-ignored and regenerated with one command — `sh scripts/build-plugin.sh` — which copies `.agents/skills/`, `.agent/hooks/`, and `.claude/agents/` into `plugin/` and rewrites `plugin.json` + `hooks/hooks.json` + `README.md`. Never edit `plugin/` by hand; edit the source and rebuild. (Only `scripts/build-plugin.sh` and the root `.claude-plugin/marketplace.json` are committed.)
+
 ---
 ← [Lesson 8.2](02-computer-use-and-browser-agents.md) · [Phase 8 home](index.md) · → [Check your understanding](quiz.md)
 
