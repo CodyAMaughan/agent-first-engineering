@@ -67,6 +67,25 @@ if [ -x "$HOOK" ]; then
     && ok "capture-learnings hook fires (memory persisted)" \
     || bad "capture-learnings hook did not persist memory"
   rm -rf "$td"
+
+  # 4b. Regression: an empty "## " heading (path forgotten / typed on the next line) must NOT
+  # silently destroy the following section. flush() returns early when `current` is empty, yet
+  # staging is unconditionally wiped at the end — the learning is lost with rc=0 and no warning.
+  # Contract: the section is EITHER persisted to a <path>.md OR staging is left intact to fix.
+  td=$(mktemp -d)
+  mkdir -p "$td/.agent/memory"
+  printf '## \nbody for empty path\nmore body\n' > "$td/.agent/memory/_staging.md"
+  ( cd "$td" && echo '{}' | sh "$HOOK" >/dev/null 2>&1 )
+  persisted=0
+  [ -n "$(find "$td/.agent/memory" -type f -name '*.md' ! -name '_staging.md' ! -name 'session-log.md' 2>/dev/null)" ] && persisted=1
+  staging_kept=0
+  [ -s "$td/.agent/memory/_staging.md" ] && staging_kept=1
+  if [ "$persisted" -eq 1 ] || [ "$staging_kept" -eq 1 ]; then
+    ok "capture-learnings: empty '## ' heading is persisted or staging left intact (no silent loss)"
+  else
+    bad "capture-learnings: empty '## ' heading silently discarded the section AND wiped staging (data loss, rc=0)"
+  fi
+  rm -rf "$td"
 fi
 
 # 5. QA loop manifest is well-formed (repo-self only; scaffold targets have no .agent/qa.conf).
