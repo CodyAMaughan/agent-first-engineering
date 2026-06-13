@@ -36,6 +36,8 @@ for s in $(find "$ROOT/.agents/skills" -name SKILL.md 2>/dev/null); do
   # is a YAML mapping indicator that silently drops the whole frontmatter at load time.
   # (Dogfooding caught this in scaffold-agent-project's "Two modes: init".)
   if awk '
+      BEGIN { bom = sprintf("%c%c%c", 239, 187, 191) }          # UTF-8 BOM bytes (portable: octal/hex regex escapes are not honored by BWK awk)
+      { sub(/\r$/, ""); if (NR == 1 && index($0, bom) == 1) $0 = substr($0, length(bom) + 1) }  # normalize CRLF / strip a leading BOM
       /^---[ \t]*$/ { d++; next }
       d==1 && /^[a-zA-Z0-9_-]+:/ {
         val = $0; sub(/^[^:]*:[ \t]*/, "", val)       # strip the key
@@ -205,6 +207,15 @@ if [ -f "$ROOT/tests/check-git-safety-whitespace.sh" ]; then
     ok "git-safety: a tab/double-space between 'git' and clean/commit still blocks"
   else
     bad "git-safety: 'git\\tclean -f' / 'git  commit' (tab/double-space) evade the literal-space glob while still running (run: sh tests/check-git-safety-whitespace.sh)"
+  fi
+fi
+
+# 9. The SKILL.md ': ' frontmatter detector fires on CRLF/BOM, not just LF.
+if [ -f "$ROOT/tests/check-skill-frontmatter-encoding.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-skill-frontmatter-encoding.sh >/dev/null 2>&1 ); then
+    ok "SKILL.md ': ' detector fires on LF, CRLF, and BOM alike"
+  else
+    bad "SKILL.md ': ' detector false-greens on CRLF/BOM (awk fence anchor misses '---\\r'/BOM) (run: sh tests/check-skill-frontmatter-encoding.sh)"
   fi
 fi
 
