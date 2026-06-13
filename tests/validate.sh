@@ -199,6 +199,15 @@ if [ -f "$ROOT/tests/check-capture-learnings-crlf.sh" ]; then
   fi
 fi
 
+# 8. git-safety blocks destructive git commands regardless of token whitespace.
+if [ -f "$ROOT/tests/check-git-safety-whitespace.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-git-safety-whitespace.sh >/dev/null 2>&1 ); then
+    ok "git-safety: a tab/double-space between 'git' and clean/commit still blocks"
+  else
+    bad "git-safety: 'git\\tclean -f' / 'git  commit' (tab/double-space) evade the literal-space glob while still running (run: sh tests/check-git-safety-whitespace.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"
