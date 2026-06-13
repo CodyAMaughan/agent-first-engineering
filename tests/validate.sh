@@ -219,6 +219,15 @@ if [ -f "$ROOT/tests/check-skill-frontmatter-encoding.sh" ]; then
   fi
 fi
 
+# 10. The feature-pipeline's adversarial Review gate is BLOCKING, at parity with Spec/Plan/Implement.
+if [ -f "$ROOT/tests/check-feature-pipeline-review-gate.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-feature-pipeline-review-gate.sh >/dev/null 2>&1 ); then
+    ok "feature-pipeline Review gate caps with stoppedAt:'Review' on unresolved findings"
+  else
+    bad "feature-pipeline Review gate is non-blocking: unresolved must-fix findings fall through to phase('Ready') (run: sh tests/check-feature-pipeline-review-gate.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"
