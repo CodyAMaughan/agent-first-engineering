@@ -190,6 +190,15 @@ if [ -f "$ROOT/tests/check-capture-learnings-bom.sh" ]; then
   fi
 fi
 
+# 7. capture-learnings does not embed a CR in the derived filename for a CRLF heading.
+if [ -f "$ROOT/tests/check-capture-learnings-crlf.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-capture-learnings-crlf.sh >/dev/null 2>&1 ); then
+    ok "capture-learnings: a CRLF heading maps to the clean memory file (no CR in name)"
+  else
+    bad "capture-learnings: a CRLF heading writes tools/db^M.md, orphaned from the clean name (run: sh tests/check-capture-learnings-crlf.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"
