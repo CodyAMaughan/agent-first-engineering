@@ -54,7 +54,11 @@ EOF
     --runId "$RUN_ID" \
     --steps "$steps"
   rc=$?
-  echo "__RUNS_DIR__=$td/runs"
+  # Surface the written ledger record(s) inline so the caller can assert on it WITHOUT racing the
+  # cleanup below (a deleted temp dir can't be inspected after the fact).
+  for f in "$td"/runs/*.ndjson; do
+    [ -f "$f" ] && sed 's/^/__RECORD__/' "$f"
+  done
   echo "__RC__=$rc"
   rm -rf "$td"
 }
@@ -83,12 +87,11 @@ self_test
 # ⇒ fires after step 1. Run 5 steps; expect an abort with the soft alert emitted earlier.
 echo "  case 1: hard-cost abort + soft-alert-first"
 out=$(scenario 20 1000 1000000 5)
-runs_dir=$(echo "$out" | sed -n 's/^__RUNS_DIR__=//p')
 echo "$out" | grep -q 'aborted-on-budget'                  || { echo "    FAIL no hard-cost abort"; fail=1; }
 echo "$out" | grep -q '"breachedThreshold":"perTask.hard"' || { echo "    FAIL breached threshold not perTask.hard"; fail=1; }
-echo "$out" | grep -qi 'soft alert\|"soft":true\|softFired' || { echo "    FAIL soft alert did not fire before the hard abort"; fail=1; }
-# A BudgetRecord must exist for the aborted run (SC-002).
-if ls "$runs_dir"/*.ndjson >/dev/null 2>&1 && grep -q 'aborted-on-budget' "$runs_dir"/*.ndjson 2>/dev/null; then
+echo "$out" | grep -qi 'soft alert\|"softFired":true'       || { echo "    FAIL soft alert did not fire before the hard abort"; fail=1; }
+# A BudgetRecord must have been written for the aborted run (SC-002): the inlined __RECORD__ line.
+if echo "$out" | grep '^__RECORD__' | grep -q 'aborted-on-budget'; then
   echo "    ok   hard-cost abort, soft-alert-first, BudgetRecord written"
 else
   echo "    FAIL no BudgetRecord with aborted-on-budget written to the run ledger"; fail=1
