@@ -17,9 +17,13 @@ block() {
 # recursive `rm` (-r/-R, bundled with -f and reordered: -rf, -fr, -Rf, -f -r) whose target is
 # exactly / or ~ — not just the literal "rm -rf /" substring. We pad with spaces and require the
 # target to be a standalone token (" / " / " ~ ") so legit paths like /tmp/foo don't false-trip.
+# A glob target (`rm -rf /*` / `rm -rf ~/*`) deletes every top-level entry — semantically identical
+# to `rm -rf /` — yet the slash is glued to "*", so it would dodge the standalone-token check; also
+# match the glob forms " /*" / " ~/*" / " ~*" (slash/tilde followed by a glob, not a path component).
 npad=" $(printf '%s' "$INPUT" | tr '\t"' '   ') "
 case "$npad" in
-  *" rm "*"-"*[rR]*" / "*|*" rm "*"-"*[rR]*" ~ "*)
+  *" rm "*"-"*[rR]*" / "*|*" rm "*"-"*[rR]*" ~ "*|\
+  *" rm "*"-"*[rR]*" /*"*|*" rm "*"-"*[rR]*" ~/*"*|*" rm "*"-"*[rR]*" ~*"*)
                                               block "recursive delete of a top-level path" ;;
 esac
 
