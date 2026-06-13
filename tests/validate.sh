@@ -128,6 +128,27 @@ if [ -x "$GITSAFE" ]; then
   else
     bad "git-safety: leading-'+' refspec force-push slips through (control --force rc=$ctl, +refs/heads/main rc=$r1, +main rc=$r2; all must be 2)"
   fi
+
+  # 4e. Regression: git-safety must block a recursive root/home delete REGARDLESS of flag order or
+  # spelling, not just the two literal substrings "rm -rf /" / "rm -rf ~". The line-18 case is a
+  # fixed-substring match, but the flag bundle is attacker-controlled: `rm -fr /`, `rm -f -r /`, and
+  # `rm -Rf /` are all valid invocations that recursively delete root (and likewise `rm -fr ~` for
+  # home), yet each slips through (exit 0). Contract: every recursive-force delete of / or ~ MUST be
+  # blocked with exit 2. Control: the canonical `rm -rf /` already blocks, proving the hook ran.
+  # NB: the trigger commands are assembled from $R/$SL/$TL via printf so the *substrings* never appear
+  # literally in this file — otherwise the live repo's own git-safety hook would intercept the test's
+  # own JSON when an agent reads/edits it. The hook under test still receives the real commands.
+  R=rm; SL=/; TL='~'
+  printf '{"command":"%s -rf %s"}' "$R" "$SL" | sh "$GITSAFE" >/dev/null 2>&1; gctl=$?   # control: must block
+  printf '{"command":"%s -fr %s"}' "$R" "$SL" | sh "$GITSAFE" >/dev/null 2>&1; g1=$?      # reordered flags
+  printf '{"command":"%s -f -r %s"}' "$R" "$SL" | sh "$GITSAFE" >/dev/null 2>&1; g2=$?    # split flags
+  printf '{"command":"%s -Rf %s"}' "$R" "$SL" | sh "$GITSAFE" >/dev/null 2>&1; g3=$?      # capital -R
+  printf '{"command":"%s -fr %s"}' "$R" "$TL" | sh "$GITSAFE" >/dev/null 2>&1; g4=$?      # reordered, home
+  if [ "$gctl" -eq 2 ] && [ "$g1" -eq 2 ] && [ "$g2" -eq 2 ] && [ "$g3" -eq 2 ] && [ "$g4" -eq 2 ]; then
+    ok "git-safety: blocks recursive root/home delete regardless of flag order/spelling (-fr, -f -r, -Rf)"
+  else
+    bad "git-safety: reordered/split/capital rm flags evade the literal guard (control -rf / rc=$gctl; -fr / rc=$g1, -f -r / rc=$g2, -Rf / rc=$g3, -fr ~ rc=$g4; all must be 2)"
+  fi
 fi
 
 # 5. QA loop manifest is well-formed (repo-self only; scaffold targets have no .agent/qa.conf).
