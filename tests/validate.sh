@@ -181,6 +181,15 @@ if [ -f "$ROOT/.agent/qa.conf" ]; then
   fi
 fi
 
+# 6. capture-learnings does not drop a BOM-prefixed learning while wiping staging.
+if [ -f "$ROOT/tests/check-capture-learnings-bom.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-capture-learnings-bom.sh >/dev/null 2>&1 ); then
+    ok "capture-learnings: a BOM-prefixed first heading is not silently dropped"
+  else
+    bad "capture-learnings: a BOM-prefixed first heading is dropped AND staging wiped (run: sh tests/check-capture-learnings-bom.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"
