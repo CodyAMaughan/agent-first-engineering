@@ -86,6 +86,27 @@ if [ -x "$HOOK" ]; then
     bad "capture-learnings: empty '## ' heading silently discarded the section AND wiped staging (data loss, rc=0)"
   fi
   rm -rf "$td"
+
+  # 4f. Regression (security): a staged "## " heading must not escape the .agent/memory/ lane via
+  # path traversal. `current` is taken verbatim from the heading (capture-learnings.sh:47), then
+  # `target=$MEM_DIR/$current.md` with `mkdir -p $(dirname target)`; a heading like "## ../../OUTSIDE"
+  # resolves to ".agent/memory/../../OUTSIDE.md" and the mv writes ABOVE the memory dir. Staged content
+  # is attacker-influenceable (fetched docs / agent-summarized output per the script header), so this is
+  # untrusted content escaping its lane. Contract: every persisted memory file MUST stay under
+  # .agent/memory/, and a traversing heading must NOT create a file outside it.
+  td=$(mktemp -d)
+  mkdir -p "$td/.agent/memory"
+  printf '## ../../OUTSIDE\npwned\n' > "$td/.agent/memory/_staging.md"
+  ( cd "$td" && echo '{}' | sh "$HOOK" >/dev/null 2>&1 )
+  # Anything written outside .agent/memory/ is an escape. find every .md under the temp root that is
+  # NOT inside .agent/memory/ — there must be none.
+  escaped=$(find "$td" -name '*.md' ! -path "$td/.agent/memory/*" 2>/dev/null)
+  if [ -z "$escaped" ]; then
+    ok "capture-learnings: traversing '## ../..' heading is contained to .agent/memory/ (no path-traversal escape)"
+  else
+    bad "capture-learnings: traversing '## ../..' heading escaped .agent/memory/ (wrote: $escaped) — untrusted staged content broke containment, rc=0"
+  fi
+  rm -rf "$td"
 fi
 
 # 4c. Regression: a memory file whose path contains a SPACE must be re-injected by load-memory.sh.
