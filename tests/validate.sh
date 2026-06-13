@@ -28,9 +28,26 @@ fi
 found_skill=0
 for s in $(find "$ROOT/.agents/skills" -name SKILL.md 2>/dev/null); do
   found_skill=1
-  grep -q '^name:' "$s" && grep -q '^description:' "$s" \
-    && ok "SKILL.md valid: $s" \
-    || bad "SKILL.md missing name/description: $s"
+  if ! grep -q '^name:' "$s" || ! grep -q '^description:' "$s"; then
+    bad "SKILL.md missing name/description: $s"
+    continue
+  fi
+  # Frontmatter must PARSE, not just exist: an unquoted ": " (colon-space) in a value
+  # is a YAML mapping indicator that silently drops the whole frontmatter at load time.
+  # (Dogfooding caught this in scaffold-agent-project's "Two modes: init".)
+  if awk '
+      /^---[ \t]*$/ { d++; next }
+      d==1 && /^[a-zA-Z0-9_-]+:/ {
+        val = $0; sub(/^[^:]*:[ \t]*/, "", val)       # strip the key
+        if (val ~ /^".*"$/ || val ~ /^'\''.*'\''$/) next  # quoted values may contain ": "
+        if (val ~ /: /) { print; bad=1 }
+      }
+      END { exit bad }
+    ' "$s" >/dev/null; then
+    ok "SKILL.md valid: $s"
+  else
+    bad "SKILL.md frontmatter has an unquoted \": \" (breaks YAML parse): $s"
+  fi
 done
 [ "$found_skill" -eq 0 ] && echo "  note no SKILL.md found (skipped skill checks)"
 

@@ -1,7 +1,7 @@
 ---
 name: scaffold-agent-project
 version: 0.1.0
-description: Interview the developer about a project, then generate a complete agent-first setup — a command-first AGENTS.md, a portable .agents/skills/ library, and deterministic guardrail hooks (incl. a capture-learnings memory loop) — rendered for Claude Code, Codex, and Cursor. Two modes: init (new repo) and adopt (upgrade an existing one). Trigger with "scaffold an agent-first project", "set up this repo for agents", "/scaffold-agent-project", or "make my repo agent-ready".
+description: Interview the developer about a project, then generate a complete agent-first setup — a command-first AGENTS.md, a portable .agents/skills/ library, and deterministic guardrail hooks (incl. a capture-learnings memory loop) — rendered for Claude Code, Codex, and Cursor. Two modes — init (new repo) and adopt (upgrade an existing one). Trigger with "scaffold an agent-first project", "set up this repo for agents", "/scaffold-agent-project", or "make my repo agent-ready".
 ---
 
 # Scaffold Agent-First Project
