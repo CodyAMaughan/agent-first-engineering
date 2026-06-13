@@ -28,9 +28,37 @@ case "$npad" in
                                               block "recursive delete of a top-level path" ;;
 esac
 
+# Git GLOBAL options (`-C <dir>`, `--git-dir[=...]`, `--work-tree[=...]`, `-c k=v`, `-p`, `--bare`,
+# …) go BEFORE the subcommand, inserting tokens between `git` and the subcommand: `git -C foo clean
+# -f`. That splits the contiguous `git clean`/`git checkout`/`git restore` substring the globs below
+# anchor on, so a destructive command would run unblocked. Build $ngit by iteratively peeling those
+# leading global-option tokens off the `git ` invocation, re-collapsing `git <subcmd>` to be
+# contiguous again, then run the same globs against it. Pure POSIX parameter expansion (no `sed`
+# alternation — BSD/macOS sed lacks BRE `\|`). $ngit is used ONLY for the destructive subcommand
+# match below; the protected-branch check keeps using $nsq.
+ngit=" $nsq "
+while :; do
+  case "$ngit" in
+    *" git -"*)
+      pre=${ngit%%" git -"*}            # everything before the ` git ` (other commands in a chain)
+      rest=${ngit#*" git -"}            # tokens after ` git ` (first global option, sans its '-')
+      rest="-$rest"; tok=${rest%%" "*}  # $tok = the leading global-option token
+      case "$tok" in
+        # Two-token options: flag + separate argument (`-C foo`, `-c k=v`, `--git-dir foo`, …).
+        -C|-c|--git-dir|--work-tree|--namespace)
+          rest=${rest#*" "}; rest=${rest#*" "} ;;   # drop the flag AND its argument
+        # One-token options incl. `=`-joined (`--git-dir=foo`, `-p`, `--bare`, `--no-pager`, …).
+        *) rest=${rest#*" "} ;;                      # drop just the flag
+      esac
+      ngit="$pre git $rest" ;;
+    *) break ;;
+  esac
+done
+
 # Destructive / irreversible commands. Match the whitespace-collapsed $nsq (not raw
-# $INPUT) so tab/double-space token separators can't evade these single-space globs.
-case "$nsq" in
+# $INPUT) so tab/double-space token separators can't evade these single-space globs;
+# $ngit additionally has git global options peeled so they can't split the substring.
+case "$ngit" in
   *"git push"*"--force"*|*"git push -f"*)    block "force-push (rewrites shared history)" ;;
   *"git push"*" +"*)                          block "force-push via leading-'+' refspec (rewrites shared history)" ;;
   *"git reset --hard"*)                       block "git reset --hard (discards uncommitted work)" ;;
@@ -41,9 +69,10 @@ esac
 # Wholesale discard where the `.` pathspec follows the subcommand after intervening tokens that don't
 # narrow the scope — the idiomatic `git checkout -- .` (`--` end-of-options) and
 # `git restore --staged --worktree .` discard the entire tree exactly like the bare forms above. Match
-# `git checkout`/`git restore` anywhere ahead of a standalone `.` token, using the space-padded $npad
-# so a path like `foo.txt` or `./x` (no surrounding spaces) can't false-trip.
-case "$npad" in
+# `git checkout`/`git restore` anywhere ahead of a standalone `.` token, using the space-padded
+# (and global-option-peeled) $ngit so a leading `git -C foo` can't split the substring while a path
+# like `foo.txt` or `./x` (no surrounding spaces) still can't false-trip.
+case "$ngit" in
   *" git checkout "*" . "*|*" git restore "*" . "*) block "wholesale discard of working-tree changes" ;;
 esac
 
