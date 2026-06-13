@@ -97,6 +97,42 @@ else
   echo "  ok   oversized learning is capped to $big bytes (<= $CAP_BYTES)"
 fi
 
+# --- real check: MULTIBYTE (UTF-8) memory must NOT blow the byte budget ---------
+# The accumulator in load-memory.sh measures `${#chunk}` (line 37) and the title/
+# header lengths in CHARACTERS under a UTF-8 locale (the agent runtime defaults to
+# LANG=en_US.UTF-8 and /bin/sh is bash-in-posix-mode where ${#s} is a char count),
+# while `head -c "$remain"` (line 35) bounds each emitted chunk in BYTES. So every
+# 2-3-byte UTF-8 char counts as 1 toward `used`, undercounting the budget ~2-3x and
+# letting the find|while loop keep emitting past the cap. The ASCII scenario above
+# can NEVER catch this (there ${#chunk} == byte count), so build fixtures directly
+# with multibyte content. run_mb_scenario <file-count> <chars-per-file> <utf8-char>.
+run_mb_scenario() {
+  files="$1"; chars="$2"; ch="$3"
+  td=$(mktemp -d) || { echo "MKTEMP-FAIL"; echo -1 > "$CNT_FILE"; return; }
+  mkdir -p "$td/.agent/hooks" "$td/.agent/memory"
+  cp "$LOAD" "$td/.agent/hooks/load-memory.sh"
+  i=1
+  while [ "$i" -le "$files" ]; do
+    python3 -c "import sys; print('# h'); print(sys.argv[1]*int(sys.argv[2]))" \
+      "$ch" "$chars" > "$td/.agent/memory/f$i.md"
+    i=$((i + 1))
+  done
+  bytes=$( cd "$td" && echo '{}' | sh .agent/hooks/load-memory.sh 2>/dev/null | wc -c )
+  bytes=$(printf '%s' "$bytes" | tr -d ' ')
+  echo "$bytes" > "$CNT_FILE"
+  rm -rf "$td"
+}
+
+# 6 files x 30000 'é' (2-byte) chars: ~360 KB of bytes, char-counted as ~180 KB.
+run_mb_scenario 6 30000 'é'; mb=$(cat "$CNT_FILE")
+echo "  ..   multibyte (UTF-8 'é') memory re-injects $mb bytes (cap $CAP_BYTES)"
+if [ "$mb" -gt "$CAP_BYTES" ]; then
+  echo "  FAIL load-memory emitted $mb bytes (> $CAP_BYTES cap) from multibyte UTF-8 memory — \${#chunk} char-vs-byte undercount lets the cap be exceeded ~2-3x every session"
+  fail=1
+else
+  echo "  ok   multibyte memory is capped to $mb bytes (<= $CAP_BYTES)"
+fi
+
 rm -f "$CNT_FILE"
 
 echo
