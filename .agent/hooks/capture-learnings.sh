@@ -69,8 +69,11 @@ while IFS= read -r line || [ -n "$line" ]; do
       current=$(printf '%s' "$line" | sed 's/^## *//; s/'"$(printf '\r')"'$//')
       # Reject a path that is empty, absolute, or traverses upward ("..") — staged content is
       # attacker-influenceable, so a heading like "## ../../OUTSIDE" must not escape the memory lane.
+      # Only a real ".." path SEGMENT is traversal (".." alone, or bounded by "/"): a benign
+      # filename that merely embeds the substring ".." (e.g. "tools/v1.2..3") stays INSIDE the
+      # lane and must persist, so we match the four segment forms, not the broad glob "*..*".
       case "$current" in
-        ""|/*|*..*) current=""; unsaved=1 ;;   # can't persist -> keep staging to fix
+        ""|/*|".."|"../"*|*"/.."|*"/../"*) current=""; unsaved=1 ;;   # can't persist -> keep staging to fix
         *)
           tmp=$(mktemp 2>/dev/null || echo "$MEM_DIR/.tmp.$$")
           printf '# %s\n' "$current" > "$tmp"
