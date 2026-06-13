@@ -33,16 +33,32 @@ if [ "$agents" != "$claude" ]; then
   fail=1
 fi
 
-# 2. Each canonical skill must be byte-identical to its mirror.
+# 2. Each canonical skill must be byte-identical to its mirror — same CONTENT
+#    (diff -r) AND same executable bit per file (diff -r ignores file mode, so a
+#    mirrored hook that lost its +x bit would otherwise pass as identical).
+#    modes() lists "<exec-flag> <relpath>" for every regular file, sorted, where
+#    exec-flag is x when the owner-execute bit is set and - otherwise.
+modes() {
+  ( cd "$1" && find . -type f | sort | while IFS= read -r f; do
+      if [ -x "$f" ]; then echo "x $f"; else echo "- $f"; fi
+    done )
+}
 for name in $agents; do
   if [ ! -d "$CL/$name" ]; then
     echo "  FAIL $name: present in $AG but missing from $CL"
     fail=1
-  elif diff -r "$AG/$name" "$CL/$name" >/dev/null 2>&1; then
+  elif diff -r "$AG/$name" "$CL/$name" >/dev/null 2>&1 \
+       && [ "$(modes "$AG/$name")" = "$(modes "$CL/$name")" ]; then
     echo "  ok   $name"
   else
-    echo "  FAIL $name: contents differ —"
+    echo "  FAIL $name: contents or file modes differ —"
     diff -r "$AG/$name" "$CL/$name" 2>&1 | sed 's/^/         /'
+    if [ "$(modes "$AG/$name")" != "$(modes "$CL/$name")" ]; then
+      echo "         mode: executable-bit parity differs (canonical vs mirror):"
+      printf 'canonical: %s\nmirror:    %s\n' \
+        "$(modes "$AG/$name" | tr '\n' ' ')" "$(modes "$CL/$name" | tr '\n' ' ')" \
+        | sed 's/^/         /'
+    fi
     fail=1
   fi
 done
