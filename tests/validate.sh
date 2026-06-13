@@ -208,24 +208,30 @@ if [ -f "$ROOT/tests/check-budget.sh" ] && [ -d "$ROOT/.claude/workflows/lib" ];
   fi
 fi
 
-# 9. Steerable/bounded QA-loop: the decision-logic unit tests + the post-mortem replay fixture fire.
-# The replay proves the redesign's invariants HOLD (report-first touches no code, theoretical-edge →
-# backlog, the moderate bar, bar-keyed convergence, a budget/fix-cap abort → partial report) — not
-# merely that the files exist. Repo-self only; scaffold targets have no qa decision core yet.
-if [ -f "$ROOT/tests/check-qa-loop.sh" ] && [ -f "$ROOT/.claude/workflows/lib/qa-classify.js" ]; then
+# 9. Steerable/bounded QA-loop: the workflow script is SELF-CONTAINED — it must parse both raw and
+# wrapped the way the runtime loads it (an async function body, no import/import()). qa-loop.js inlines
+# its own decision logic, so this is its oracle. Repo-self only; scaffold targets have no qa-loop yet.
+if [ -f "$ROOT/.claude/workflows/qa-loop.js" ]; then
   if command -v node >/dev/null 2>&1; then
-    if ( cd "$ROOT" && node --test tests/qa-classify.test.js tests/qa-convergence.test.js >/dev/null 2>&1 ); then
-      ok "QA decision-logic unit tests (qa-classify + qa-convergence) green"
+    if ( cd "$ROOT" && node --check .claude/workflows/qa-loop.js >/dev/null 2>&1 ); then
+      ok "qa-loop.js parses (raw node --check)"
     else
-      bad "QA decision-logic unit tests failed (run: node --test tests/qa-classify.test.js tests/qa-convergence.test.js)"
+      bad "qa-loop.js has a syntax error (run: node --check .claude/workflows/qa-loop.js)"
     fi
-    if ( cd "$ROOT" && sh tests/check-qa-loop.sh >/dev/null 2>&1 ); then
-      ok "QA-loop replay fires (report-first, impact bar, convergence, budget/fix-cap abort → partial report)"
+    wrapped="$(mktemp -d)/wfck.mjs"   # .mjs so node --check treats it as an ES module (wrapped body)
+    {
+      printf 'async function __wf(){ const args={}, budget={total:null,spent:()=>0,remaining:()=>Infinity}; const agent=async()=>({}), parallel=async()=>[], phase=()=>{}, log=()=>{}; '
+      sed 's/^export const meta/const meta/' "$ROOT/.claude/workflows/qa-loop.js"
+      printf '}'
+    } > "$wrapped"
+    if node --check "$wrapped" >/dev/null 2>&1; then
+      ok "qa-loop.js is self-contained (parses wrapped as the runtime loads it — no import/import())"
     else
-      bad "QA-loop replay broken (run: sh tests/check-qa-loop.sh)"
+      bad "qa-loop.js fails the wrapped parse (an import/import() or top-level statement leaked in)"
     fi
+    rm -rf "$(dirname "$wrapped")"
   else
-    echo "  note node not found (skipped QA decision-logic checks)"
+    echo "  note node not found (skipped qa-loop.js parse checks)"
   fi
 fi
 

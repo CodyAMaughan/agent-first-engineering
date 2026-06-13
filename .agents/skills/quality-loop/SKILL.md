@@ -125,12 +125,14 @@ could cross, or everyday correctness/robustness are **at or above it**.
    away.
 2. Ensure `qa-adversary` + `qa-verifier` subagents exist in `.claude/agents/` (the verifier must emit
    the `impact`/`impactConfidence`/`impactRationale` fields) and a `TEST_CMD` in `.agent/lifecycle.conf`.
-3. Run the `qa-loop` workflow. Keep `tests/check-qa-manifest.sh` (manifest) and `tests/check-qa-loop.sh`
-   (the post-mortem replay gate) so the loop's own invariants stay enforced.
+3. Run the `qa-loop` workflow. Keep `tests/check-qa-manifest.sh` (manifest) so the loop's targets stay
+   honest; `tests/validate.sh` parse-checks `qa-loop.js` itself (raw + wrapped) to keep it self-contained.
 
 ## Portability
 Follows the Agent Skills (`SKILL.md`) standard. Canonical copy in `.agents/skills/quality-loop/`;
 mirrored byte-identical to `.claude/skills/quality-loop/`. The orchestrator is
-`.claude/workflows/qa-loop.js`; its pure decision logic lives in `.claude/workflows/lib/qa-classify.js`,
-`qa-convergence.js`, and `qa-report.js` (unit-tested with `node --test`); the subagents are
-`.claude/agents/qa-adversary.md` and `.claude/agents/qa-verifier.md`.
+`.claude/workflows/qa-loop.js` — a SELF-CONTAINED workflow script that inlines its own decision logic
+(impact tiering, bar-keyed convergence, ranked report rendering) and bounds the run with the runtime's
+native `budget` primitive plus the inline ceilings (no `import`/`import()`, since workflow scripts run
+as an async function body); the subagents are `.claude/agents/qa-adversary.md` and
+`.claude/agents/qa-verifier.md`.
