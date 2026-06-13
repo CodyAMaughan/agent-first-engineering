@@ -80,13 +80,25 @@ $(tail -n 30 "$OUT" 2>/dev/null)"
 fi
 
 # JSON form (Claude/Codex): a structured block decision.
-# Encode REASON as a proper JSON string: escape backslashes and quotes, turn
-# control chars (TAB, CR, and the line-ending newlines) into their \uXXXX-free
-# short escapes, then wrap the result in double quotes. Without the quotes and
-# control-char escaping a TAB or unquoted value yields a payload a consumer
-# can't json.loads() — losing the block reason.
-ESCAPED=$(printf '%s' "$REASON" \
-  | sed 's/\\/\\\\/g; s/"/\\"/g; s/	/\\t/g; s/\r/\\r/g; s/$/\\n/' \
-  | tr -d '\n\r')
+# Encode REASON as a proper JSON string: escape backslash and quote, give TAB/CR/
+# LF their short escapes, and — critically — turn EVERY OTHER C0 control char
+# (0x00-0x08, 0x0b, 0x0c, 0x0e-0x1f) into a \uXXXX escape. RFC 8259 forbids any
+# unescaped U+0000–U+001F inside a string, and REASON is built from the TEST_CMD's
+# own output (tail of $OUT) — attacker/agent-influenceable — so a raw control byte
+# would otherwise leak in and a JSON-only consumer could not json.loads() the
+# block decision. perl slurps the whole reason (-0777) so no line-splitting can
+# drop a byte; it is already required on every macOS/Linux (see run_bounded).
+ESCAPED=$(printf '%s' "$REASON" | perl -0777 -pe '
+  s/([\x00-\x1f"\\])/
+    my $o = ord($1);
+    $o == 0x5c ? "\\\\" :
+    $o == 0x22 ? "\\\"" :
+    $o == 0x08 ? "\\b"  :
+    $o == 0x09 ? "\\t"  :
+    $o == 0x0a ? "\\n"  :
+    $o == 0x0c ? "\\f"  :
+    $o == 0x0d ? "\\r"  :
+    sprintf("\\u%04x", $o)
+  /ge')
 printf '{"decision":"block","reason":"%s"}\n' "$ESCAPED"
 exit 2
