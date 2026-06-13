@@ -66,6 +66,41 @@ for p in ".envrc" ".env.local" "id_dsa"; do
   fi
 done
 
+# --- regression: encoded secret paths must ALSO block (no raw-byte evasion) ---
+# secret-scan.sh:20 greps the RAW JSON bytes with no JSON/percent decoding, so
+# any encoded representation of a secret path slips past the PATTERN. The literal
+# substring `.env` never appears in the raw text, so the gate exits 0.
+#
+# These cases need the *encoding* bytes themselves on the wire (a literal
+# backslash-u, or a `%`), so we feed pre-built JSON bodies rather than going
+# through run_hook's `printf %s` quoting. run_hook_raw <json> drives the real
+# hook with <json> verbatim on stdin and returns its exit code.
+run_hook_raw() {
+  body="$1"
+  td=$(mktemp -d) || { echo "MKTEMP-FAIL"; return 99; }
+  ( cd "$td" && printf '%s' "$body" | sh "$HOOK" >/dev/null 2>&1 )
+  rc=$?
+  rm -rf "$td"
+  return "$rc"
+}
+
+# Build bodies with printf so the encoding bytes are exact (note `\\u` -> `\u`,
+# a literal backslash-u; the `%%` -> `%` for the percent-encoded variant).
+json_unicode=$(printf '{"file_path":"\\u002eenv"}')   # bytes: {"file_path":".env"}  (decodes to .env)
+json_percent=$(printf '{"file_path":"%%2eenv"}')      # bytes: {"file_path":"%2eenv"}     (decodes to .env)
+
+# label|body pairs.
+for case in "JSON \\u002e unicode-escape|$json_unicode" "percent-encode %2e|$json_percent"; do
+  label=${case%%|*}; body=${case#*|}
+  run_hook_raw "$body"; rc=$?
+  if [ "$rc" -eq 2 ]; then
+    echo "  ok   blocked (encoded): $label  [$body]"
+  else
+    echo "  FAIL not blocked (encoded): $label  [$body] (exit $rc, expected 2) — encoded secret path evades the raw-byte grep"
+    fail=1
+  fi
+done
+
 echo
 if [ "$fail" -eq 0 ]; then
   echo "PASS — secret-scan blocks .envrc / id_dsa and friends (no letter-boundary evasion)."
