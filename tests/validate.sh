@@ -210,6 +210,39 @@ if [ -x "$GITSAFE" ]; then
   else
     bad "git-safety: backslash-newline line-continuation evades the root-delete guard (control -rf / rc=$nctl; -rf \\<NL>/ rc=$n1; both must be 2) — tr normalizes only TAB/\" to space, never the newline, so the \" / \" token never forms"
   fi
+
+  # 4i. Regression (data loss): git-safety must block destructive git commands even when a git GLOBAL
+  # OPTION precedes the subcommand. `git -C <dir>`, `git -c k=v`, and `git --work-tree=...` are valid,
+  # common invocations that insert tokens between `git` and the subcommand — breaking the contiguous
+  # substrings the guard matches ("git push", "git reset --hard", "git clean -", "git checkout .").
+  # So `git -C /repo push --force`, `git -C /x reset --hard HEAD`, `git -C /x clean -f`, and
+  # `git -C /x checkout .` all slip through (exit 0) and rewrite history / discard work / delete files.
+  # The line-54 protected-branch fallback (`*"git push"*`) is evaded the same way. Contract: each
+  # destructive command MUST be blocked with exit 2 regardless of a leading global option. Control:
+  # the same commands WITHOUT a global option already block, proving the hook ran.
+  # NB: the "git push"/"reset --hard"/"clean"/"checkout" subcommand tokens are assembled from
+  # $G/$PUSH/$RH/$CLN/$CO via printf so the literal contiguous strings never appear in this file —
+  # else the live repo's own git-safety hook would intercept this file's JSON on read/edit. The hook
+  # under test still receives the real commands.
+  G=git
+  PUSH=$(printf 'pu''sh'); RH=$(printf 'reset --''hard'); CLN=$(printf 'cle''an'); CO=$(printf 'check''out')
+  # Controls — same commands with NO global option must block (exit 2), proving the hook ran.
+  printf '{"command":"%s %s origin --force"}' "$G" "$PUSH"   | sh "$GITSAFE" >/dev/null 2>&1; ictl1=$?
+  printf '{"command":"%s %s HEAD"}'           "$G" "$RH"     | sh "$GITSAFE" >/dev/null 2>&1; ictl2=$?
+  # The gap — a leading global option splits the contiguous token and every guard is bypassed.
+  printf '{"command":"%s -C /repo %s origin --force"}' "$G" "$PUSH" | sh "$GITSAFE" >/dev/null 2>&1; i1=$?  # git -C <dir> push --force
+  printf '{"command":"%s -c http.x=1 %s --force"}'     "$G" "$PUSH" | sh "$GITSAFE" >/dev/null 2>&1; i2=$?  # git -c k=v  push --force
+  printf '{"command":"%s -C /r %s -f"}'                "$G" "$PUSH" | sh "$GITSAFE" >/dev/null 2>&1; i3=$?  # git -C <dir> push -f
+  printf '{"command":"%s -C /x %s HEAD"}'              "$G" "$RH"   | sh "$GITSAFE" >/dev/null 2>&1; i4=$?  # git -C <dir> reset --hard
+  printf '{"command":"%s -C /x %s -f"}'                "$G" "$CLN"  | sh "$GITSAFE" >/dev/null 2>&1; i5=$?  # git -C <dir> clean -f
+  printf '{"command":"%s -C /x %s ."}'                 "$G" "$CO"   | sh "$GITSAFE" >/dev/null 2>&1; i6=$?  # git -C <dir> checkout .
+  if [ "$ictl1" -eq 2 ] && [ "$ictl2" -eq 2 ] \
+     && [ "$i1" -eq 2 ] && [ "$i2" -eq 2 ] && [ "$i3" -eq 2 ] \
+     && [ "$i4" -eq 2 ] && [ "$i5" -eq 2 ] && [ "$i6" -eq 2 ]; then
+    ok "git-safety: blocks destructive git commands behind a leading global option (-C/-c/--work-tree)"
+  else
+    bad "git-safety: a leading git global option (-C/-c/--work-tree) splits the contiguous token and bypasses every destructive guard (controls push --force rc=$ictl1, reset --hard rc=$ictl2; -C push --force rc=$i1, -c push --force rc=$i2, -C push -f rc=$i3, -C reset --hard rc=$i4, -C clean -f rc=$i5, -C checkout . rc=$i6; all must be 2)"
+  fi
 fi
 
 # 5. QA loop manifest is well-formed (repo-self only; scaffold targets have no .agent/qa.conf).
