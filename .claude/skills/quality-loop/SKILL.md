@@ -1,138 +1,76 @@
 ---
 name: quality-loop
-version: 0.2.0
-description: Steerable, bounded, REPORT-FIRST adversarial QA of the repo's own tooling. Generate candidate failure modes, REPRODUCE each against the real code AND classify its real-world impact under the threat model, then write a ranked triage report and STOP for human review — no branch, no code change, except a narrow auto-fix lane for unambiguous data-loss/security findings. A human approves a subset; only that subset is fixed, on one branch, with a fast fix-gate. Every run is bounded (budget + max-fixes + rounds); any ceiling yields a graceful partial report. Run it via the qa-loop workflow or by hand. Trigger with "run the quality loop", "adversarially test our tooling", "/quality-loop".
+version: 0.3.0
+description: Lean, safe, report-first adversarial QA of the repo's own tooling. ONE grounded review pass finds the few sharpest real issues (each cited to file:line + a reproduction, abstaining on clean code); a verifier reproduces-or-drops each and classifies it critical/high/low/nitpick; a ranked report is written and the run STOPS — no branch, no code change. Auto-fix is opt-in via a flag and scoped to named severities. Hard-capped by total agents + a token ceiling so it cannot run away. Run it via the qa-loop workflow or by hand. Trigger with "run the quality loop", "review our tooling", "/quality-loop".
 ---
 
-# Quality Loop
+# Quality Loop (lean)
 
-Break the tools before your users (or your agents) do — the agent-first way: adversarial agents
-*generate* candidate failures, a hostile skeptic *reproduces* each against the real code **and classifies
-its real-world impact**, and the loop writes a **ranked triage report and stops for human review**. Only
-a human-approved subset gets fixed (test-first), on one branch. This is "write loops, not prompts"
-pointed at your own quality bar (Phases 3 + 6) — now **report-first and bounded** so it can't run away.
+Find the real bugs in your own tooling without drowning in noise or burning tokens. v2 is deliberately
+small: **one grounded review pass → verify each finding → a ranked report → stop.** Report-only by
+default; writing code is always an explicit opt-in.
 
-> **Operating principle:** generation is cheap and mostly noise; a finding counts only when a hostile
-> skeptic has **reproduced** it AND it clears an **impact bar** under the threat model. Discovery is
-> read-only and *stops* for review; *action* is scoped, branched, and human-gated. This is *confirm RED
-> before green* applied to QA — plus "rank by real impact, then let a human steer."
+> **Operating principle:** precision over volume. LLM reviewers' dominant failure is *inventing*
+> issues (most run >90% noise), so every finding must be **grounded** (cite `file:line` + a
+> reproduction) or it's dropped, and **abstaining on clean code is success**. Reproduction — not
+> "are you sure?" self-critique — is the gate that kills false positives.
 
-## Why report-first (the post-mortem)
-An earlier unbounded run went for ~4 hours, surfaced 28 "bugs" in the repo's own guardrail hooks, and
-**auto-fixed every one** on its own branch — yet most were pedantic edge cases (exotic encodings,
-theoretical races on hooks that never run concurrently). Four root causes, four fixes:
-
-| Failure | Fix |
-|---|---|
-| No ceiling → ran for hours | **Bounded execution** — budget + `QA_MAX_FIXES` + rounds cap; any breach → partial report |
-| Acceptance bar was just "reproduces?" | **Impact bar** — classify each finding; only at/above `QA_MIN_SEVERITY` is fix-worthy |
-| Fire-and-forget, no human checkpoint | **Report-first** — discovery stops; a human approves a subset to fix |
-| Never converged (always one more edge case) | **Bar-keyed convergence** — the below-bar marginal tail can't extend the run |
+## Why it's shaped this way (the post-mortem)
+The previous version fanned out 6 parallel "lens" agents, verified every invented candidate, looped 4
+rounds, and had no real cost ceiling — it ran ~2.6h / 3.5M tokens / 105 agents, twice. The research is
+unanimous on the fix: a single grounded pass beats a parallel swarm (parallel near-identical agents
+duplicate work and burn ~15× tokens); cap **cumulative** agents+tokens (round caps don't bound a
+fan-out); ground-or-drop; abstain; collapse nitpicks; gate auto-fix behind a flag.
 
 ## The pipeline
 
 ```
-targets → [GENERATE] → dedup → [VERIFY +impact] → [RANK] → [TRIAGE report] → ⏸ human
-            │ (fan-out)          │ reproduce         │ tier vs the bar   │ .md + .json
-          N lens-agents        skeptic + impact    fix | backlog        STOP (default)
-          (candidates)         class               │
-                                                    └─► auto-fix lane: ONLY unambiguous
-                                                        data-loss/security (high-confidence)
-
-  then, separately:  human approves ids → [mode: fix] → scoped fixes on one branch
-                                            fast gate per fix · full TEST_CMD once at end
+config → REVIEW (1 grounded agent: the few sharpest issues, cited + reproducible, or ABSTAIN)
+       → VERIFY each (reproduce-or-DROP in a sandbox; classify critical/high/low/nitpick)
+       → RANK + write qa-<date>.{md,json} → STOP        [report-only: no branch, no code]
+       --autofix critical|high → scoped RED-first fix of ONLY those tiers, on one branch
 ```
 
-| Stage | Actor produces | Gate (oracle) | Loops until | Config |
-|---|---|---|---|---|
-| **Generate** | candidates (per lens) + a `proposedImpact` hint | — (volume is fine) | every lens runs | `QA_LENSES`, `QA_TARGETS` |
-| **Verify** | a verdict **+ impact class + confidence** per finding | skeptic must **reproduce** it, else REJECT | every fresh finding judged | `QA_THREAT_MODEL` |
-| **Rank** | each confirmed finding tiered fix vs. backlog | impact vs. `QA_MIN_SEVERITY` | once per round | `QA_MIN_SEVERITY` |
-| **Triage** | a **ranked report** (`.md` + `.json` sidecar) | — | once, on every terminating path | — |
-| **Fix** *(only on approval / auto-fix lane)* | a regression test (RED first) + a minimal fix | **fast gate** (regression + affected checks); full `TEST_CMD` **once at end** | green or the fix cap | `lifecycle.conf` `TEST_CMD`, `QA_AFFECTED_MAP` |
+| Stage | Agents | Gate | Config |
+|---|---|---|---|
+| Config | 1 | — | `.agent/qa.conf` |
+| Review | 1 | precision-first; returns ≤ `QA_MAX_FINDINGS`; may abstain | `QA_TARGETS`, `QA_THREAT_MODEL` |
+| Verify | ≤ findings | **reproduce-or-drop** + severity class | — |
+| Fix *(opt-in)* | ≤ `QA_MAX_FIXES` | RED-first; full `TEST_CMD` once at end | `QA_AUTOFIX`, `lifecycle.conf` |
+| Report | 1 | writes `.md` + `.json`, STOP | — |
 
-## Modes (the steering control)
+A default run is **~3–6 agents, report-only**. Clean code → ~3 agents and an "abstained" report.
 
-| `mode` | Branch? | Code change? | Approval | Output |
-|---|---|---|---|---|
-| **`report`** (default) | only if the top-tier auto-fix lane fires | only unambiguous **data-loss/security** (high-confidence) | none beyond that narrow lane | ranked `.md` + `.json`, then **STOP** |
-| `fix` | one branch | only the approved `fix` id subset | a human passed the ids | scoped fixes + end-of-run full `TEST_CMD` |
-| `autofix` (opt-in) | one branch | the whole fix tier | none (explicit opt-in) | full-auto fixes, still honoring ceilings + the bar |
+## Severity (replaces the old 5-class scale)
+`critical > high > low > nitpick`. **`QA_MIN_SEVERITY` (default `low`)** = lowest tier shown as an
+actionable finding; **nitpick is always collapsed** (count shown, details hidden). The verifier assigns
+severity from the *reproduced* impact: critical = data-loss/security/breakage; high = a real wrong
+result; low = an edge that genuinely bites; nitpick = marginal/theoretical.
 
-**Default is report-first for everything except a narrow autonomous lane** for unambiguous
-data-loss/security findings. Broader auto-fixing is opt-in, never implicit. With **no** `qa.conf`
-present the workflow still adopts the safe defaults (report-first, ceilings on) — never unbounded.
-
-## The impact bar (so the loop stops chasing pedantry)
-The verifier classifies each confirmed finding by **real-world impact** under the threat model:
-
-```
-data-loss  >  security  >  correctness  >  robustness  >  theoretical-edge
-```
-
-`QA_MIN_SEVERITY` names the lowest class still in the **fix tier**; the rest go to the **backlog /
-won't-fix tier** with a stated reason. **Default `moderate`**: data-loss, security, correctness, and
-robustness reach the fix tier; purely **theoretical-edge** findings (exotic encodings, a race on a
-never-concurrent hook) go to the backlog. Ambiguous class ⇒ assigned the **higher** one (conservative).
-**Convergence keys on "no new finding at/above the bar"**, so below-bar noise can't keep the loop alive.
-
-## Bounded execution (no more runaways)
-Every run is hard-bounded and any breach yields a **graceful partial report** naming the ceiling:
-- **Budget** — reuses spec 003's cost guardrail (`.agent/budget.conf`), **wired into** `qa-loop.js`
-  (`BudgetBreaker.checkpoint()` each round + after each verify/fix). Absent/disabled ⇒ degrade to the
-  caps below.
-- **`QA_MAX_FIXES`** — cap on fix-tier findings acted on per run.
-- **`QA_MAX_ROUNDS`** — hard rounds cap; **`QA_DRY_STREAK`** — bar-keyed convergence streak.
-- **`QA_WALLCLOCK`** (optional) — wall-clock minutes.
+## Bounds — always on (no budget directive required)
+Enforced in the script at every agent spawn; any breach → **abort + partial report**:
+- **`QA_MAX_AGENTS`** (default 10) — total `agent()` calls.
+- **`QA_TOKEN_CEILING`** (default 150000) — tokens this run (`budget.spent()` works even with no `+Nk`).
+- **`QA_MAX_FINDINGS`** (default 5) — caps the reviewer, bounding verify.
+- Optional `.agent/budget.conf` notional-$ ceiling (spec 003), if a `+Nk` directive is active.
 
 ## How to run it
+- **Default (report-only):** `Workflow qa-loop {}` — reviews `QA_TARGETS`, writes `qa/reports/qa-<date>.md`
+  + `.json`, and stops. Watch with `/workflows`; it's hard-capped, so it can't run away.
+- **Scope it:** `{ targets: ["path", ...] }` reviews just those.
+- **Auto-fix (opt-in):** `{ autofix: "critical" }` or `"critical,high"` — RED-first fixes ONLY those
+  tiers on one branch, then runs `TEST_CMD` once. A bare run NEVER writes code.
 
-**Autonomously (the loop):** run the workflow `qa-loop`. Default `mode: report` fans out the lenses,
-reproduces + classifies each candidate, ranks them, **writes `qa/reports/qa-<date>.md` + `.json` and
-stops** — no code touched (bar the narrow lane). Watch it live with `/workflows` (spec 003's
-observability) and abort mid-flight if it heads somewhere unproductive — it still emits its report.
+**By hand:** read the targets → list only the few sharpest issues you can cite + reproduce (abstain
+otherwise) → reproduce each in a sandbox, classify severity, drop the unreproducible → write a short
+ranked report.
 
-**Approve & fix a subset (US3):** read the report, then run `qa-loop` with
-`args = { "mode": "fix", "fix": ["<id>", ...] }`. The ids resolve against the latest `qa-<date>.json`
-sidecar; only those are fixed, on one branch. Each fix is gated by its new regression case + the
-directly-affected checks; the **full `TEST_CMD` runs once at the end** (not per fix). Empty subset ⇒
-no change. Unknown ids are reported skipped; a finding that no longer reproduces is reported, not faked.
-
-**Scope a run (US5):** `args = { "targets": ["<path>", ...] }` QAs one subsystem instead of all targets.
-
-**By hand (drive it yourself):**
-1. **Generate.** Per target + lens, write candidate failures — each with `file:line`, a one-line claim,
-   a literal repro recipe, and a `proposedImpact` hint.
-2. **Verify.** `mktemp -d`, write the failing input, run the real script/hook, capture exit+output.
-   CONFIRM only if reproduced — then **classify impact** under the threat model (conservative: ambiguous
-   → higher class). Otherwise reject with a reason.
-3. **Rank & report.** Tier each confirmed finding fix vs. backlog by impact vs. `QA_MIN_SEVERITY`; write
-   the ranked report and **stop**.
-4. **Fix (only the approved subset).** Add a regression case and confirm it FAILS first (RED), make the
-   minimal fix, run the fast gate (regression + affected checks), and the **full** `TEST_CMD` once at end.
-
-## Threat model (so you don't chase non-bugs)
-These guardrails — and the code the loop tests — protect against an **honest agent's mistakes** and
-**untrusted content** the agent reads (the lethal trifecta), *not* a determined local attacker with
-file-write/RCE (that's out of scope). That framing is the impact yardstick: a reproducible-but-
-implausible finding (exotic-encoding evasion, a split-second race on a never-concurrent hook) is
-**below the bar** (theoretical-edge). Findings that map to data loss, a security boundary an honest run
-could cross, or everyday correctness/robustness are **at or above it**.
-
-## Adapting to a new repo
-1. Set `QA_TARGETS` in `.agent/qa.conf` to that project's risky surfaces (its hooks, gates, scripts),
-   and keep the defaults (`QA_MODE=report`, `QA_MIN_SEVERITY=moderate`, the ceilings) so a run can't run
-   away.
-2. Ensure `qa-adversary` + `qa-verifier` subagents exist in `.claude/agents/` (the verifier must emit
-   the `impact`/`impactConfidence`/`impactRationale` fields) and a `TEST_CMD` in `.agent/lifecycle.conf`.
-3. Run the `qa-loop` workflow. Keep `tests/check-qa-manifest.sh` (manifest) so the loop's targets stay
-   honest; `tests/validate.sh` parse-checks `qa-loop.js` itself (raw + wrapped) to keep it self-contained.
+## Evaluation
+`tests/eval-qa-loop/` holds the oracle: `planted.sh` (one real critical bug — must be found) and
+`clean.sh` (correct — must be abstained on). That's how "working as intended" is checked, not just
+"the code parses." See `tests/eval-qa-loop/README.md`.
 
 ## Portability
-Follows the Agent Skills (`SKILL.md`) standard. Canonical copy in `.agents/skills/quality-loop/`;
-mirrored byte-identical to `.claude/skills/quality-loop/`. The orchestrator is
-`.claude/workflows/qa-loop.js` — a SELF-CONTAINED workflow script that inlines its own decision logic
-(impact tiering, bar-keyed convergence, ranked report rendering) and bounds the run with the runtime's
-native `budget` primitive plus the inline ceilings (no `import`/`import()`, since workflow scripts run
-as an async function body); the subagents are `.claude/agents/qa-adversary.md` and
-`.claude/agents/qa-verifier.md`.
+Follows the Agent Skills (`SKILL.md`) standard. Canonical in `.agents/skills/quality-loop/`; mirrored
+byte-identical to `.claude/skills/quality-loop/`. Orchestrator: `.claude/workflows/qa-loop.js`;
+subagents: `.claude/agents/qa-adversary.md` (reviewer) + `.claude/agents/qa-verifier.md` (verifier).
