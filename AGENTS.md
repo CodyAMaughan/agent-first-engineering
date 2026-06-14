@@ -60,6 +60,10 @@ under every subsection, and **agent-agnostic** framing (per-agent specifics go i
 - **`check-understanding`** — quiz the user on a phase from its `quiz.json`.
 - **`feature-lifecycle`** — drive a feature request → review-ready branch through verified, looping
   stages (spec → plan → implement → test-gate → review). Config in `.agent/lifecycle.conf`.
+- **`create-mvp`** — drive a greenfield idea/spec to a first fully-functional MVP: refine spec →
+  scaffold a green harness → decompose into always-functional slices → build each test-first.
+- **`quality-loop`** — lean, report-first adversarial QA of the repo's own tooling: one grounded
+  review pass → reproduce-or-drop → severity-ranked report; hard-capped so it can't run away.
 
 ## Subagents (Claude Code: `.claude/agents/`)
 - **`lesson-reviewer`** — adversarial, fresh-context review of a lesson/phase against the authoring
@@ -74,6 +78,9 @@ unlike `SKILL.md`, there's no shared cross-tool standard yet.
 ## Workflows (Claude Code: `.claude/workflows/`)
 - **`feature-pipeline`** — the orchestrator for `feature-lifecycle`: runs the staged loops, gates each
   on a reviewer subagent or `TEST_CMD`, and stops before the PR for human sign-off.
+- **`create-mvp`** — the orchestrator for `create-mvp`: greenfield idea/spec → first working MVP.
+- **`qa-loop`** — the orchestrator for `quality-loop` (uses the `qa-adversary` reviewer + `qa-verifier`
+  subagents): one grounded pass, report-only by default, hard-capped (≤`QA_MAX_AGENTS`, token ceiling).
 
 ## Agent guardrails & memory (`.agent/`)
 Deterministic hooks (registered in `.claude/settings.json`) run on agent events: `git-safety` +

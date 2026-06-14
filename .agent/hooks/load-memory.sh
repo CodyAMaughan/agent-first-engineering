@@ -11,7 +11,9 @@ cat >/dev/null 2>&1 || true            # drain stdin
 [ -d "$MEM_DIR" ] || exit 0
 
 found=0
-find "$MEM_DIR" -type f -name '*.md' 2>/dev/null | grep -v '_staging.md' | grep -v 'session-log.md' | sort | while IFS= read -r f; do
+# Exclude ONLY the two top-level transient files by EXACT path (not a substring grep, which would
+# also drop a legitimately-persisted nested learning like reference/session-log.md). [qa-loop found this]
+find "$MEM_DIR" -type f -name '*.md' ! -path "$MEM_DIR/_staging.md" ! -path "$MEM_DIR/session-log.md" 2>/dev/null | sort | while IFS= read -r f; do
   if [ "$found" -eq 0 ]; then
     printf '# Project memory (persisted learnings)\n\n'
     found=1

@@ -235,6 +235,15 @@ if [ -f "$ROOT/.claude/workflows/qa-loop.js" ]; then
   fi
 fi
 
+# Curriculum footnote integrity (repo-self only; scaffold targets have no docs/curriculum).
+if [ -d "$ROOT/docs/curriculum" ] && [ -f "$ROOT/tests/check-footnotes.sh" ]; then
+  if ( cd "$ROOT" && sh tests/check-footnotes.sh >/dev/null 2>&1 ); then
+    ok "curriculum footnotes balanced (no orphans/gaps/duplicates)"
+  else
+    bad "curriculum footnote imbalance (run: sh tests/check-footnotes.sh)"
+  fi
+fi
+
 echo
 [ "$fail" -eq 0 ] && echo "PASS — agent-first layer is well-formed." || echo "FAILURES above."
 exit "$fail"
