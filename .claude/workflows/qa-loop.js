@@ -154,18 +154,25 @@ function budgetSpend() {
   try { return { spentUsd: Number(BUDGET.spent()), totalUsd: Number(BUDGET.total) } } catch (e) { return null }
 }
 
+// budget.spent() is CUMULATIVE for the whole turn (main loop + all workflows), so the per-run token
+// cap must measure the DELTA from a baseline captured at run start — not the raw cumulative number.
+const tokenBaseline = spentTokens()
+function runTokens() { return Math.max(0, spentTokens() - tokenBaseline) }
+
 let agentsUsed = 0
 let CAPS = { maxAgents: 10, tokenCeiling: 150000 }   // tightened after Config
 function capReason() {
-  if (agentsUsed >= CAPS.maxAgents) return 'agent-cap'
-  if (spentTokens() >= CAPS.tokenCeiling) return 'token-ceiling'
+  if (agentsUsed >= CAPS.maxAgents) return 'agent-cap'           // primary, reliable (self-counted)
+  if (runTokens() >= CAPS.tokenCeiling) return 'token-ceiling'   // per-run delta, not cumulative
   if (budgetLow()) return 'budget'
   return null
 }
 async function callAgent(prompt, opts) { agentsUsed++; return agent(prompt, opts) }
 
-// ---- args ---------------------------------------------------------------------------------------
-const A = (args && typeof args === 'object') ? args : {}
+// ---- args (the runtime may hand `args` as an object OR a JSON string — accept both) -------------
+const A = (typeof args === 'string')
+  ? (() => { try { return JSON.parse(args) } catch (e) { return {} } })()
+  : ((args && typeof args === 'object') ? args : {})
 const dateStamp = A.dateStamp || 'latest'
 
 // ---- schemas ------------------------------------------------------------------------------------
@@ -297,6 +304,7 @@ await callAgent(
 return {
   mode: cfg.mode,
   targets: cfg.targets.length,
+  runTokens: runTokens(),
   agentsUsed,
   stop,
   findings: { fix: sidecar.meta.counts.fix, backlog: sidecar.meta.counts.backlog, autoFixed: sidecar.meta.counts.autoFixed, dropped: rejected.length },

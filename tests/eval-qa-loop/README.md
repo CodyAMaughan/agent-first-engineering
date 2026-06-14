@@ -22,3 +22,15 @@ Every run is hard-capped (≤ `QA_MAX_AGENTS`, a token ceiling, 1 round) — it 
 **Pass criteria:** `planted.sh` → 1 finding, critical/high, grounded; `clean.sh` → 0 findings (abstain).
 If it invents on `clean.sh` or misses `planted.sh` after ~2–3 prompt tunings, that's a design signal —
 stop and reassess rather than overfitting to these two files.
+
+## Eval results — 2026-06-13 (v2)
+
+| Target | Outcome | Agents / tokens |
+|---|---|---|
+| `planted.sh` | ✅ found the planted **critical** path-traversal bug at `:14`, cited + sandbox-reproduced | 4 / ~8k |
+| `clean.sh` | ✅ **abstained** (0 findings) — no invention on correct code | 3 / ~7.6k |
+| `.agent/hooks/load-memory.sh` (real target) | ✅ 1 **real** grounded finding (`low`): unanchored `grep -v 'session-log.md'` drops a nested `*/session-log.md` learning | 4 / ~18k |
+
+All runs report-only, ≤4 agents, cents each, `stop: done` — bounded, no runaway. Two bugs were caught
+by this eval on the first pass and fixed: the token ceiling was measuring cumulative-turn tokens (now a
+per-run delta), and the runtime hands `args` as a JSON **string** (now parsed).
