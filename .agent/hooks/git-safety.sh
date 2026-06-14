@@ -29,8 +29,26 @@ case "$npad" in
                                               block "recursive delete of a top-level path" ;;
 esac
 
+# A leading git GLOBAL OPTION (`git -C <dir>`, `git -c k=v`, `git --work-tree=…`, `git --git-dir …`,
+# `git -p`, etc.) inserts tokens between `git` and the subcommand, splitting the contiguous strings
+# the guards below match ("git push", "git reset --hard", …) and silently bypassing every guard.
+# Normalize: repeatedly collapse `git <global-option>[ <value>]` back to `git`, so the subcommand
+# becomes contiguous regardless of how many global options precede it. Options that take a separate
+# value argument (-C/-c/--git-dir/--work-tree/--namespace) consume the following token too; the
+# `=`-joined forms (--git-dir=…) and bare flags (-p/--paginate/--no-pager/--bare) are self-contained.
+# Done with sed in a fixed-point loop (POSIX, no LLM). Used ONLY for matching, not for execution.
+NORM="$INPUT"
+while :; do
+  prev="$NORM"
+  # value-taking options: drop the option AND its argument token.
+  NORM=$(printf '%s' "$NORM" | sed -E 's/(^|[^[:alnum:]_./-])git[[:space:]]+(-C|-c|--git-dir|--work-tree|--namespace)([[:space:]]+|=)[^[:space:]]+[[:space:]]+/\1git /')
+  # bare flag options: drop just the option.
+  NORM=$(printf '%s' "$NORM" | sed -E 's/(^|[^[:alnum:]_./-])git[[:space:]]+(-p|--paginate|--no-pager|--bare|--no-replace-objects|--literal-pathspecs)[[:space:]]+/\1git /')
+  [ "$NORM" = "$prev" ] && break
+done
+
 # Destructive / irreversible commands.
-case "$INPUT" in
+case "$NORM" in
   *"git push"*"--force"*|*"git push -f"*)    block "force-push (rewrites shared history)" ;;
   *"git push"*" +"*)                          block "force-push via leading-'+' refspec (rewrites shared history)" ;;
   *"git reset --hard"*)                       block "git reset --hard (discards uncommitted work)" ;;
@@ -51,7 +69,7 @@ if [ -n "${PROTECTED_BRANCHES:-}" ]; then
   [ -n "$branch" ] || branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
   for pb in $PROTECTED_BRANCHES; do
     [ "$branch" = "$pb" ] || continue
-    case "$INPUT" in
+    case "$NORM" in
       *"git commit"*|*"git push"*) block "writing directly to the protected '$branch' branch — create a feature branch first (set PROTECTED_BRANCHES in $CONF to change)" ;;
     esac
   done
